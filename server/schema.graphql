@@ -1,0 +1,381 @@
+scalar DateTime
+
+# ============= ENUMS =============
+
+enum TransactionType {
+  income
+  expense
+  transfer
+}
+
+enum WalletType {
+  cash
+  bank
+  credit
+  investment
+}
+
+enum BudgetPeriod {
+  monthly
+  yearly
+}
+
+enum RecurringFrequency {
+  daily
+  weekly
+  monthly
+  yearly
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  rejected
+  cancelled
+}
+
+enum MemberRole {
+  owner
+  admin
+  member
+}
+
+# ============= USER =============
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  emailVerified: Boolean!
+  image: String
+  username: String
+  displayUsername: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  wallets: [Wallet!]!
+  categories: [Category!]!
+  transactions: [Transaction!]!
+  budgets: [Budget!]!
+  recurringTransactions: [RecurringTransaction!]!
+  financialGoals: [FinancialGoal!]!
+  members: [Member!]!
+}
+
+# ============= ORGANIZATION =============
+
+type Organization {
+  id: ID!
+  name: String!
+  slug: String!
+  logo: String
+  metadata: String
+  createdAt: DateTime!
+
+  members: [Member!]!
+  invitations: [Invitation!]!
+  wallets: [Wallet!]!
+  categories: [Category!]!
+  transactions: [Transaction!]!
+  budgets: [Budget!]!
+  recurringTransactions: [RecurringTransaction!]!
+  financialGoals: [FinancialGoal!]!
+}
+
+type Member {
+  id: ID!
+  role: String!
+  createdAt: DateTime!
+  organization: Organization!
+  user: User!
+}
+
+type Invitation {
+  id: ID!
+  email: String!
+  role: String
+  status: InvitationStatus!
+  expiresAt: DateTime!
+  createdAt: DateTime!
+  organization: Organization!
+  inviter: User!
+}
+
+# ============= WALLET =============
+
+type Wallet {
+  id: ID!
+  name: String!
+  type: String!
+  balance: Int!
+  currency: String!
+  createdAt: DateTime!
+  user: User!
+  organization: Organization
+  transactions: [Transaction!]!
+  recurringTransactions: [RecurringTransaction!]!
+  financialGoals: [FinancialGoal!]!
+}
+
+# ============= CATEGORY =============
+
+type Category {
+  id: ID!
+  name: String!
+  icon: String
+  type: String!
+  createdAt: DateTime!
+  user: User!
+  organization: Organization
+  transactions: [Transaction!]!
+  budgets: [Budget!]!
+}
+
+# ============= TRANSACTION =============
+
+type Transaction {
+  id: ID!
+  amount: Int!
+  type: TransactionType!
+  description: String
+  currency: String!
+  exchangeRate: Int!
+  date: DateTime!
+  createdAt: DateTime!
+  wallet: Wallet!
+  toWallet: Wallet
+  category: Category
+  user: User!
+  organization: Organization
+}
+
+# ============= BUDGET =============
+
+type Budget {
+  id: ID!
+  amount: Int!
+  period: BudgetPeriod!
+  createdAt: DateTime!
+  category: Category!
+  user: User!
+  organization: Organization
+}
+
+# ============= RECURRING TRANSACTION =============
+
+type RecurringTransaction {
+  id: ID!
+  amount: Int!
+  type: TransactionType!
+  description: String
+  frequency: RecurringFrequency!
+  startDate: DateTime!
+  nextRunDate: DateTime!
+  lastRunDate: DateTime
+  isActive: Boolean!
+  createdAt: DateTime!
+  wallet: Wallet!
+  toWallet: Wallet
+  category: Category
+  user: User!
+  organization: Organization
+}
+
+# ============= FINANCIAL GOAL =============
+
+type FinancialGoal {
+  id: ID!
+  name: String!
+  targetAmount: Int!
+  currentAmount: Int!
+  deadline: DateTime
+  createdAt: DateTime!
+  wallet: Wallet!
+  user: User!
+  organization: Organization
+}
+
+# ============= QUERIES =============
+
+type Query {
+  # User
+  me: User
+
+  # Wallets
+  wallets: [Wallet!]!
+  wallet(id: ID!): Wallet
+
+  # Categories
+  categories(type: String): [Category!]!
+  category(id: ID!): Category
+
+  # Transactions
+  transactions(
+    walletId: ID
+    categoryId: ID
+    type: TransactionType
+    from: DateTime
+    to: DateTime
+    limit: Int
+    offset: Int
+  ): [Transaction!]!
+  transaction(id: ID!): Transaction
+  
+  # Budgets
+  budgets: [Budget!]!
+  budget(id: ID!): Budget
+
+  # Recurring Transactions
+  recurringTransactions(isActive: Boolean): [RecurringTransaction!]!
+  recurringTransaction(id: ID!): RecurringTransaction
+
+  # Financial Goals
+  financialGoals: [FinancialGoal!]!
+  financialGoal(id: ID!): FinancialGoal
+
+  # Organization
+  organization(id: ID!): Organization
+  organizations: [Organization!]!
+}
+
+# ============= MUTATIONS =============
+
+type Mutation {
+  # Wallet
+  createWallet(input: CreateWalletInput!): Wallet!
+  updateWallet(id: ID!, input: UpdateWalletInput!): Wallet!
+  deleteWallet(id: ID!): Boolean!
+
+  # Category
+  createCategory(input: CreateCategoryInput!): Category!
+  updateCategory(id: ID!, input: UpdateCategoryInput!): Category!
+  deleteCategory(id: ID!): Boolean!
+
+  # Transaction
+  createTransaction(input: CreateTransactionInput!): Transaction!
+  updateTransaction(id: ID!, input: UpdateTransactionInput!): Transaction!
+  deleteTransaction(id: ID!): Boolean!
+
+  # Budget
+  createBudget(input: CreateBudgetInput!): Budget!
+  updateBudget(id: ID!, input: UpdateBudgetInput!): Budget!
+  deleteBudget(id: ID!): Boolean!
+
+  # Recurring Transaction
+  createRecurringTransaction(input: CreateRecurringTransactionInput!): RecurringTransaction!
+  updateRecurringTransaction(id: ID!, input: UpdateRecurringTransactionInput!): RecurringTransaction!
+  deleteRecurringTransaction(id: ID!): Boolean!
+
+  # Financial Goal
+  createFinancialGoal(input: CreateFinancialGoalInput!): FinancialGoal!
+  updateFinancialGoal(id: ID!, input: UpdateFinancialGoalInput!): FinancialGoal!
+  deleteFinancialGoal(id: ID!): Boolean!
+
+  # Organization
+  createOrganization(input: CreateOrganizationInput!): Organization!
+  inviteMember(organizationId: ID!, email: String!, role: String): Invitation!
+  removeMember(memberId: ID!): Boolean!
+}
+
+# ============= INPUTS =============
+
+input CreateWalletInput {
+  name: String!
+  type: String!
+  balance: Int
+  currency: String
+  organizationId: ID
+}
+
+input UpdateWalletInput {
+  name: String
+  type: String
+  currency: String
+}
+
+input CreateCategoryInput {
+  name: String!
+  icon: String
+  type: String!
+  organizationId: ID
+}
+
+input UpdateCategoryInput {
+  name: String
+  icon: String
+  type: String
+}
+
+input CreateTransactionInput {
+  amount: Int!
+  type: TransactionType!
+  description: String
+  currency: String
+  exchangeRate: Int
+  date: DateTime!
+  walletId: ID!
+  toWalletId: ID
+  categoryId: ID
+  organizationId: ID
+}
+
+input UpdateTransactionInput {
+  amount: Int
+  description: String
+  date: DateTime
+  categoryId: ID
+}
+
+input CreateBudgetInput {
+  amount: Int!
+  period: BudgetPeriod
+  categoryId: ID!
+  organizationId: ID
+}
+
+input UpdateBudgetInput {
+  amount: Int
+  period: BudgetPeriod
+}
+
+input CreateRecurringTransactionInput {
+  amount: Int!
+  type: TransactionType!
+  description: String
+  frequency: RecurringFrequency!
+  startDate: DateTime!
+  walletId: ID!
+  toWalletId: ID
+  categoryId: ID
+  organizationId: ID
+}
+
+input UpdateRecurringTransactionInput {
+  amount: Int
+  description: String
+  frequency: RecurringFrequency
+  isActive: Boolean
+  categoryId: ID
+}
+
+input CreateFinancialGoalInput {
+  name: String!
+  targetAmount: Int!
+  deadline: DateTime
+  walletId: ID!
+  organizationId: ID
+}
+
+input UpdateFinancialGoalInput {
+  name: String
+  targetAmount: Int
+  currentAmount: Int
+  deadline: DateTime
+}
+
+input CreateOrganizationInput {
+  name: String!
+  slug: String!
+  logo: String
+  metadata: String
+}
