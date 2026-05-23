@@ -9,6 +9,7 @@ export default defineNuxtConfig({
       appBaseUrl: process.env.PUBLIC_APP_BASE_URL,
       betterAuthAppUrl: process.env.BETTER_AUTH_APP_URL,
     },
+    exchangeRateApiKey: process.env.EXCHANGE_RATE_API_KEY,
     betterAuthSecret: process.env.BETTER_AUTH_SECRET,
     upstashRedisRestUrl: process.env.UPSTASH_REDIS_REST_URL,
     upstashRedisRestToken: process.env.UPSTASH_REDIS_REST_TOKEN,
@@ -59,13 +60,18 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        'lucide-vue-next',
-        'class-variance-authority',
-        'reka-ui',
-        'clsx',
-        'tailwind-merge',
-        'better-auth/vue',
+        '@apollo/client/core',
+        '@tanstack/vue-query',
+        '@vue/apollo-composable',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
         'better-auth/client/plugins',
+        'better-auth/vue',
+        'class-variance-authority',
+        'clsx',
+        'lucide-vue-next',
+        'reka-ui',
+        'tailwind-merge',
         'vue-sonner',
       ]
     }
