@@ -14,6 +14,7 @@
     "@apollo/server": "^5.5.1",
     "@as-integrations/h3": "^2.0.3",
     "@libsql/client": "^0.17.3",
+    "@lucide/vue": "^1.16.0",
     "@nuxt/fonts": "0.14.0",
     "@nuxt/icon": "2.2.1",
     "@nuxtjs/color-mode": "4.0.0",
@@ -45,7 +46,7 @@
     "pinia": "^3.0.4",
     "reka-ui": "^2.9.8",
     "shadcn-nuxt": "2.6.2",
-    "tailwind-merge": "^3.5.0",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.2.4",
     "vee-validate": "^4.15.1",
     "vite": "^7.3.2",
@@ -57,7 +58,7 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.105",
     "drizzle-kit": "^0.31.10",
-    "shadcn-vue": "^2.6.2",
+    "shadcn-vue": "^2.7.3",
     "tw-animate-css": "^1.4.0"
   },
   "trustedDependencies": [

@@ -9,6 +9,7 @@
         "@apollo/server": "^5.5.1",
         "@as-integrations/h3": "^2.0.3",
         "@libsql/client": "^0.17.3",
+        "@lucide/vue": "^1.16.0",
         "@nuxt/fonts": "0.14.0",
         "@nuxt/icon": "2.2.1",
         "@nuxtjs/color-mode": "4.0.0",
@@ -40,7 +41,7 @@
         "pinia": "^3.0.4",
         "reka-ui": "^2.9.8",
         "shadcn-nuxt": "2.6.2",
-        "tailwind-merge": "^3.5.0",
+        "tailwind-merge": "^3.6.0",
         "tailwindcss": "^4.2.4",
         "vee-validate": "^4.15.1",
         "vite": "^7.3.2",
@@ -52,7 +53,7 @@
       "devDependencies": {
         "@iconify-json/lucide": "^1.2.105",
         "drizzle-kit": "^0.31.10",
-        "shadcn-vue": "^2.6.2",
+        "shadcn-vue": "^2.7.3",
         "tw-animate-css": "^1.4.0",
       },
     },
@@ -423,6 +424,8 @@
     "@libsql/linux-x64-musl": ["@libsql/linux-x64-musl@0.5.29", "", { "os": "linux", "cpu": "x64" }, "sha512-gquqwA/39tH4pFl+J9n3SOMSymjX+6kZ3kWgY3b94nXFTwac9bnFNMffIomgvlFaC4ArVqMnOZD3nuJ3H3VO1w=="],
 
     "@libsql/win32-x64-msvc": ["@libsql/win32-x64-msvc@0.5.29", "", { "os": "win32", "cpu": "x64" }, "sha512-4/0CvEdhi6+KjMxMaVbFM2n2Z44escBRoEYpR+gZg64DdetzGnYm8mcNLcoySaDJZNaBd6wz5DNdgRmcI4hXcg=="],
+
+    "@lucide/vue": ["@lucide/vue@1.16.0", "", { "peerDependencies": { "vue": ">=3.0.1" } }, "sha512-kiHx0fe49DMjQuvNaEOu9Jou6u9FwdqQ8xbZIKlD47sXrOI8g59kIeeQL42NBLI4AvO+UJsbaPX0hEK/4rHSBQ=="],
 
     "@mapbox/node-pre-gyp": ["@mapbox/node-pre-gyp@2.0.3", "", { "dependencies": { "consola": "^3.2.3", "detect-libc": "^2.0.0", "https-proxy-agent": "^7.0.5", "node-fetch": "^2.6.7", "nopt": "^8.0.0", "semver": "^7.5.3", "tar": "^7.4.0" }, "bin": { "node-pre-gyp": "bin/node-pre-gyp" } }, "sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg=="],
 
