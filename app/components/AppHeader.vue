@@ -11,7 +11,7 @@ const availableLocales = computed(() =>
 
 <template>
   <header
-    class="flex h-20 w-full sticky top-0 shrink-0 items-center justify-between gap-4 border-b-2 bg-background p-3"
+    class="flex z-20 h-20 w-full sticky top-0 shrink-0 items-center justify-between gap-4 border-b-2 backdrop-blur-3xl p-3"
   >
     <ClientOnly>
       <template #fallback>
@@ -21,7 +21,6 @@ const availableLocales = computed(() =>
     </ClientOnly>
 
     <div class="flex items-center gap-2">
-      <!-- Currency / Locale Selector -->
       <UiSelect
         :model-value="locale"
         @update:model-value="(v: any) => setLocale(v)"
