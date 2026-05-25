@@ -3,11 +3,17 @@ import "vue-sonner/style.css";
 import AppSidebar from "@/components/AppSidebar.vue";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+
+const router = useRouter()
+
+const isRoot = computed(()=>{
+  return router.currentRoute.value.path == "/"
+})
 </script>
 
 <template>
   <NuxtLoadingIndicator/>
-  <SidebarProvider>
+  <SidebarProvider :defaultOpen="!isRoot">
     <AppSidebar />
     <div class=" w-full">
       <AppHeader />

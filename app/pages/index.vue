@@ -4,9 +4,7 @@ import {
   AnimatePresence,
   useScroll,
   useTransform,
-  type Variants,
 } from "motion-v";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 useHead({
@@ -24,8 +22,6 @@ useHead({
 const { scrollYProgress } = useScroll();
 const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.92]);
 const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-
-const mobileMenuOpen = ref(false);
 
 const features = [
   {

@@ -52,7 +52,7 @@ const orgItems = [
 
 const route = useRoute();
 const { $authClient } = useNuxtApp();
-const isOrgOpen = ref(true);
+const isOrgOpen = ref(false);
 
 const headers = useRequestHeaders(["cookie"]);
 
@@ -88,7 +88,7 @@ const signOutMutation = useMutation({
 </script>
 
 <template>
-  <Sidebar collapsible="icon">
+  <Sidebar>
     <SidebarHeader>
       <DropdownMenu>
         <DropdownMenuTrigger :disabled="orgs?.pending.value">
