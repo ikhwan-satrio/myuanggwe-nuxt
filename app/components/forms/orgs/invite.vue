@@ -30,21 +30,19 @@ const inviteForm = useForm({
 <template>
   <UiCard>
     <UiCardHeader>
-      <UiCardTitle>Invite Member</UiCardTitle>
-      <UiCardDescription
-        >Send an invitation to join your organization</UiCardDescription
-      >
+      <UiCardTitle>Undang Anggota</UiCardTitle>
+      <UiCardDescription>Kirim undangan untuk bergabung ke organisasi Anda.</UiCardDescription>
     </UiCardHeader>
     <UiCardContent>
       <form class="grid gap-4" @submit.prevent="inviteForm.handleSubmit()">
         <inviteForm.Field name="email">
           <template #default="{ field }">
             <div class="grid gap-2">
-              <UiLabel for="email">Email Address</UiLabel>
+              <UiLabel for="email">Alamat Email</UiLabel>
               <UiInput
                 id="email"
                 type="email"
-                placeholder="member@example.com"
+                placeholder="anggota@contoh.com"
                 :value="field.state.value"
                 required
                 autocomplete="email"
@@ -68,9 +66,7 @@ const inviteForm = useForm({
           <template #default="{ field }">
             <div class="grid gap-2">
               <UiLabel for="role">Role</UiLabel>
-              <UiSelect
-                :model-value="field.state.value"
-              >
+              <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger id="role" class="w-full">
                   <UiSelectValue>
                     {{
@@ -123,7 +119,7 @@ const inviteForm = useForm({
                 class="mr-2 h-4 w-4 animate-spin"
               />
               <Icon v-else name="lucide:send" class="mr-2 h-4 w-4" />
-              {{ isSubmitting ? "Sending invitation..." : "Send Invitation" }}
+              {{ isSubmitting ? "Mengirim..." : "Kirim Undangan" }}
             </UiButton>
           </template>
         </inviteForm.Subscribe>

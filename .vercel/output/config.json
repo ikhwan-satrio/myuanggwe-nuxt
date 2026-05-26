@@ -1,0 +1,358 @@
+{
+  "version": 3,
+  "overrides": {},
+  "routes": [
+    {
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
+      "src": "/_nuxt/builds/meta/(.*)"
+    },
+    {
+      "headers": {
+        "cache-control": "public, max-age=1, immutable"
+      },
+      "src": "/_nuxt/builds/(.*)"
+    },
+    {
+      "headers": {
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "*",
+        "access-control-allow-headers": "*",
+        "access-control-max-age": "0"
+      },
+      "src": "/api/(.*)"
+    },
+    {
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
+      "src": "/_fonts/(.*)"
+    },
+    {
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
+      "src": "/_nuxt/(.*)"
+    },
+    {
+      "headers": {
+        "Referrer-Policy": "no-referrer",
+        "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "X-Download-Options": "noopen",
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "X-XSS-Protection": "0"
+      },
+      "src": "/(.*)"
+    },
+    {
+      "src": "/_nuxt/builds/meta(.*)",
+      "headers": {
+        "cache-control": "public,max-age=31536000,immutable"
+      },
+      "continue": true
+    },
+    {
+      "src": "/_nuxt/builds(.*)",
+      "headers": {
+        "cache-control": "public,max-age=31536000,immutable"
+      },
+      "continue": true
+    },
+    {
+      "src": "/_fonts(.*)",
+      "headers": {
+        "cache-control": "public,max-age=31536000,immutable"
+      },
+      "continue": true
+    },
+    {
+      "src": "/_nuxt(.*)",
+      "headers": {
+        "cache-control": "public,max-age=31536000,immutable"
+      },
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "(?<__isr_route>/__nuxt_error)",
+      "dest": "/__fallback"
+    },
+    {
+      "src": "/wallets",
+      "dest": "/wallets"
+    },
+    {
+      "src": "/transactions",
+      "dest": "/transactions"
+    },
+    {
+      "src": "/sg/wallets",
+      "dest": "/sg/wallets"
+    },
+    {
+      "src": "/sg/transactions",
+      "dest": "/sg/transactions"
+    },
+    {
+      "src": "/sg/recurring",
+      "dest": "/sg/recurring"
+    },
+    {
+      "src": "/sg/orgs/manage",
+      "dest": "/sg/orgs/manage"
+    },
+    {
+      "src": "/sg/orgs/invitations",
+      "dest": "/sg/orgs/invitations"
+    },
+    {
+      "src": "/sg/orgs",
+      "dest": "/sg/orgs"
+    },
+    {
+      "src": "/sg/goals",
+      "dest": "/sg/goals"
+    },
+    {
+      "src": "/sg/dashboard",
+      "dest": "/sg/dashboard"
+    },
+    {
+      "src": "/sg/categories",
+      "dest": "/sg/categories"
+    },
+    {
+      "src": "/sg/budgets",
+      "dest": "/sg/budgets"
+    },
+    {
+      "src": "/sg/auth",
+      "dest": "/sg/auth"
+    },
+    {
+      "src": "/sg",
+      "dest": "/sg"
+    },
+    {
+      "src": "/recurring",
+      "dest": "/recurring"
+    },
+    {
+      "src": "/orgs/manage",
+      "dest": "/orgs/manage"
+    },
+    {
+      "src": "/orgs/invitations",
+      "dest": "/orgs/invitations"
+    },
+    {
+      "src": "/orgs",
+      "dest": "/orgs"
+    },
+    {
+      "src": "/my/wallets",
+      "dest": "/my/wallets"
+    },
+    {
+      "src": "/my/transactions",
+      "dest": "/my/transactions"
+    },
+    {
+      "src": "/my/recurring",
+      "dest": "/my/recurring"
+    },
+    {
+      "src": "/my/orgs/manage",
+      "dest": "/my/orgs/manage"
+    },
+    {
+      "src": "/my/orgs/invitations",
+      "dest": "/my/orgs/invitations"
+    },
+    {
+      "src": "/my/orgs",
+      "dest": "/my/orgs"
+    },
+    {
+      "src": "/my/goals",
+      "dest": "/my/goals"
+    },
+    {
+      "src": "/my/dashboard",
+      "dest": "/my/dashboard"
+    },
+    {
+      "src": "/my/categories",
+      "dest": "/my/categories"
+    },
+    {
+      "src": "/my/budgets",
+      "dest": "/my/budgets"
+    },
+    {
+      "src": "/my/auth",
+      "dest": "/my/auth"
+    },
+    {
+      "src": "/my",
+      "dest": "/my"
+    },
+    {
+      "src": "/jp/wallets",
+      "dest": "/jp/wallets"
+    },
+    {
+      "src": "/jp/transactions",
+      "dest": "/jp/transactions"
+    },
+    {
+      "src": "/jp/recurring",
+      "dest": "/jp/recurring"
+    },
+    {
+      "src": "/jp/orgs/manage",
+      "dest": "/jp/orgs/manage"
+    },
+    {
+      "src": "/jp/orgs/invitations",
+      "dest": "/jp/orgs/invitations"
+    },
+    {
+      "src": "/jp/orgs",
+      "dest": "/jp/orgs"
+    },
+    {
+      "src": "/jp/goals",
+      "dest": "/jp/goals"
+    },
+    {
+      "src": "/jp/dashboard",
+      "dest": "/jp/dashboard"
+    },
+    {
+      "src": "/jp/categories",
+      "dest": "/jp/categories"
+    },
+    {
+      "src": "/jp/budgets",
+      "dest": "/jp/budgets"
+    },
+    {
+      "src": "/jp/auth",
+      "dest": "/jp/auth"
+    },
+    {
+      "src": "/jp",
+      "dest": "/jp"
+    },
+    {
+      "src": "/goals",
+      "dest": "/goals"
+    },
+    {
+      "src": "/en/wallets",
+      "dest": "/en/wallets"
+    },
+    {
+      "src": "/en/transactions",
+      "dest": "/en/transactions"
+    },
+    {
+      "src": "/en/recurring",
+      "dest": "/en/recurring"
+    },
+    {
+      "src": "/en/orgs/manage",
+      "dest": "/en/orgs/manage"
+    },
+    {
+      "src": "/en/orgs/invitations",
+      "dest": "/en/orgs/invitations"
+    },
+    {
+      "src": "/en/orgs",
+      "dest": "/en/orgs"
+    },
+    {
+      "src": "/en/goals",
+      "dest": "/en/goals"
+    },
+    {
+      "src": "/en/dashboard",
+      "dest": "/en/dashboard"
+    },
+    {
+      "src": "/en/categories",
+      "dest": "/en/categories"
+    },
+    {
+      "src": "/en/budgets",
+      "dest": "/en/budgets"
+    },
+    {
+      "src": "/en/auth",
+      "dest": "/en/auth"
+    },
+    {
+      "src": "/en",
+      "dest": "/en"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/dashboard"
+    },
+    {
+      "src": "/categories",
+      "dest": "/categories"
+    },
+    {
+      "src": "/budgets",
+      "dest": "/budgets"
+    },
+    {
+      "src": "/auth",
+      "dest": "/auth"
+    },
+    {
+      "src": "/api/graphql",
+      "dest": "/api/graphql"
+    },
+    {
+      "src": "/api/exchange-rates",
+      "dest": "/api/exchange-rates"
+    },
+    {
+      "src": "/__nuxt_error",
+      "dest": "/__nuxt_error"
+    },
+    {
+      "src": "/",
+      "dest": "/index"
+    },
+    {
+      "src": "/api/_nuxt_icon/(?<collection>[^/]+)",
+      "dest": "/api/_nuxt_icon/[collection]"
+    },
+    {
+      "src": "/_i18n/(?<hash>[^/]+)/(?<locale>[^/]+)/messages.json",
+      "dest": "/_i18n/[hash]/[locale]/messages.json"
+    },
+    {
+      "src": "/api/auth/?(?<all>.+)",
+      "dest": "/api/auth/[...all]"
+    },
+    {
+      "src": "/__nuxt_island/(?:.*)",
+      "dest": "/__nuxt_island/[...]"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/__fallback"
+    }
+  ]
+}

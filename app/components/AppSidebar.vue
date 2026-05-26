@@ -90,6 +90,16 @@ const signOutMutation = useMutation({
 <template>
   <Sidebar>
     <SidebarHeader>
+      <NuxtLink
+        to="/"
+        class="flex items-center gap-2 px-2 pb-3 p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+      >
+        <NuxtImg src="/favicon.png" width="30" class="rounded-full" />
+        <span
+          class="text-md font-bold tracking-tight group-data-[collapsible=icon]:hidden"
+          >myuanggwe</span
+        >
+      </NuxtLink>
       <DropdownMenu>
         <DropdownMenuTrigger :disabled="orgs?.pending.value">
           <div
@@ -239,7 +249,20 @@ const signOutMutation = useMutation({
     <SidebarFooter>
       <SidebarSeparator />
       <SidebarMenu>
-        <SidebarMenuItem v-if="!session.data">
+        <template v-if="session.data">
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Logout"
+              class="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+              :disable="signOutMutation.isPending"
+              @click="signOutMutation.mutate()"
+            >
+              <Icon name="lucide:log-out" size="16" />
+              <span class="group-data-[collapsible=icon]:hidden">Logout</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </template>
+        <SidebarMenuItem v-else>
           <SidebarMenuButton
             tooltip="Login"
             class="text-green-500 hover:bg-green-500 hover:text-green-50"
@@ -249,18 +272,6 @@ const signOutMutation = useMutation({
             <span class="group-data-[collapsible=icon]:hidden"
               >Get started</span
             >
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-
-        <SidebarMenuItem v-else>
-          <SidebarMenuButton
-            tooltip="Logout"
-            class="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-            :disable="signOutMutation.isPending"
-            @click="signOutMutation.mutate()"
-          >
-            <Icon name="lucide:log-out" size="16" />
-            <span class="group-data-[collapsible=icon]:hidden">Logout</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
 

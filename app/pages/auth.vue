@@ -1,5 +1,21 @@
 <script setup lang="ts">
+import { useAuthTabsStore } from "~/stores/auth-tabs";
+
 const authTabsStore = useAuthTabsStore();
+
+useHead({
+  title: "Masuk / Daftar - MyUangGwe | Kelola Keuangan dengan Tenang",
+  meta: [
+    {
+      name: "description",
+      content: "Daftar atau masuk ke akun MyUangGwe untuk mulai mencatat pemasukan, mengelola pengeluaran, dan mewujudkan target finansial.",
+    },
+    {
+      name: "keywords",
+      content: "daftar akun, login keuangan, registrasi aplikasi keuangan, manajemen keuangan pribadi",
+    },
+  ],
+})
 </script>
 
 <template>

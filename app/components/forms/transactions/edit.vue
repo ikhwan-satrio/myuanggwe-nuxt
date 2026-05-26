@@ -1,27 +1,23 @@
 <script setup lang="ts">
-import { useForm } from '@tanstack/vue-form'
-import { toast } from 'vue-sonner'
-import { useMutation } from '@vue/apollo-composable'
-import type { TransactionType } from '~/lib/dto/transactions'
-import type { CategoryType, WalletType } from '~~/server/lib/db/schemas'
-import { useCurrency } from '~/composables/useCurrency' // Pastikan composable ini tersedia
-import type { TransactionMerge } from '~/lib/@types/transaction'
+import { useForm } from "@tanstack/vue-form";
+import { toast } from "vue-sonner";
+import { useMutation } from "@vue/apollo-composable";
+import type { TransactionType } from "~/lib/dto/transactions";
+import type { CategoryType, WalletType } from "~~/server/lib/db/schemas";
+import { useTransactionsCrudStore } from "~/stores/crud/transactions";
+import { transactionSchema } from "~/lib/@type-schemas/transactions";
 
-const props = defineProps<{
-  transaction: TransactionMerge
-}>()
+const store = useTransactionsCrudStore();
+const emit = defineEmits<{ updated: [] }>();
 
-const open = defineModel<boolean>('open')
+const { formatCurrency } = useCurrency();
+const { $apolloClient } = useNuxtApp();
 
-const { formatCurrency } = useCurrency()
-const { $apolloClient } = useNuxtApp()
-
-// Ambil data wallets dan categories dari Apollo Client
 const { data: walletsData } = useAsyncData<WalletType[]>(
   "wallets",
   async () => {
     const result = await $apolloClient.query({
-      query: GET_WALLETS, // Ganti dengan query yang benar
+      query: GET_WALLETS,
       fetchPolicy: "network-only",
     });
     return result.data.wallets;
@@ -33,7 +29,7 @@ const { data: categoriesData } = useAsyncData<CategoryType[]>(
   "categories",
   async () => {
     const result = await $apolloClient.query({
-      query: GET_CATEGORIES, // Ganti dengan query yang benar
+      query: GET_CATEGORIES,
       fetchPolicy: "network-only",
     });
     return result.data.categories;
@@ -44,20 +40,24 @@ const { data: categoriesData } = useAsyncData<CategoryType[]>(
 const wallets = computed(() => walletsData.value ?? []);
 const categories = computed(() => categoriesData.value ?? []);
 
-// Gunakan mutation untuk update
-const { mutate } = useMutation(UPDATE_TRANSACTION); // Ganti dengan mutation UPDATE_TRANSACTION
+const { mutate } = useMutation(UPDATE_TRANSACTION);
 
 const transactionForm = useForm({
+  validators: {
+    onChange: transactionSchema,
+    onSubmit: transactionSchema,
+  },
   defaultValues: {
-    type: props.transaction.type,
-    amount: props.transaction.amount,
-    walletId: props.transaction.wallet.id,
-    toWalletId: props.transaction.toWallet?.id ?? '',
-    categoryId: props.transaction.category?.id ?? '',
-    description: props.transaction.description ?? '',
-    date: new Date(props.transaction.date).toISOString().split('T')[0],
+    type: "expense" as TransactionType,
+    amount: 0,
+    walletId: "",
+    toWalletId: "",
+    categoryId: "",
+    description: "",
+    date: new Date().toISOString().split("T")[0],
   },
   onSubmit: async ({ value }) => {
+    if (!store.editingTransaction) return;
     try {
       const input: any = {
         type: value.type,
@@ -65,62 +65,102 @@ const transactionForm = useForm({
         walletId: value.walletId,
         description: value.description || null,
         date: new Date(value.date!).toISOString(),
-      }
+      };
 
-      if (value.type === 'transfer') {
-        input.toWalletId = value.toWalletId
+      if (value.type === "transfer") {
+        input.toWalletId = value.toWalletId;
       } else {
-        input.categoryId = value.categoryId
+        input.categoryId = value.categoryId;
       }
 
-      await mutate({ id: props.transaction.id, input }) // Kirim ID transaksi
+      await mutate({ id: store.editingTransaction.id, input });
 
-      toast.success('Transaksi berhasil diubah')
-      open.value = false
-      refreshNuxtData("transactions"); // Refresh data jika diperlukan
+      toast.success("Transaksi berhasil diubah");
+      store.closeEdit();
+      emit("updated");
     } catch {
-      toast.error('Terjadi kesalahan')
+      toast.error("Terjadi kesalahan");
     }
   },
-})
+});
 
-const formValues = transactionForm.useStore((s) => s.values)
+watch(
+  () => store.editingTransaction,
+  (tx) => {
+    if (!tx) return;
+    transactionForm.setFieldValue("type", tx.type as TransactionType);
+    transactionForm.setFieldValue("amount", tx.amount);
+    transactionForm.setFieldValue("walletId", tx.wallet.id);
+    transactionForm.setFieldValue("toWalletId", tx.toWallet?.id ?? "");
+    transactionForm.setFieldValue("categoryId", tx.category?.id ?? "");
+    transactionForm.setFieldValue("description", tx.description ?? "");
+    transactionForm.setFieldValue(
+      "date",
+      new Date(tx.date).toISOString().split("T")[0],
+    );
+  },
+  { immediate: true },
+);
+
+const formValues = transactionForm.useStore((s) => s.values);
 
 const selectedWallet = computed(
-  () => wallets.value.find((w) => w.id === formValues.value.walletId)?.name ?? 'Pilih Dompet'
-)
+  () =>
+    wallets.value.find((w) => w.id === formValues.value.walletId)?.name ??
+    "Pilih Dompet",
+);
 const selectedToWallet = computed(
-  () => wallets.value.find((w) => w.id === formValues.value.toWalletId)?.name ?? 'Pilih Dompet Tujuan'
-)
+  () =>
+    wallets.value.find((w) => w.id === formValues.value.toWalletId)?.name ??
+    "Pilih Dompet Tujuan",
+);
 const selectedCategory = computed(
-  () => categories.value.find((c) => c.id === formValues.value.categoryId)?.name ?? 'Pilih Kategori'
-)
-const filteredCategories = computed(
-  () => categories.value.filter((c) => c.type === formValues.value.type)
-)
+  () =>
+    categories.value.find((c) => c.id === formValues.value.categoryId)?.name ??
+    "Pilih Kategori",
+);
+const filteredCategories = computed(() =>
+  categories.value.filter((c) => c.type === formValues.value.type),
+);
 
 function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('id-ID')
+  return new Date(date).toLocaleDateString("id-ID");
 }
 </script>
 
 <template>
-  <UiSheet :open="open" @update:open="(v) => open = v">
+  <UiSheet :open="store.editOpen" @update:open="store.closeEdit()">
     <UiSheetContent side="right" class="overflow-y-auto">
       <UiSheetHeader>
-        <UiSheetTitle>Edit Transaksi {{ formatDate(String(transaction.date)) }}</UiSheetTitle>
-        <UiSheetDescription>
-          Ubah informasi transaksi tanggal {{ formatDate(String(transaction.date)) }}
-        </UiSheetDescription>
+        <UiSheetTitle
+          >Edit Transaksi
+          {{
+            store.editingTransaction
+              ? formatDate(String(store.editingTransaction.date))
+              : ""
+          }}</UiSheetTitle
+        >
+        <UiSheetDescription
+          >Ubah informasi transaksi tanggal
+          {{
+            store.editingTransaction
+              ? formatDate(String(store.editingTransaction.date))
+              : ""
+          }}</UiSheetDescription
+        >
       </UiSheetHeader>
 
-      <form class="space-y-4 p-4" @submit.prevent="transactionForm.handleSubmit()">
-        <!-- Type -->
+      <form
+        class="space-y-4 p-4"
+        @submit.prevent="transactionForm.handleSubmit()"
+      >
         <transactionForm.Field name="type">
           <template #default="{ field }">
             <UiTabs
               :model-value="field.state.value"
-              @update:model-value="(v) => field.handleChange(v as TransactionType)"
+              @update:model-value="
+                (v) => field.handleChange(v as TransactionType)
+              "
             >
               <UiTabsList class="grid w-full grid-cols-3">
                 <UiTabsTrigger value="expense">Keluar</UiTabsTrigger>
@@ -131,7 +171,6 @@ function formatDate(date: string) {
           </template>
         </transactionForm.Field>
 
-        <!-- Amount -->
         <transactionForm.Field name="amount">
           <template #default="{ field }">
             <div class="space-y-2">
@@ -143,7 +182,12 @@ function formatDate(date: string) {
                 placeholder="0"
                 min="0"
                 @blur="field.handleBlur()"
-                @input="(e: Event) => field.handleChange(Number((e.target as HTMLInputElement).value))"
+                @input="
+                  (e: Event) =>
+                    field.handleChange(
+                      Number((e.target as HTMLInputElement).value),
+                    )
+                "
               />
               <p
                 v-if="field.state.meta.errors.length > 0"
@@ -155,14 +199,15 @@ function formatDate(date: string) {
           </template>
         </transactionForm.Field>
 
-        <!-- Wallet -->
         <transactionForm.Field name="walletId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>{{ formValues.type === 'transfer' ? 'Dari Dompet' : 'Dompet' }}</UiLabel>
+              <UiLabel>{{
+                formValues.type === "transfer" ? "Dari Dompet" : "Dompet"
+              }}</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
-                @update:model-value="field.handleChange"
+                @update:model-value="(v) => field.handleChange(v as string)"
               >
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ selectedWallet }}</UiSelectValue>
@@ -187,21 +232,25 @@ function formatDate(date: string) {
           </template>
         </transactionForm.Field>
 
-        <!-- To Wallet -->
-        <transactionForm.Field v-if="formValues.type === 'transfer'" name="toWalletId">
+        <transactionForm.Field
+          v-if="formValues.type === 'transfer'"
+          name="toWalletId"
+        >
           <template #default="{ field }">
             <div class="space-y-2">
               <UiLabel>Ke Dompet</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
-                @update:model-value="field.handleChange"
+                @update:model-value="(v) => field.handleChange(v as string)"
               >
                 <UiSelectTrigger class="w-full border-dashed border-primary">
                   <UiSelectValue>{{ selectedToWallet }}</UiSelectValue>
                 </UiSelectTrigger>
                 <UiSelectContent>
                   <UiSelectItem
-                    v-for="wallet in wallets.filter((w) => w.id !== formValues.walletId)"
+                    v-for="wallet in wallets.filter(
+                      (w) => w.id !== formValues.walletId,
+                    )"
                     :key="wallet.id"
                     :value="wallet.id"
                   >
@@ -219,14 +268,13 @@ function formatDate(date: string) {
           </template>
         </transactionForm.Field>
 
-        <!-- Category -->
         <transactionForm.Field v-else name="categoryId">
           <template #default="{ field }">
             <div class="space-y-2">
               <UiLabel>Kategori</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
-                @update:model-value="field.handleChange"
+                @update:model-value="(v) => field.handleChange(v as string)"
               >
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ selectedCategory }}</UiSelectValue>
@@ -237,7 +285,7 @@ function formatDate(date: string) {
                     :key="cat.id"
                     :value="cat.id"
                   >
-                    {{ cat.icon ?? '' }} {{ cat.name }}
+                    {{ cat.icon ?? "" }} {{ cat.name }}
                   </UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
@@ -251,7 +299,6 @@ function formatDate(date: string) {
           </template>
         </transactionForm.Field>
 
-        <!-- Description -->
         <transactionForm.Field name="description">
           <template #default="{ field }">
             <div class="space-y-2">
@@ -261,13 +308,15 @@ function formatDate(date: string) {
                 :value="field.state.value"
                 placeholder="Makan siang, dsb"
                 @blur="field.handleBlur()"
-                @input="(e: Event) => field.handleChange((e.target as HTMLInputElement).value)"
+                @input="
+                  (e: Event) =>
+                    field.handleChange((e.target as HTMLInputElement).value)
+                "
               />
             </div>
           </template>
         </transactionForm.Field>
 
-        <!-- Date -->
         <transactionForm.Field name="date">
           <template #default="{ field }">
             <div class="space-y-2">
@@ -277,18 +326,24 @@ function formatDate(date: string) {
                 type="date"
                 :value="field.state.value"
                 @blur="field.handleBlur()"
-                @input="(e: Event) => field.handleChange((e.target as HTMLInputElement).value)"
+                @input="
+                  (e: Event) =>
+                    field.handleChange((e.target as HTMLInputElement).value)
+                "
               />
             </div>
           </template>
         </transactionForm.Field>
 
-        <!-- Submit -->
         <transactionForm.Subscribe>
           <template #default="{ isSubmitting }">
             <UiButton type="submit" class="w-full" :disabled="isSubmitting">
-              <Icon v-if="isSubmitting" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
-              {{ isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
+              <Icon
+                v-if="isSubmitting"
+                name="lucide:loader-2"
+                class="mr-2 h-4 w-4 animate-spin"
+              />
+              {{ isSubmitting ? "Menyimpan..." : "Simpan Perubahan" }}
             </UiButton>
           </template>
         </transactionForm.Subscribe>

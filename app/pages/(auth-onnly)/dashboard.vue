@@ -1,4 +1,18 @@
 <script setup lang="ts">
+useHead({
+  title: "Dasbor - MyUangGwe | Ringkasan Keuangan",
+  meta: [
+    {
+      name: "description",
+      content: "Pantau ringkasan keuangan Anda - saldo total, pemasukan, pengeluaran, dan anggaran bulanan dalam satu tampilan.",
+    },
+    {
+      name: "keywords",
+      content: "dasbor keuangan, ringkasan keuangan, saldo total, pemasukan pengeluaran, aplikasi keuangan",
+    },
+  ],
+})
+
 definePageMeta({
   middleware: ["auth"],
 });

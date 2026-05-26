@@ -10,7 +10,12 @@ export const auth = betterAuth({
     provider: "sqlite",
   }),
   appName: "myuanggwe-nuxt",
-  plugins: [organization(), username()],
+  plugins: [
+    organization({
+      requireEmailVerificationOnInvitation: false,
+    }),
+    username()
+  ],
   secret: runtimeConfig.betterAuthSecret,
   emailAndPassword: {
     enabled: true

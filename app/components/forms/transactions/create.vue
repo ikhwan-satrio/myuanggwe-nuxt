@@ -4,14 +4,17 @@ import { toast } from "vue-sonner";
 import { useMutation } from "@vue/apollo-composable";
 import type { TransactionType } from "~/lib/dto/transactions";
 import type { CategoryType, WalletType } from "~~/server/lib/db/schemas";
+import { useTransactionsCrudStore } from "~/stores/crud/transactions";
+import { transactionSchema } from "~/lib/@type-schemas/transactions";
 
-const open = defineModel<boolean>("open");
+const store = useTransactionsCrudStore();
+const emit = defineEmits<{ created: [] }>();
 
-const { formatCurrency} = useCurrency()
+const { formatCurrency } = useCurrency();
 const { $apolloClient } = useNuxtApp();
 
 const { data: walletsData } = useAsyncData<WalletType[]>(
-  "wallets", // ← key sama
+  "wallets",
   async () => {
     const result = await $apolloClient.query({
       query: GET_WALLETS,
@@ -23,7 +26,7 @@ const { data: walletsData } = useAsyncData<WalletType[]>(
 );
 
 const { data: categoriesData } = useAsyncData<CategoryType[]>(
-  "categories", // ← key sama
+  "categories",
   async () => {
     const result = await $apolloClient.query({
       query: GET_CATEGORIES,
@@ -40,6 +43,10 @@ const categories = computed(() => categoriesData.value ?? []);
 const { mutate } = useMutation(CREATE_TRANSACTION);
 
 const transactionForm = useForm({
+  validators: {
+    onChange: transactionSchema,
+    onSubmit: transactionSchema,
+  },
   defaultValues: {
     type: "expense" as TransactionType,
     amount: 0,
@@ -68,9 +75,9 @@ const transactionForm = useForm({
       await mutate({ input });
 
       toast.success("Transaksi berhasil dicatat");
-      open.value = false;
+      store.closeCreate();
       transactionForm.reset();
-      refreshNuxtData("transactions");
+      emit("created");
     } catch {
       toast.error("Terjadi kesalahan");
     }
@@ -150,7 +157,7 @@ const filteredCategories = computed(() =>
           }}</UiLabel>
           <UiSelect
             :model-value="field.state.value"
-            @update:model-value="field.handleChange"
+            @update:model-value="(v) => field.handleChange(v as string)"
           >
             <UiSelectTrigger class="w-full">
               <UiSelectValue>{{ selectedWallet }}</UiSelectValue>
@@ -184,7 +191,7 @@ const filteredCategories = computed(() =>
           <UiLabel>Ke Dompet</UiLabel>
           <UiSelect
             :model-value="field.state.value"
-            @update:model-value="field.handleChange"
+            @update:model-value="(v) => field.handleChange(v as string)"
           >
             <UiSelectTrigger class="w-full border-dashed border-primary">
               <UiSelectValue>{{ selectedToWallet }}</UiSelectValue>
@@ -217,8 +224,8 @@ const filteredCategories = computed(() =>
           <UiLabel>Kategori</UiLabel>
           <UiSelect
             :model-value="field.state.value"
-            @update:model-value="field.handleChange"
-          >
+            @update:model-value="(v)=> field.handleChange(v as string)"
+            >
             <UiSelectTrigger class="w-full">
               <UiSelectValue>{{ selectedCategory }}</UiSelectValue>
             </UiSelectTrigger>

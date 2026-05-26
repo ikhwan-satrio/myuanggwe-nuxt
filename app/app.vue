@@ -4,18 +4,18 @@ import AppSidebar from "@/components/AppSidebar.vue";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
-const router = useRouter()
+const router = useRouter();
 
-const isRoot = computed(()=>{
-  return router.currentRoute.value.path == "/"
-})
+const isRoot = computed(() => {
+  return ["/", "/auth"].includes(router.currentRoute.value.path);
+});
 </script>
 
 <template>
-  <NuxtLoadingIndicator/>
+  <NuxtLoadingIndicator />
   <SidebarProvider :defaultOpen="!isRoot">
     <AppSidebar />
-    <div class=" w-full">
+    <div class="w-full">
       <AppHeader />
       <main class="w-full p-3">
         <NuxtPage />

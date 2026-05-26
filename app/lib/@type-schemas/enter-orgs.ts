@@ -1,5 +1,5 @@
 import { type } from "arktype";
 
 export const enterOrgsSchema = type({
-  invitationId: "string"
+  invitationId: "string > 0"
 })

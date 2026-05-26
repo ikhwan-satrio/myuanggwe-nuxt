@@ -27,8 +27,16 @@ export default defineNuxtConfig({
     'nuxt-graphql-server',
     '@peterbud/nuxt-query',
     '@nuxtjs/i18n',
-    'motion-v/nuxt'
+    'motion-v/nuxt',
+    'nuxt-security',
+    '@nuxt/image',
+    '@nuxtjs/robots',
+    '@nuxtjs/sitemap',
   ],
+
+  pinia: {
+    storesDirs: ['./app/stores/**'],
+  },
 
   graphqlServer: {
     url: '/api/graphql',
@@ -51,6 +59,22 @@ export default defineNuxtConfig({
       cookieKey: 'i18n_locale',
       redirectOn: 'root',
     },
+  },
+
+  security: {
+    corsHandler: {
+      origin: [
+        'http://localhost:3000',
+        process.env.PUBLIC_APP_BASE_URL,
+        process.env.BETTER_AUTH_APP_URL,
+      ].filter(Boolean) as string[],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      credentials: true,
+    },
+  },
+
+  routeRules: {
+    '/api/**': { cors: true }
   },
 
   nuxtQuery: {

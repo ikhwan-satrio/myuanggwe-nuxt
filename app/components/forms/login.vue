@@ -2,6 +2,7 @@
 import { useForm } from "@tanstack/vue-form";
 import { toast } from "vue-sonner";
 import { loginSchema } from "~/lib/@type-schemas/login";
+import { useAuthTabsStore } from "~/stores/auth-tabs";
 
 const { $authClient } = useNuxtApp();
 

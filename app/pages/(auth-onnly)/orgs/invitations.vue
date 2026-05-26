@@ -38,7 +38,13 @@ const filteredInvitations = computed(() => {
 });
 
 useHead({
-  title: "My Invitations - MyUangGwe",
+  title: "Undangan - MyUangGwe | Gabung Organisasi",
+  meta: [
+    {
+      name: "description",
+      content: "Lihat dan kelola undangan bergabung ke organisasi atau tim kolaborasi keuangan.",
+    },
+  ],
 });
 
 definePageMeta({

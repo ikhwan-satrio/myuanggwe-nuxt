@@ -2,7 +2,9 @@
 import { useForm } from "@tanstack/vue-form";
 import { toast } from "vue-sonner";
 import { enterOrgsSchema } from "~/lib/@type-schemas/enter-orgs";
+import { useOrgsTabsStore } from "~/stores/orgs-tabs";
 
+const orgsTabStore = useOrgsTabsStore();
 const { $authClient } = useNuxtApp();
 
 const joinOrgForm = useForm({
@@ -29,19 +31,19 @@ const joinOrgForm = useForm({
 <template>
   <UiCard class="w-full max-w-md">
     <UiCardHeader>
-      <UiCardTitle class="text-2xl">Join Organization</UiCardTitle>
-      <UiCardDescription>Enter your invitation ID to join</UiCardDescription>
+      <UiCardTitle class="text-2xl">Gabung Organisasi</UiCardTitle>
+      <UiCardDescription>Masukkan ID undangan untuk bergabung.</UiCardDescription>
     </UiCardHeader>
     <UiCardContent>
       <form class="grid gap-4" @submit.prevent="joinOrgForm.handleSubmit()">
         <joinOrgForm.Field name="invitationId">
           <template #default="{ field }">
             <div class="grid gap-2">
-              <UiLabel for="invitationId">Invitation ID</UiLabel>
+              <UiLabel for="invitationId">ID Undangan</UiLabel>
               <UiInput
                 id="invitationId"
                 type="text"
-                placeholder="Your invitation ID"
+                placeholder="Masukkan ID undangan"
                 :value="field.state.value"
                 required
                 class="text-center"
@@ -60,7 +62,7 @@ const joinOrgForm = useForm({
             <UiButton type="submit" class="w-full" :disabled="isSubmitting">
               <Icon v-if="isSubmitting" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
               <Icon v-else name="lucide:users" class="mr-2 h-4 w-4" />
-              {{ isSubmitting ? "Joining..." : "Join Organization" }}
+              {{ isSubmitting ? "Bergabung..." : "Gabung Organisasi" }}
             </UiButton>
           </template>
         </joinOrgForm.Subscribe>
@@ -69,10 +71,10 @@ const joinOrgForm = useForm({
     <UiCardFooter class="flex flex-col gap-4">
       <UiSeparator />
       <div class="text-center">
-        <p class="text-sm text-muted-foreground">Don't have an invitation ID?</p>
-        <NuxtLink to="/organizations/create" class="text-sm font-medium text-primary underline">
-          Create your own organization
-        </NuxtLink>
+        <p class="text-sm text-muted-foreground">Tidak punya ID undangan?</p>
+        <button class="text-sm font-medium text-primary underline hover:no-underline cursor-pointer" @click="orgsTabStore.setActiveTab('create')">
+          Buat organisasi sendiri
+        </button>
       </div>
     </UiCardFooter>
   </UiCard>

@@ -1,16 +1,22 @@
 <script setup lang="ts">
 const { $authClient } = useNuxtApp();
+import { useOrgsTabsStore } from "~/stores/orgs-tabs";
 
+const orgsTabStore = useOrgsTabsStore();
 const orgs = $authClient.useListOrganizations();
 
 useHead({
-  title: "NewOrgs - MyUangGwe | Financial Management App",
+  title: "Organisasi - MyUangGwe | Kelola Keuangan Tim",
   meta: [
-    { name: "description", content: "Create an organizations to collaborate" },
+    {
+      name: "description",
+      content:
+        "Buat atau kelola organisasi untuk kolaborasi keuangan tim, bisnis kecil, atau kelompok.",
+    },
     {
       name: "keywords",
       content:
-        "create organizations, financial account, financial management, financial dashboard",
+        "buat organisasi, kolaborasi keuangan, keuangan tim, bisnis kecil, kelompok keuangan",
     },
   ],
 });
@@ -22,12 +28,12 @@ definePageMeta({
 
 <template>
   <div class="flex min-h-screen items-center justify-center p-4">
-    <UiTabs default-value="create">
+    <UiTabs v-model:modelValue="orgsTabStore.activeTab" default-value="create">
       <UiTabsList>
-        <UiTabsTrigger value="create">Create</UiTabsTrigger>
-        <UiTabsTrigger value="enter">Enter</UiTabsTrigger>
+        <UiTabsTrigger value="create">Buat</UiTabsTrigger>
+        <UiTabsTrigger value="enter">Gabung</UiTabsTrigger>
         <UiTabsTrigger value="invite" :disabled="!orgs?.data"
-          >Invite</UiTabsTrigger
+          >Undang</UiTabsTrigger
         >
       </UiTabsList>
       <UiTabsContent value="create"><FormsOrgsCreate /></UiTabsContent>
