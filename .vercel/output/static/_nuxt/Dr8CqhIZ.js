@@ -1,1 +1,0 @@
-import{$ as a,aX as u,a2 as r,aY as n,ai as o}from"./Ch4wSnJ3.js";const d=a(async()=>{let e,s;const{$authClient:t}=u();if(!([e,s]=r(()=>t.getSession({fetchOptions:{headers:n()}})),e=await e,s(),e).data?.user)return o("/auth")});export{d as default};
