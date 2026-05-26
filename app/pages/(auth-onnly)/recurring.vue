@@ -14,6 +14,10 @@ useHead({
       name: "description",
       content: "Kelola transaksi berulang Anda seperti tagihan, langganan, atau gaji agar pencatatan keuangan menjadi otomatis dan tidak terlewat.",
     },
+    {
+      name: "keywords",
+      content: "transaksi berulang otomatis tagihan bulanan, auto debit subscription tracker, recurring payment scheduler Indonesia, langganan Netflix Spotify Gojek catat otomatis, gaji bulanan rutin pencatatan, atur cicilan kredit mobil rumah otomatis, bill reminder integrated dashboard, daily weekly monthly yearly frequency kustom, automated expense recording tool, langganan aplikasi berbayar tercatat, recurring income expense management, jangan sampai lupa bayar tagihan aplikasi catat",
+    },
   ],
 })
 

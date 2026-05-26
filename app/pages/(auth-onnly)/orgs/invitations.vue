@@ -44,6 +44,10 @@ useHead({
       name: "description",
       content: "Lihat dan kelola undangan bergabung ke organisasi atau tim kolaborasi keuangan.",
     },
+    {
+      name: "keywords",
+      content: "undangan bergabung organisasi keuangan, invitation to join financial team, accept reject invitation kolaborasi, pending invitation management, team finance invite system, daftar undangan masuk organisasi, invitation ID based join mechanism, collaborative finance invitation tracker, undangan bergabung tim UKM, invitation management dashboard",
+    },
   ],
 });
 

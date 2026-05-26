@@ -12,7 +12,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "daftar akun, login keuangan, registrasi aplikasi keuangan, manajemen keuangan pribadi",
+      content: "daftar akun myuanggwe gratis, login aplikasi catat uang, sign up financial tracker no ads Indonesia, registrasi pengelola keuangan pribadi, buat akun nabung online, register personal expense manager, masuk akun dompet digital terintegrasi, alternative to spending tracker berbayar",
     },
   ],
 })

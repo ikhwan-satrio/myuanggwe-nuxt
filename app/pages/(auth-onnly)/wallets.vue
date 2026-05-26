@@ -15,8 +15,7 @@ useHead({
     },
     {
       name: "keywords",
-      content:
-        "dompet digital, rekening bank, manajemen saldo, pengelolaan keuangan, aplikasi keuangan",
+      content: "multi-wallet management Indonesia, kelola dompet bank e-wallet tunai, aplikasi catat saldo rekening, credit card spending tracker gratis, cashless expense manager, dompet digital terintegrasi GoPay OVO DANA, bank account aggregation tool, kelompokkan dompet untuk anggaran terpisah, digital wallet balance overview real-time, manajemen saldo multi mata uang IDR USD",
     },
   ],
 });

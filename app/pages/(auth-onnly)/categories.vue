@@ -14,7 +14,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "kategori keuangan, jenis transaksi, pengelompokan keuangan, manajemen anggaran, aplikasi keuangan",
+      content: "kategori transaksi kustom ikon emoji, pengelompokan pemasukan pengeluaran otomatis, expense categorization Indonesia, tagar kategori belanja makan transportasi, jenis transaksi income expense transfer, category-based budget tracking, atur kategori sesuai gaya hidup, personal spending categories tidak ada di app lain, emoji category labels unik, financial category management system",
     },
   ],
 })

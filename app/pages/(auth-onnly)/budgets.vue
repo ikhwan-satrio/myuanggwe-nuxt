@@ -12,6 +12,10 @@ useHead({
       name: "description",
       content: "Kelola anggaran bulanan dan tahunan Anda untuk setiap kategori pengeluaran agar keuangan tetap terkendali.",
     },
+    {
+      name: "keywords",
+      content: "anggaran bulanan per kategori real-time, budget planner Indonesia gratis, batas pengeluaran pintar notifikasi, yearly spending limit tracker, percentage-based budget monitoring, atur budget makan transport hiburan, early warning over budget alert, aplikasi amplop digital terbaru, envelope budgeting system bahasa Indonesia, anggaran cerdas untuk anak kos dan keluarga, budget vs actual comparison chart",
+    },
   ],
 })
 

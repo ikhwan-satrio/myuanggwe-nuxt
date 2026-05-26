@@ -1,19 +1,24 @@
 <script setup lang="ts">
-import { motion, AnimatePresence, useScroll, useTransform } from "motion-v"
+import { motion, AnimatePresence, useScroll, useTransform } from "motion-v";
 
 useHead({
   title: "MyUangGwe — Kelola Keuangan dengan Tenang",
   meta: [
     {
       name: "description",
-      content: "Catat pemasukan, kelola pengeluaran, dan wujudkan target finansialmu dalam satu aplikasi yang sederhana, gratis, dan bebas iklan.",
+      content:
+        "Catat pemasukan, kelola pengeluaran, dan wujudkan target finansialmu dalam satu aplikasi yang sederhana, gratis, dan bebas iklan.",
+    },
+    {
+      name: "keywords",
+      content: "aplikasi catat uang harian gratis Indonesia, personal finance tracker tanpa iklan, manajemen keuangan pribadi anak muda, budget planner中小学生, aplikasi amplop digital online, pencatatan pemasukan pengeluaran sederhana, nabung otomatis target menabung, multi-wallet e-wallet bank cash management, expense tracker bahasa Indonesia, free no-ad financial planning tool untuk pemula, dompet digital terintegrasi catatan transaksi, aplikasi ngatur duit anak kost, financial literacy app for Gen Z Indonesia",
     },
   ],
-})
+});
 
-const { scrollYProgress } = useScroll()
-const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95])
-const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0])
+const { scrollYProgress } = useScroll();
+const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
+const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
 const features = [
   {
@@ -46,7 +51,7 @@ const features = [
     title: "Multi Mata Uang",
     desc: "Dukungan berbagai mata uang dengan konversi kurs real-time.",
   },
-]
+];
 
 const faqs = [
   {
@@ -65,24 +70,39 @@ const faqs = [
     q: "Apakah tersedia di mobile?",
     a: "Saat ini berbasis web responsif. Aplikasi mobile sedang dalam pengembangan.",
   },
-]
+];
 
-const openFaq = ref<number | null>(null)
+const openFaq = ref<number | null>(null);
 </script>
 
 <template>
   <div class="min-h-screen bg-background font-sans overflow-x-hidden">
     <!-- HERO -->
-    <section class="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
+    <section
+      class="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden"
+    >
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
-        <div class="absolute top-1/3 right-1/4 w-80 h-80 rounded-full bg-chart-2/10 blur-3xl" />
-        <div class="absolute bottom-1/4 left-1/2 w-72 h-72 rounded-full bg-chart-1/5 blur-3xl" />
+        <div
+          class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/5 blur-3xl"
+        />
+        <div
+          class="absolute top-1/3 right-1/4 w-80 h-80 rounded-full bg-chart-2/10 blur-3xl"
+        />
+        <div
+          class="absolute bottom-1/4 left-1/2 w-72 h-72 rounded-full bg-chart-1/5 blur-3xl"
+        />
       </div>
 
       <div
         class="absolute inset-0 pointer-events-none opacity-[0.015] dark:opacity-[0.03]"
-        style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 32px 32px;"
+        style="
+          background-image: radial-gradient(
+            circle,
+            currentColor 1px,
+            transparent 1px
+          );
+          background-size: 32px 32px;
+        "
       />
 
       <motion.div
@@ -94,7 +114,10 @@ const openFaq = ref<number | null>(null)
           :animate="{ opacity: 1, scale: 1 }"
           :transition="{ duration: 0.5, delay: 0.1 }"
         >
-          <UiBadge class="mb-6 px-4 py-1.5 text-xs font-medium rounded-full" variant="secondary">
+          <UiBadge
+            class="mb-6 px-4 py-1.5 text-xs font-medium rounded-full"
+            variant="secondary"
+          >
             <Icon name="lucide:sparkles" class="mr-1.5 h-3.5 w-3.5" />
             Selamat datang di era keuangan teratur
           </UiBadge>
@@ -107,7 +130,9 @@ const openFaq = ref<number | null>(null)
           class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-foreground leading-[1.05] mb-6"
         >
           Uangmu,<br />
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-chart-2">
+          <span
+            class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-chart-2"
+          >
             Hidupmu
           </span>
         </motion.h1>
@@ -148,9 +173,22 @@ const openFaq = ref<number | null>(null)
           :transition="{ duration: 0.6, delay: 0.65 }"
           class="mt-16 grid grid-cols-4 gap-8 md:gap-16"
         >
-          <div v-for="stat in [{ value: '100%', label: 'Gratis' }, { value: '6+', label: 'Fitur Utama' }, { value: '∞', label: 'Transaksi' }, { value: '🔒', label: 'Aman & Privat' }]" :key="stat.label" class="flex flex-col items-center gap-1">
-            <span class="text-2xl md:text-3xl font-bold text-foreground">{{ stat.value }}</span>
-            <span class="text-xs text-muted-foreground whitespace-nowrap">{{ stat.label }}</span>
+          <div
+            v-for="stat in [
+              { value: '100%', label: 'Gratis' },
+              { value: '6+', label: 'Fitur Utama' },
+              { value: '∞', label: 'Transaksi' },
+              { value: '🔒', label: 'Aman & Privat' },
+            ]"
+            :key="stat.label"
+            class="flex flex-col items-center gap-1"
+          >
+            <span class="text-2xl md:text-3xl font-bold text-foreground">{{
+              stat.value
+            }}</span>
+            <span class="text-xs text-muted-foreground whitespace-nowrap">{{
+              stat.label
+            }}</span>
           </div>
         </motion.div>
       </motion.div>
@@ -179,20 +217,29 @@ const openFaq = ref<number | null>(null)
         :viewport="{ once: true, margin: '-100px' }"
         class="relative rounded-xl overflow-hidden border border-border shadow-2xl bg-card"
       >
-        <div class="flex items-center gap-2 px-4 py-3 bg-muted/50 border-b border-border">
+        <div
+          class="flex items-center gap-2 px-4 py-3 bg-muted/50 border-b border-border"
+        >
           <div class="h-3 w-3 rounded-full bg-destructive/70" />
           <div class="h-3 w-3 rounded-full bg-chart-3/70" />
           <div class="h-3 w-3 rounded-full bg-chart-2/70" />
-          <div class="mx-auto flex items-center gap-2 text-xs text-muted-foreground bg-muted rounded-full px-4 py-1">
+          <div
+            class="mx-auto flex items-center gap-2 text-xs text-muted-foreground bg-muted rounded-full px-4 py-1"
+          >
             <Icon name="lucide:lock" class="h-3 w-3" />
             <span>myuanggwe.app/dashboard</span>
           </div>
         </div>
 
         <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <UiCard class="md:col-span-1 bg-gradient-to-br from-primary to-chart-2 text-primary-foreground border-0">
+          <UiCard
+            class="md:col-span-1 bg-gradient-to-br from-primary to-chart-2 text-primary-foreground border-0"
+          >
             <UiCardHeader class="pb-2">
-              <UiCardTitle class="text-sm font-medium text-primary-foreground/80">Total Saldo</UiCardTitle>
+              <UiCardTitle
+                class="text-sm font-medium text-primary-foreground/80"
+                >Total Saldo</UiCardTitle
+              >
             </UiCardHeader>
             <UiCardContent>
               <p class="text-3xl font-bold mb-4">Rp 12.450.000</p>
@@ -211,34 +258,85 @@ const openFaq = ref<number | null>(null)
 
           <UiCard class="md:col-span-2">
             <UiCardHeader class="pb-3">
-              <UiCardTitle class="text-sm font-medium">Transaksi Terbaru</UiCardTitle>
+              <UiCardTitle class="text-sm font-medium"
+                >Transaksi Terbaru</UiCardTitle
+              >
             </UiCardHeader>
             <UiCardContent class="space-y-3">
-              <div v-for="tx in [{ icon: '🍜', name: 'Makan Siang', cat: 'Makanan', amount: '-Rp 35.000', income: false }, { icon: '💼', name: 'Gaji Bulanan', cat: 'Pendapatan', amount: '+Rp 8.000.000', income: true }, { icon: '⚡', name: 'Bayar Listrik', cat: 'Tagihan', amount: '-Rp 250.000', income: false }]" :key="tx.name" class="flex items-center justify-between py-2 border-b last:border-0 border-border">
+              <div
+                v-for="tx in [
+                  {
+                    icon: '🍜',
+                    name: 'Makan Siang',
+                    cat: 'Makanan',
+                    amount: '-Rp 35.000',
+                    income: false,
+                  },
+                  {
+                    icon: '💼',
+                    name: 'Gaji Bulanan',
+                    cat: 'Pendapatan',
+                    amount: '+Rp 8.000.000',
+                    income: true,
+                  },
+                  {
+                    icon: '⚡',
+                    name: 'Bayar Listrik',
+                    cat: 'Tagihan',
+                    amount: '-Rp 250.000',
+                    income: false,
+                  },
+                ]"
+                :key="tx.name"
+                class="flex items-center justify-between py-2 border-b last:border-0 border-border"
+              >
                 <div class="flex items-center gap-3">
                   <span class="text-xl">{{ tx.icon }}</span>
                   <div>
-                    <p class="text-sm font-medium text-foreground">{{ tx.name }}</p>
+                    <p class="text-sm font-medium text-foreground">
+                      {{ tx.name }}
+                    </p>
                     <p class="text-xs text-muted-foreground">{{ tx.cat }}</p>
                   </div>
                 </div>
-                <span class="text-sm font-semibold" :class="tx.income ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">{{ tx.amount }}</span>
+                <span
+                  class="text-sm font-semibold"
+                  :class="
+                    tx.income
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-red-600 dark:text-red-400'
+                  "
+                  >{{ tx.amount }}</span
+                >
               </div>
             </UiCardContent>
           </UiCard>
 
           <UiCard class="md:col-span-3">
             <UiCardHeader class="pb-3">
-              <UiCardTitle class="text-sm font-medium">Anggaran Bulan Ini</UiCardTitle>
+              <UiCardTitle class="text-sm font-medium"
+                >Anggaran Bulan Ini</UiCardTitle
+              >
             </UiCardHeader>
             <UiCardContent class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div v-for="budget in [{ name: 'Makanan', used: 65 }, { name: 'Transportasi', used: 40 }, { name: 'Hiburan', used: 85 }]" :key="budget.name" class="space-y-2">
+              <div
+                v-for="budget in [
+                  { name: 'Makanan', used: 65 },
+                  { name: 'Transportasi', used: 40 },
+                  { name: 'Hiburan', used: 85 },
+                ]"
+                :key="budget.name"
+                class="space-y-2"
+              >
                 <div class="flex justify-between text-xs">
                   <span class="text-muted-foreground">{{ budget.name }}</span>
                   <span class="text-muted-foreground">{{ budget.used }}%</span>
                 </div>
                 <div class="h-2 rounded-full bg-muted overflow-hidden">
-                  <div class="h-full rounded-full bg-primary transition-all" :style="{ width: budget.used + '%' }" />
+                  <div
+                    class="h-full rounded-full bg-primary transition-all"
+                    :style="{ width: budget.used + '%' }"
+                  />
                 </div>
               </div>
             </UiCardContent>
@@ -256,8 +354,12 @@ const openFaq = ref<number | null>(null)
         :viewport="{ once: true }"
         class="text-center mb-16"
       >
-        <UiBadge class="mb-4 px-4 py-1.5 text-xs rounded-full" variant="outline">Fitur Lengkap</UiBadge>
-        <h2 class="text-4xl md:text-5xl font-bold text-foreground leading-tight">
+        <UiBadge class="mb-4 px-4 py-1.5 text-xs rounded-full" variant="outline"
+          >Fitur Lengkap</UiBadge
+        >
+        <h2
+          class="text-4xl md:text-5xl font-bold text-foreground leading-tight"
+        >
           Semua yang kamu butuhkan,<br />
           <span class="text-muted-foreground">tidak lebih, tidak kurang.</span>
         </h2>
@@ -274,11 +376,17 @@ const openFaq = ref<number | null>(null)
           :whileHover="{ y: -4, transition: { duration: 0.2 } }"
           class="group rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-lg cursor-default"
         >
-          <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div
+            class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary"
+          >
             <Icon :name="`lucide:${feature.icon}`" class="h-5 w-5" />
           </div>
-          <h3 class="text-base font-semibold text-foreground mb-2">{{ feature.title }}</h3>
-          <p class="text-sm text-muted-foreground leading-relaxed">{{ feature.desc }}</p>
+          <h3 class="text-base font-semibold text-foreground mb-2">
+            {{ feature.title }}
+          </h3>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            {{ feature.desc }}
+          </p>
         </motion.div>
       </div>
     </section>
@@ -293,8 +401,14 @@ const openFaq = ref<number | null>(null)
           :viewport="{ once: true }"
           class="text-center mb-16"
         >
-          <UiBadge class="mb-4 px-4 py-1.5 text-xs rounded-full" variant="outline">Cara Kerja</UiBadge>
-          <h2 class="text-4xl md:text-5xl font-bold text-foreground leading-tight">
+          <UiBadge
+            class="mb-4 px-4 py-1.5 text-xs rounded-full"
+            variant="outline"
+            >Cara Kerja</UiBadge
+          >
+          <h2
+            class="text-4xl md:text-5xl font-bold text-foreground leading-tight"
+          >
             Tiga langkah menuju<br />
             <span class="text-primary">keuangan yang sehat</span>
           </h2>
@@ -302,21 +416,47 @@ const openFaq = ref<number | null>(null)
 
         <div class="space-y-6">
           <motion.div
-            v-for="(step, i) in [{ num: '01', title: 'Buat Akun', desc: 'Daftar gratis dalam hitungan detik. Tidak perlu kartu kredit.' }, { num: '02', title: 'Tambah Dompet & Kategori', desc: 'Sambungkan rekening, atur kategori sesuai gaya hidupmu.' }, { num: '03', title: 'Catat & Analisis', desc: 'Mulai catat transaksi dan biarkan dashboard bekerja untukmu.' }]"
+            v-for="(step, i) in [
+              {
+                num: '01',
+                title: 'Buat Akun',
+                desc: 'Daftar gratis dalam hitungan detik. Tidak perlu kartu kredit.',
+              },
+              {
+                num: '02',
+                title: 'Tambah Dompet & Kategori',
+                desc: 'Sambungkan rekening, atur kategori sesuai gaya hidupmu.',
+              },
+              {
+                num: '03',
+                title: 'Catat & Analisis',
+                desc: 'Mulai catat transaksi dan biarkan dashboard bekerja untukmu.',
+              },
+            ]"
             :key="step.num"
             :initial="{ opacity: 0, x: i % 2 === 0 ? -32 : 32 }"
             :whileInView="{ opacity: 1, x: 0 }"
-            :transition="{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }"
+            :transition="{
+              duration: 0.6,
+              delay: i * 0.1,
+              ease: [0.22, 1, 0.36, 1],
+            }"
             :viewport="{ once: true }"
             :whileHover="{ x: 8, transition: { duration: 0.2 } }"
             class="flex items-start gap-6 rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors cursor-default group"
           >
-            <span class="text-4xl font-bold text-muted-foreground group-hover:text-primary transition-colors shrink-0">
+            <span
+              class="text-4xl font-bold text-muted-foreground group-hover:text-primary transition-colors shrink-0"
+            >
               {{ step.num }}
             </span>
             <div>
-              <h3 class="text-lg font-semibold text-foreground mb-1">{{ step.title }}</h3>
-              <p class="text-muted-foreground text-sm leading-relaxed">{{ step.desc }}</p>
+              <h3 class="text-lg font-semibold text-foreground mb-1">
+                {{ step.title }}
+              </h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {{ step.desc }}
+              </p>
             </div>
           </motion.div>
         </div>
@@ -334,10 +474,24 @@ const openFaq = ref<number | null>(null)
       >
         <div
           class="absolute inset-0 pointer-events-none"
-          style="background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 60%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%);"
+          style="
+            background-image:
+              radial-gradient(
+                circle at 20% 50%,
+                rgba(255, 255, 255, 0.1) 0%,
+                transparent 60%
+              ),
+              radial-gradient(
+                circle at 80% 20%,
+                rgba(255, 255, 255, 0.08) 0%,
+                transparent 50%
+              );
+          "
         />
         <div class="relative z-10">
-          <h2 class="text-4xl md:text-5xl font-bold text-primary-foreground mb-4">
+          <h2
+            class="text-4xl md:text-5xl font-bold text-primary-foreground mb-4"
+          >
             Mulai hari ini.<br />
             <span class="opacity-80">Gratis selamanya.</span>
           </h2>
@@ -385,7 +539,8 @@ const openFaq = ref<number | null>(null)
               :animate="{ rotate: openFaq === i ? 45 : 0 }"
               :transition="{ duration: 0.2 }"
               class="text-muted-foreground text-lg shrink-0 ml-4"
-            >+</motion.span>
+              >+</motion.span
+            >
           </button>
           <AnimatePresence>
             <motion.div
@@ -397,7 +552,11 @@ const openFaq = ref<number | null>(null)
               :transition="{ duration: 0.25, ease: 'easeInOut' }"
               class="overflow-hidden"
             >
-              <p class="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">{{ faq.a }}</p>
+              <p
+                class="px-5 pb-5 text-sm text-muted-foreground leading-relaxed"
+              >
+                {{ faq.a }}
+              </p>
             </motion.div>
           </AnimatePresence>
         </motion.div>
@@ -406,17 +565,26 @@ const openFaq = ref<number | null>(null)
 
     <!-- FOOTER -->
     <footer class="border-t border-border px-6 md:px-12 py-10">
-      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div
+        class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4"
+      >
         <div class="flex items-center gap-2">
-          <NuxtImg src='/favicon.png' width="25" />
+          <NuxtImg src="/favicon.png" width="25" />
           <span class="font-bold text-foreground">MyUangGwe</span>
         </div>
         <p class="text-xs text-muted-foreground">
-          Dibuat dengan ❤️ untuk keuangan yang lebih baik · © {{ new Date().getFullYear() }}
+          Dibuat dengan ❤️ untuk keuangan yang lebih baik · ©
+          {{ new Date().getFullYear() }}
         </p>
         <div class="flex gap-6 text-xs text-muted-foreground">
-          <NuxtLink to="/privacy" class="hover:text-foreground transition-colors">Privasi</NuxtLink>
-          <NuxtLink to="/terms" class="hover:text-foreground transition-colors">Ketentuan</NuxtLink>
+          <NuxtLink
+            to="/privacy"
+            class="hover:text-foreground transition-colors"
+            >Privasi</NuxtLink
+          >
+          <NuxtLink to="/terms" class="hover:text-foreground transition-colors"
+            >Ketentuan</NuxtLink
+          >
         </div>
       </div>
     </footer>

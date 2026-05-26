@@ -15,7 +15,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "target menabung, financial goals, tujuan keuangan, nabung rutin, manajemen keuangan",
+      content: "target menabung otomatis alokasi dana, financial goal tracker Indonesia, nabung rutin mingguan bulanan, visual progress bar target finansial, capai tujuan keuangan liburan nikah rumah, separate savings goal per wallet, debt payoff goal tracking, aplikasi nabung untuk anak muda, savings goal dengan deadline, alokasi dana otomatis ke target, pantau progres nabung real-time, alternative celengan digital modern, goal-based saving app bahasa Indonesia",
     },
   ],
 })

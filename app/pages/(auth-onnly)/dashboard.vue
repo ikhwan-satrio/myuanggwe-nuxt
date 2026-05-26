@@ -8,7 +8,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "dasbor keuangan, ringkasan keuangan, saldo total, pemasukan pengeluaran, aplikasi keuangan",
+      content: "dasbor keuangan pribadi gratis real-time, ringkasan saldo multi-wallet, grafik pemasukan pengeluaran bulanan, financial dashboard overview Indonesia, budget vs actual spending tracker, ikhtisar keuangan organisasi tim, total net worth tracker aplikasi lokal, rekap transaksi harian mingguan bulanan otomatis",
     },
   ],
 })
