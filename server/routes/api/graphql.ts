@@ -2,13 +2,15 @@ import { typeDefs } from '#graphql/schema'
 import { ApolloServer } from '@apollo/server'
 import { startServerAndCreateH3Handler } from '@as-integrations/h3'
 import { GraphQLScalarType, Kind } from 'graphql'
-import { createContext } from '~~/server/lib/graphql/context'
-import {
-  wallets, categories, transactions, budgets,
-  recurringTransactions, financialGoals,
-} from '~~/server/lib/db/schemas'
-import { eq, and } from 'drizzle-orm'
-import { withBackendCache, invalidateUserCache } from '~~/server/lib/redis'
+import { createContext } from '~~/server/lib/graphql-context'
+import type { Context } from '~~/server/lib/graphql-context'
+import { Effect } from "effect"
+import { WalletService } from "~~/server/lib/services/wallet"
+import { CategoryService } from "~~/server/lib/services/category"
+import { TransactionService } from "~~/server/lib/services/transaction"
+import { BudgetService } from "~~/server/lib/services/budget"
+import { RecurringTransactionService } from "~~/server/lib/services/recurring"
+import { FinancialGoalService } from "~~/server/lib/services/goal"
 
 const DateTimeScalar = new GraphQLScalarType({
   name: 'DateTime',
@@ -17,7 +19,7 @@ const DateTimeScalar = new GraphQLScalarType({
   parseLiteral: (ast) => (ast.kind === Kind.STRING ? new Date(ast.value) : null),
 })
 
-const apollo = new ApolloServer<Awaited<ReturnType<typeof createContext>>>({
+const apollo = new ApolloServer<Context>({
   typeDefs,
   resolvers: {
     Query: {
@@ -27,449 +29,302 @@ const apollo = new ApolloServer<Awaited<ReturnType<typeof createContext>>>({
       },
 
       // Wallets
-      wallets: async (_, __, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `wallets:org:${orgId}` : `wallets:user:${user.id}`
-        return withBackendCache(key, () =>
-          db.query.wallets.findMany({
-            where: (w, { eq }) =>
-              orgId ? eq(w.organizationId, orgId) : eq(w.userId, user.id),
-            with: { transactions: true, financialGoals: true },
-          })
+      wallets: async (_, __, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const wallet = yield* WalletService
+            return yield* Effect.promise(() => wallet.getAllWallets(c))
+          }).pipe(Effect.provide(WalletService.Default))
         )
       },
-      wallet: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `wallet:${id}:org:${orgId}` : `wallet:${id}:user:${user.id}`
-        return withBackendCache(key, async () =>
-          await db.query.wallets.findFirst({
-            where: (w, { eq, and }) =>
-              orgId
-                ? and(eq(w.id, id), eq(w.organizationId, orgId))
-                : and(eq(w.id, id), eq(w.userId, user.id)),
-            with: { transactions: true, financialGoals: true },
-          }) ?? null
+
+      wallet: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const wallet = yield* WalletService
+            return yield* Effect.promise(() => wallet.getWallet(id, c))
+          }).pipe(Effect.provide(WalletService.Default))
         )
       },
 
       // Categories
-      categories: async (_, { type }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `categories:org:${orgId}` : `categories:user:${user.id}`
-        return withBackendCache(key, () =>
-          db.query.categories.findMany({
-            where: (c, { eq, and }) => {
-              const base = orgId ? eq(c.organizationId, orgId) : eq(c.userId, user.id)
-              return type ? and(base, eq(c.type, type)) : base
-            },
-          })
+      categories: async (_, { type }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* CategoryService
+            return yield* Effect.promise(() => svc.getAllCategories(c, type))
+          }).pipe(Effect.provide(CategoryService.Default))
         )
       },
-      category: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `category:${id}:org:${orgId}` : `category:${id}:user:${user.id}`
-        return withBackendCache(key, async () =>
-          await db.query.categories.findFirst({
-            where: (c, { eq, and }) =>
-              orgId
-                ? and(eq(c.id, id), eq(c.organizationId, orgId))
-                : and(eq(c.id, id), eq(c.userId, user.id)),
-          }) ?? null
+      category: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* CategoryService
+            return yield* Effect.promise(() => svc.getCategory(id, c))
+          }).pipe(Effect.provide(CategoryService.Default))
         )
       },
 
       // Transactions
-      transactions: async (_, { walletId, categoryId, type, from, to, limit, offset }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `transactions:org:${orgId}` : `transactions:user:${user.id}`
-        return withBackendCache(key, () =>
-          db.query.transactions.findMany({
-            where: (t, { eq, and, gte, lte }) => {
-              const conditions = orgId
-                ? [eq(t.organizationId, orgId)]
-                : [eq(t.userId, user.id)]
-              if (walletId) conditions.push(eq(t.walletId, walletId))
-              if (categoryId) conditions.push(eq(t.categoryId, categoryId))
-              if (type) conditions.push(eq(t.type, type))
-              if (from) conditions.push(gte(t.date, new Date(from)))
-              if (to) conditions.push(lte(t.date, new Date(to)))
-              return and(...conditions)
-            },
-            with: { wallet: true, toWallet: true, category: true },
-            limit: limit ?? 50,
-            offset: offset ?? 0,
-            orderBy: (t, { desc }) => desc(t.date),
-          })
+      transactions: async (_, { walletId, categoryId, type, from, to, limit, offset }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* TransactionService
+            return yield* Effect.promise(() =>
+              svc.getAllTransactions(c, { walletId, categoryId, type, from, to, limit, offset })
+            )
+          }).pipe(Effect.provide(TransactionService.Default))
         )
       },
-      transaction: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `transaction:${id}:org:${orgId}` : `transaction:${id}:user:${user.id}`
-        return withBackendCache(key, async () =>
-          await db.query.transactions.findFirst({
-            where: (t, { eq, and }) =>
-              orgId
-                ? and(eq(t.id, id), eq(t.organizationId, orgId))
-                : and(eq(t.id, id), eq(t.userId, user.id)),
-            with: { wallet: true, toWallet: true, category: true },
-          }) ?? null
+      transaction: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* TransactionService
+            return yield* Effect.promise(() => svc.getTransaction(id, c))
+          }).pipe(Effect.provide(TransactionService.Default))
         )
       },
 
       // Budgets
-      budgets: async (_, __, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `budgets:org:${orgId}` : `budgets:user:${user.id}`
-        return withBackendCache(key, () =>
-          db.query.budgets.findMany({
-            where: (b, { eq }) =>
-              orgId ? eq(b.organizationId, orgId) : eq(b.userId, user.id),
-            with: { category: true },
-          })
+      budgets: async (_, __, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* BudgetService
+            return yield* Effect.promise(() => svc.getAllBudgets(c))
+          }).pipe(Effect.provide(BudgetService.Default))
         )
       },
-      budget: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `budget:${id}:org:${orgId}` : `budget:${id}:user:${user.id}`
-        return withBackendCache(key, async () =>
-          await db.query.budgets.findFirst({
-            where: (b, { eq, and }) =>
-              orgId
-                ? and(eq(b.id, id), eq(b.organizationId, orgId))
-                : and(eq(b.id, id), eq(b.userId, user.id)),
-            with: { category: true },
-          }) ?? null
+      budget: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* BudgetService
+            return yield* Effect.promise(() => svc.getBudget(id, c))
+          }).pipe(Effect.provide(BudgetService.Default))
         )
       },
 
       // Recurring Transactions
-      recurringTransactions: async (_, { isActive }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `recurring:org:${orgId}` : `recurring:user:${user.id}`
-        return withBackendCache(key, () =>
-          db.query.recurringTransactions.findMany({
-            where: (r, { eq, and }) => {
-              const base = orgId ? eq(r.organizationId, orgId) : eq(r.userId, user.id)
-              return isActive !== undefined ? and(base, eq(r.isActive, isActive)) : base
-            },
-            with: { wallet: true, category: true },
-          })
+      recurringTransactions: async (_, { isActive }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* RecurringTransactionService
+            return yield* Effect.promise(() => svc.getAllRecurringTransactions(c, isActive))
+          }).pipe(Effect.provide(RecurringTransactionService.Default))
         )
       },
-      recurringTransaction: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `recurringTransaction:${id}:org:${orgId}` : `recurringTransaction:${id}:user:${user.id}`
-        return withBackendCache(key, async () =>
-          await db.query.recurringTransactions.findFirst({
-            where: (r, { eq, and }) =>
-              orgId
-                ? and(eq(r.id, id), eq(r.organizationId, orgId))
-                : and(eq(r.id, id), eq(r.userId, user.id)),
-            with: { wallet: true, category: true },
-          }) ?? null
+      recurringTransaction: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* RecurringTransactionService
+            return yield* Effect.promise(() => svc.getRecurringTransaction(id, c))
+          }).pipe(Effect.provide(RecurringTransactionService.Default))
         )
       },
 
       // Financial Goals
-      financialGoals: async (_, __, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `goals:org:${orgId}` : `goals:user:${user.id}`
-        return withBackendCache(key, () =>
-          db.query.financialGoals.findMany({
-            where: (g, { eq }) =>
-              orgId ? eq(g.organizationId, orgId) : eq(g.userId, user.id),
-            with: { wallet: true },
-          })
+      financialGoals: async (_, __, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* FinancialGoalService
+            return yield* Effect.promise(() => svc.getAllFinancialGoals(c))
+          }).pipe(Effect.provide(FinancialGoalService.Default))
         )
       },
-      financialGoal: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const key = orgId ? `goal:${id}:org:${orgId}` : `goal:${id}:user:${user.id}`
-        return withBackendCache(key, async () =>
-          await db.query.financialGoals.findFirst({
-            where: (g, { eq, and }) =>
-              orgId
-                ? and(eq(g.id, id), eq(g.organizationId, orgId))
-                : and(eq(g.id, id), eq(g.userId, user.id)),
-            with: { wallet: true },
-          }) ?? null
+      financialGoal: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* FinancialGoalService
+            return yield* Effect.promise(() => svc.getFinancialGoal(id, c))
+          }).pipe(Effect.provide(FinancialGoalService.Default))
         )
-      },
-
-      // Organization
-      organizations: async (_, __, { user, db }) => {
-        if (!user) throw new Error('Unauthorized')
-        const members = await db.query.member.findMany({
-          where: (m, { eq }) => eq(m.userId, user.id),
-          with: { organization: true },
-        })
-        return members.map((m) => m.organization)
-      },
-      organization: async (_, { id }, { user, db }) => {
-        if (!user) throw new Error('Unauthorized')
-        const m = await db.query.member.findFirst({
-          where: (m, { eq, and }) =>
-            and(eq(m.organizationId, id), eq(m.userId, user.id)),
-          with: { organization: true },
-        })
-        return m?.organization ?? null
       },
     },
 
     Mutation: {
       // Wallet
-      createWallet: async (_, { input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.insert(wallets).values({
-          ...input,
-          userId: user.id,
-          organizationId: orgId ?? input.organizationId ?? null,
-          balance: input.balance ?? 0,
-          currency: input.currency ?? 'IDR',
-        }).returning()
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      updateWallet: async (_, { id, input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.update(wallets)
-          .set(input)
-          .where(
-            orgId
-              ? and(eq(wallets.id, id), eq(wallets.organizationId, orgId))
-              : and(eq(wallets.id, id), eq(wallets.userId, user.id))
-          )
-          .returning()
-        if (!result[0]) throw new Error('Wallet not found')
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      deleteWallet: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        await db.delete(wallets).where(
-          orgId
-            ? and(eq(wallets.id, id), eq(wallets.organizationId, orgId))
-            : and(eq(wallets.id, id), eq(wallets.userId, user.id))
+      createWallet: async (_, { input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* WalletService
+            return yield* Effect.promise(() => svc.createWallet(input, c))
+          }).pipe(Effect.provide(WalletService.Default))
         )
-        await invalidateUserCache(user.id, orgId)
-        return true
+      },
+      updateWallet: async (_, { id, input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* WalletService
+            return yield* Effect.promise(() => svc.updateWallet(id, input, c))
+          }).pipe(Effect.provide(WalletService.Default))
+        )
+      },
+      deleteWallet: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* WalletService
+            return yield* Effect.promise(() => svc.deleteWallet(id, c))
+          }).pipe(Effect.provide(WalletService.Default))
+        )
       },
 
       // Category
-      createCategory: async (_, { input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.insert(categories).values({
-          ...input,
-          userId: user.id,
-          organizationId: orgId ?? input.organizationId ?? null,
-        }).returning()
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      updateCategory: async (_, { id, input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.update(categories)
-          .set(input)
-          .where(
-            orgId
-              ? and(eq(categories.id, id), eq(categories.organizationId, orgId))
-              : and(eq(categories.id, id), eq(categories.userId, user.id))
-          )
-          .returning()
-        if (!result[0]) throw new Error('Category not found')
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      deleteCategory: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        await db.delete(categories).where(
-          orgId
-            ? and(eq(categories.id, id), eq(categories.organizationId, orgId))
-            : and(eq(categories.id, id), eq(categories.userId, user.id))
+      createCategory: async (_, { input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* CategoryService
+            return yield* Effect.promise(() => svc.createCategory(input, c))
+          }).pipe(Effect.provide(CategoryService.Default))
         )
-        await invalidateUserCache(user.id, orgId)
-        return true
+      },
+      updateCategory: async (_, { id, input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* CategoryService
+            return yield* Effect.promise(() => svc.updateCategory(id, input, c))
+          }).pipe(Effect.provide(CategoryService.Default))
+        )
+      },
+      deleteCategory: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* CategoryService
+            return yield* Effect.promise(() => svc.deleteCategory(id, c))
+          }).pipe(Effect.provide(CategoryService.Default))
+        )
       },
 
       // Transaction
-      createTransaction: async (_, { input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.insert(transactions).values({
-          ...input,
-          userId: user.id,
-          organizationId: orgId ?? input.organizationId ?? null,
-          date: new Date(input.date),
-          currency: input.currency ?? 'IDR',
-          exchangeRate: input.exchangeRate ?? 1000000,
-        }).returning()
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      updateTransaction: async (_, { id, input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.update(transactions)
-          .set({ ...input, date: input.date ? new Date(input.date) : undefined })
-          .where(
-            orgId
-              ? and(eq(transactions.id, id), eq(transactions.organizationId, orgId))
-              : and(eq(transactions.id, id), eq(transactions.userId, user.id))
-          )
-          .returning()
-        if (!result[0]) throw new Error('Transaction not found')
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      deleteTransaction: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        await db.delete(transactions).where(
-          orgId
-            ? and(eq(transactions.id, id), eq(transactions.organizationId, orgId))
-            : and(eq(transactions.id, id), eq(transactions.userId, user.id))
+      createTransaction: async (_, { input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* TransactionService
+            return yield* Effect.promise(() => svc.createTransaction(input, c))
+          }).pipe(Effect.provide(TransactionService.Default))
         )
-        await invalidateUserCache(user.id, orgId)
-        return true
+      },
+      updateTransaction: async (_, { id, input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* TransactionService
+            return yield* Effect.promise(() => svc.updateTransaction(id, input, c))
+          }).pipe(Effect.provide(TransactionService.Default))
+        )
+      },
+      deleteTransaction: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* TransactionService
+            return yield* Effect.promise(() => svc.deleteTransaction(id, c))
+          }).pipe(Effect.provide(TransactionService.Default))
+        )
       },
 
       // Budget
-      createBudget: async (_, { input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.insert(budgets).values({
-          ...input,
-          userId: user.id,
-          organizationId: orgId ?? input.organizationId ?? null,
-          period: input.period ?? 'monthly',
-        }).returning()
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      updateBudget: async (_, { id, input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.update(budgets)
-          .set(input)
-          .where(
-            orgId
-              ? and(eq(budgets.id, id), eq(budgets.organizationId, orgId))
-              : and(eq(budgets.id, id), eq(budgets.userId, user.id))
-          )
-          .returning()
-        if (!result[0]) throw new Error('Budget not found')
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      deleteBudget: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        await db.delete(budgets).where(
-          orgId
-            ? and(eq(budgets.id, id), eq(budgets.organizationId, orgId))
-            : and(eq(budgets.id, id), eq(budgets.userId, user.id))
+      createBudget: async (_, { input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* BudgetService
+            return yield* Effect.promise(() => svc.createBudget(input, c))
+          }).pipe(Effect.provide(BudgetService.Default))
         )
-        await invalidateUserCache(user.id, orgId)
-        return true
+      },
+      updateBudget: async (_, { id, input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* BudgetService
+            return yield* Effect.promise(() => svc.updateBudget(id, input, c))
+          }).pipe(Effect.provide(BudgetService.Default))
+        )
+      },
+      deleteBudget: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* BudgetService
+            return yield* Effect.promise(() => svc.deleteBudget(id, c))
+          }).pipe(Effect.provide(BudgetService.Default))
+        )
       },
 
       // Recurring Transaction
-      createRecurringTransaction: async (_, { input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.insert(recurringTransactions).values({
-          ...input,
-          userId: user.id,
-          organizationId: orgId ?? input.organizationId ?? null,
-          startDate: new Date(input.startDate),
-          nextRunDate: new Date(input.startDate),
-        }).returning()
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      updateRecurringTransaction: async (_, { id, input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.update(recurringTransactions)
-          .set(input)
-          .where(
-            orgId
-              ? and(eq(recurringTransactions.id, id), eq(recurringTransactions.organizationId, orgId))
-              : and(eq(recurringTransactions.id, id), eq(recurringTransactions.userId, user.id))
-          )
-          .returning()
-        if (!result[0]) throw new Error('Recurring transaction not found')
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      deleteRecurringTransaction: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        await db.delete(recurringTransactions).where(
-          orgId
-            ? and(eq(recurringTransactions.id, id), eq(recurringTransactions.organizationId, orgId))
-            : and(eq(recurringTransactions.id, id), eq(recurringTransactions.userId, user.id))
+      createRecurringTransaction: async (_, { input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* RecurringTransactionService
+            return yield* Effect.promise(() => svc.createRecurringTransaction(input, c))
+          }).pipe(Effect.provide(RecurringTransactionService.Default))
         )
-        await invalidateUserCache(user.id, orgId)
-        return true
+      },
+      updateRecurringTransaction: async (_, { id, input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* RecurringTransactionService
+            return yield* Effect.promise(() => svc.updateRecurringTransaction(id, input, c))
+          }).pipe(Effect.provide(RecurringTransactionService.Default))
+        )
+      },
+      deleteRecurringTransaction: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* RecurringTransactionService
+            return yield* Effect.promise(() => svc.deleteRecurringTransaction(id, c))
+          }).pipe(Effect.provide(RecurringTransactionService.Default))
+        )
       },
 
       // Financial Goal
-      createFinancialGoal: async (_, { input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.insert(financialGoals).values({
-          ...input,
-          userId: user.id,
-          organizationId: orgId ?? input.organizationId ?? null,
-          deadline: input.deadline ? new Date(input.deadline) : undefined,
-        }).returning()
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      updateFinancialGoal: async (_, { id, input }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        const result = await db.update(financialGoals)
-          .set({ ...input, deadline: input.deadline ? new Date(input.deadline) : undefined })
-          .where(
-            orgId
-              ? and(eq(financialGoals.id, id), eq(financialGoals.organizationId, orgId))
-              : and(eq(financialGoals.id, id), eq(financialGoals.userId, user.id))
-          )
-          .returning()
-        if (!result[0]) throw new Error('Financial goal not found')
-        await invalidateUserCache(user.id, orgId)
-        return result[0]
-      },
-      deleteFinancialGoal: async (_, { id }, { user, db, session }) => {
-        if (!user) throw new Error('Unauthorized')
-        const orgId = session?.activeOrganizationId
-        await db.delete(financialGoals).where(
-          orgId
-            ? and(eq(financialGoals.id, id), eq(financialGoals.organizationId, orgId))
-            : and(eq(financialGoals.id, id), eq(financialGoals.userId, user.id))
+      createFinancialGoal: async (_, { input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* FinancialGoalService
+            return yield* Effect.promise(() => svc.createFinancialGoal(input, c))
+          }).pipe(Effect.provide(FinancialGoalService.Default))
         )
-        await invalidateUserCache(user.id, orgId)
-        return true
+      },
+      updateFinancialGoal: async (_, { id, input }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* FinancialGoalService
+            return yield* Effect.promise(() => svc.updateFinancialGoal(id, input, c))
+          }).pipe(Effect.provide(FinancialGoalService.Default))
+        )
+      },
+      deleteFinancialGoal: async (_, { id }, c) => {
+        if (!c.user) throw new Error('Unauthorized')
+        return Effect.runPromise(
+          Effect.gen(function* () {
+            const svc = yield* FinancialGoalService
+            return yield* Effect.promise(() => svc.deleteFinancialGoal(id, c))
+          }).pipe(Effect.provide(FinancialGoalService.Default))
+        )
       },
     },
 

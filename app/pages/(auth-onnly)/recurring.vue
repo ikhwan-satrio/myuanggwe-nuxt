@@ -87,11 +87,11 @@ async function handleDelete(id: string) {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-wrap items-center justify-between gap-2">
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight">Transaksi Rutin</h1>
-        <p class="text-sm text-muted-foreground">Otomatisasi transaksi yang terjadi berulang kali.</p>
+  <div class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="min-w-0">
+        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Transaksi Rutin</h1>
+        <p class="text-xs text-muted-foreground sm:text-sm">Otomatisasi transaksi yang terjadi berulang kali.</p>
       </div>
       <FormsRecurringCreate :wallets="wallets" :categories="categories" @created="refreshRecurring()" />
     </div>

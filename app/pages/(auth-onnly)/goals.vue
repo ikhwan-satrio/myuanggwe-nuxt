@@ -91,13 +91,13 @@ async function handleDelete(id: string) {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-wrap items-center justify-between gap-2">
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight">Target Menabung</h1>
-        <p class="text-muted-foreground">Atur dan pantau target keuangan Anda.</p>
+  <div class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="min-w-0">
+        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Target Menabung</h1>
+        <p class="text-xs text-muted-foreground sm:text-sm">Atur dan pantau target keuangan Anda.</p>
       </div>
-      <UiButton @click="goalsCrudStore.openCreate()">
+      <UiButton size="sm" class="w-full sm:w-auto" @click="goalsCrudStore.openCreate()">
         <Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Tambah Target
       </UiButton>
     </div>

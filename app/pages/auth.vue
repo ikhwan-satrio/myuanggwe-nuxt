@@ -19,14 +19,15 @@ useHead({
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center p-4">
+  <div class="mx-auto flex min-h-screen items-center justify-center p-4">
     <UiTabs
       defaultValue="register"
       v-model:modelValue="authTabsStore.activeTab"
+      class="w-full max-w-sm"
     >
-      <UiTabsList>
-        <UiTabsTrigger value="register">Register</UiTabsTrigger>
-        <UiTabsTrigger value="login">Login</UiTabsTrigger>
+      <UiTabsList class="w-full">
+        <UiTabsTrigger value="register" class="flex-1 text-xs sm:text-sm">Register</UiTabsTrigger>
+        <UiTabsTrigger value="login" class="flex-1 text-xs sm:text-sm">Login</UiTabsTrigger>
       </UiTabsList>
 
       <UiTabsContent value="register">

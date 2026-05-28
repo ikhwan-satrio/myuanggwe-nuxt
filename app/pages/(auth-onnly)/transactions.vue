@@ -57,20 +57,20 @@ async function handleDelete(id: string) {
 </script>
 
 <template>
-  <div class="space-y-6 p-6">
-    <div class="flex flex-wrap items-center justify-between gap-2">
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight">Transaksi</h1>
-        <p class="text-sm text-muted-foreground">Kelola transaksi.</p>
+  <div class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="min-w-0">
+        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Transaksi</h1>
+        <p class="text-xs text-muted-foreground sm:text-sm">Kelola transaksi.</p>
       </div>
 
       <UiDialog :open="store.createOpen" @update:open="store.closeCreate()">
         <UiDialogTrigger as-child>
-          <UiButton @click="store.openCreate()">
+          <UiButton size="sm" class="w-full sm:w-auto">
             <Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Catat Transaksi
           </UiButton>
         </UiDialogTrigger>
-        <UiDialogContent class="sm:max-w-md">
+        <UiDialogContent class="sm:max-w-md w-[95vw] max-w-[95vw] sm:max-w-md">
           <UiDialogHeader>
             <UiDialogTitle>Tambah Transaksi</UiDialogTitle>
             <UiDialogDescription>Catat pemasukan, pengeluaran, atau transfer antar dompet.</UiDialogDescription>

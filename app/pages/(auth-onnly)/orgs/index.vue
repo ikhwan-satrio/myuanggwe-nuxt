@@ -26,14 +26,12 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center p-4">
-    <UiTabs v-model:modelValue="orgsTabStore.activeTab" default-value="create">
-      <UiTabsList>
-        <UiTabsTrigger value="create">Buat</UiTabsTrigger>
-        <UiTabsTrigger value="enter">Gabung</UiTabsTrigger>
-        <UiTabsTrigger value="invite" :disabled="!orgs?.data"
-          >Undang</UiTabsTrigger
-        >
+  <div class="mx-auto flex min-h-[60vh] items-center justify-center p-4">
+    <UiTabs v-model:modelValue="orgsTabStore.activeTab" default-value="create" class="w-full max-w-md">
+      <UiTabsList class="w-full">
+        <UiTabsTrigger value="create" class="flex-1 text-xs sm:text-sm">Buat</UiTabsTrigger>
+        <UiTabsTrigger value="enter" class="flex-1 text-xs sm:text-sm">Gabung</UiTabsTrigger>
+        <UiTabsTrigger value="invite" class="flex-1 text-xs sm:text-sm" :disabled="!orgs?.data">Undang</UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="create"><FormsOrgsCreate /></UiTabsContent>
       <UiTabsContent value="enter"><FormsOrgsEnter /></UiTabsContent>

@@ -1,4 +1,3 @@
-// ~~/server/lib/redis
 import { Redis } from "@upstash/redis";
 import type { DurationInput } from "effect/Duration";
 import { Duration } from "effect";
@@ -15,32 +14,32 @@ export function getRedis() {
 export const redis = getRedis();
 
 export async function invalidateUserCache(userId: string, orgId?: string | null) {
-	const patterns = [
-		`layout:${userId}`,
-		`dashboard:user:${userId}`,
-		`wallets:user:${userId}`,
-		`transactions:user:${userId}`,
-		`categories:user:${userId}`,
-		`chart:user:${userId}`,
-		`budgets:user:${userId}`,
-		`recurring:user:${userId}`,
-		`goals:user:${userId}`
-	];
+  const patterns = [
+    `layout:${userId}`,
+    `dashboard:user:${userId}`,
+    `wallets:user:${userId}`,
+    `transactions:user:${userId}`,
+    `categories:user:${userId}`,
+    `chart:user:${userId}`,
+    `budgets:user:${userId}`,
+    `recurring:user:${userId}`,
+    `goals:user:${userId}`
+  ];
 
-	if (orgId) {
-		patterns.push(
-			`dashboard:org:${orgId}`,
-			`wallets:org:${orgId}`,
-			`transactions:org:${orgId}`,
-			`categories:org:${orgId}`,
-			`chart:org:${orgId}`,
-			`budgets:org:${orgId}`,
-			`recurring:org:${orgId}`,
-			`goals:org:${orgId}`
-		);
-	}
+  if (orgId) {
+    patterns.push(
+      `dashboard:org:${orgId}`,
+      `wallets:org:${orgId}`,
+      `transactions:org:${orgId}`,
+      `categories:org:${orgId}`,
+      `chart:org:${orgId}`,
+      `budgets:org:${orgId}`,
+      `recurring:org:${orgId}`,
+      `goals:org:${orgId}`
+    );
+  }
 
-	await Promise.all(patterns.map((p) => backendCache.del(p)));
+  await Promise.all(patterns.map((p) => backendCache.del(p)));
 }
 
 // Vite-style colors

@@ -118,11 +118,11 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="container mx-auto max-w-4xl space-y-6 p-6">
-    <div class="flex items-center justify-between">
-      <h1 class="text-3xl font-bold tracking-tight">Organization Management</h1>
+  <div class="mx-auto max-w-4xl space-y-4 sm:space-y-6 px-3 sm:px-6 py-4 sm:py-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Organization Management</h1>
       <template v-if="manageQuery.data?.value?.name">
-        <UiBadge variant="outline" class="px-3 py-1 text-sm">
+        <UiBadge variant="outline" class="px-2 sm:px-3 py-1 text-xs sm:text-sm">
           Active: {{ manageQuery.data.value.name }}
         </UiBadge>
       </template>
@@ -162,75 +162,79 @@ definePageMeta({
 
     <template v-else>
       <UiCard>
-        <UiCardHeader>
-          <UiCardTitle>Members</UiCardTitle>
-          <UiCardDescription>Manage who has access to this organization.</UiCardDescription>
+        <UiCardHeader class="px-3 pt-3 sm:px-6 sm:pt-6">
+          <UiCardTitle class="text-sm sm:text-base">Members</UiCardTitle>
+          <UiCardDescription class="text-xs sm:text-sm">Manage who has access to this organization.</UiCardDescription>
         </UiCardHeader>
-        <UiCardContent>
-          <UiTable>
-            <UiTableHeader>
-              <UiTableRow>
-                <UiTableHead>Name</UiTableHead>
-                <UiTableHead>Email</UiTableHead>
-                <UiTableHead>Role</UiTableHead>
-                <UiTableHead class="text-right">Actions</UiTableHead>
-              </UiTableRow>
-            </UiTableHeader>
-            <UiTableBody>
-              <UiTableRow v-for="member in manageQuery.data?.value?.members" :key="member.id">
-                <UiTableCell class="font-medium">{{ member.user.name }}</UiTableCell>
-                <UiTableCell>{{ member.user.email }}</UiTableCell>
-                <UiTableCell>
-                  <UiBadge :variant="member.role === 'owner' ? 'default' : 'secondary'">
-                    {{ member.role }}
-                  </UiBadge>
-                </UiTableCell>
-                <UiTableCell class="text-right">
-                  <template v-if="member.role !== 'owner'">
-                    <div class="flex justify-end gap-2">
-                      <UiButton
-                        variant="ghost" size="sm"
-                        @click="handleUpdateRole(member.id, member.role)"
-                        :disabled="updateRoleMutation.isPending.value"
-                      >
-                        <Icon :name="member.role === 'admin' ? 'lucide:arrow-down' : 'lucide:arrow-up'" class="mr-2 h-4 w-4" />
-                        {{ member.role === "admin" ? "Demote" : "Promote" }}
-                      </UiButton>
-                      <UiButton
-                        variant="ghost" size="sm"
-                        class="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                        @click="store.openRemoveMember({ id: member.id, name: member.user.name })"
-                        :disabled="removeMemberMutation.isPending.value"
-                      >
-                        <Icon name="lucide:user-minus" class="h-4 w-4" />
-                      </UiButton>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <span class="text-xs text-muted-foreground italic">Owner</span>
-                  </template>
-                </UiTableCell>
-              </UiTableRow>
-            </UiTableBody>
-          </UiTable>
+        <UiCardContent class="px-0 sm:px-6">
+          <div class="overflow-x-auto">
+            <UiTable>
+              <UiTableHeader>
+                <UiTableRow>
+                  <UiTableHead class="text-xs sm:text-sm">Name</UiTableHead>
+                  <UiTableHead class="text-xs sm:text-sm">Email</UiTableHead>
+                  <UiTableHead class="text-xs sm:text-sm">Role</UiTableHead>
+                  <UiTableHead class="text-right text-xs sm:text-sm">Actions</UiTableHead>
+                </UiTableRow>
+              </UiTableHeader>
+              <UiTableBody>
+                <UiTableRow v-for="member in manageQuery.data?.value?.members" :key="member.id">
+                  <UiTableCell class="font-medium text-xs sm:text-sm">{{ member.user.name }}</UiTableCell>
+                  <UiTableCell class="text-xs sm:text-sm">{{ member.user.email }}</UiTableCell>
+                  <UiTableCell>
+                    <UiBadge :variant="member.role === 'owner' ? 'default' : 'secondary'" class="text-xs">
+                      {{ member.role }}
+                    </UiBadge>
+                  </UiTableCell>
+                  <UiTableCell class="text-right">
+                    <template v-if="member.role !== 'owner'">
+                      <div class="flex justify-end gap-1 sm:gap-2">
+                        <UiButton
+                          variant="ghost" size="sm"
+                          @click="handleUpdateRole(member.id, member.role)"
+                          :disabled="updateRoleMutation.isPending.value"
+                          class="text-xs"
+                        >
+                          <Icon :name="member.role === 'admin' ? 'lucide:arrow-down' : 'lucide:arrow-up'" class="mr-1 h-3.5 w-3.5" />
+                          <span class="hidden sm:inline">{{ member.role === "admin" ? "Demote" : "Promote" }}</span>
+                        </UiButton>
+                        <UiButton
+                          variant="ghost" size="sm"
+                          class="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          @click="store.openRemoveMember({ id: member.id, name: member.user.name })"
+                          :disabled="removeMemberMutation.isPending.value"
+                        >
+                          <Icon name="lucide:user-minus" class="h-3.5 w-3.5" />
+                        </UiButton>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <span class="text-xs text-muted-foreground italic">Owner</span>
+                    </template>
+                  </UiTableCell>
+                </UiTableRow>
+              </UiTableBody>
+            </UiTable>
+          </div>
         </UiCardContent>
       </UiCard>
 
       <UiCard class="border-destructive/50 bg-destructive/5">
-        <UiCardHeader>
-          <UiCardTitle class="text-destructive">Danger Zone</UiCardTitle>
-          <UiCardDescription>Irreversible actions for your organization.</UiCardDescription>
+        <UiCardHeader class="px-3 pt-3 sm:px-6 sm:pt-6">
+          <UiCardTitle class="text-sm sm:text-base text-destructive">Danger Zone</UiCardTitle>
+          <UiCardDescription class="text-xs sm:text-sm">Irreversible actions for your organization.</UiCardDescription>
         </UiCardHeader>
-        <UiCardContent>
-          <div class="flex items-center justify-between">
+        <UiCardContent class="px-3 pb-3 sm:px-6 sm:pb-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div class="space-y-1">
-              <h4 class="font-medium">Delete Organization</h4>
-              <p class="text-sm text-muted-foreground">
-                This will permanently delete the organization and all its data.
+              <h4 class="text-sm sm:text-base font-medium">Delete Organization</h4>
+              <p class="text-xs sm:text-sm text-muted-foreground">
+                Permanently delete the organization and all its data.
               </p>
             </div>
             <UiButton
-              variant="destructive"
+              variant="destructive" size="sm"
+              class="w-full sm:w-auto"
               @click="store.openDeleteOrg()"
               :disabled="deleteOrgMutation.isPending.value"
             >
@@ -242,16 +246,16 @@ definePageMeta({
       </UiCard>
 
       <UiDialog :open="store.isRemoveDialogOpen" @update:open="store.closeRemoveMember()">
-        <UiDialogContent>
+        <UiDialogContent class="w-[95vw] max-w-md">
           <UiDialogHeader>
             <UiDialogTitle>Remove Member</UiDialogTitle>
             <UiDialogDescription>
               Are you sure you want to remove <strong>{{ store.memberToRemove?.name }}</strong> from this organization?
             </UiDialogDescription>
           </UiDialogHeader>
-          <UiDialogFooter>
-            <UiButton variant="outline" @click="store.closeRemoveMember()">Cancel</UiButton>
-            <UiButton variant="destructive" @click="handleRemoveMember" :disabled="removeMemberMutation.isPending.value">
+          <UiDialogFooter class="flex-col sm:flex-row gap-2">
+            <UiButton variant="outline" class="w-full sm:w-auto" @click="store.closeRemoveMember()">Cancel</UiButton>
+            <UiButton variant="destructive" class="w-full sm:w-auto" @click="handleRemoveMember" :disabled="removeMemberMutation.isPending.value">
               <Icon v-if="removeMemberMutation.isPending.value" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
               Remove Member
             </UiButton>
@@ -260,21 +264,21 @@ definePageMeta({
       </UiDialog>
 
       <UiDialog :open="store.isDeleteDialogOpen" @update:open="store.closeDeleteOrg()">
-        <UiDialogContent>
+        <UiDialogContent class="w-[95vw] max-w-md">
           <UiDialogHeader>
             <UiDialogTitle class="text-destructive">Delete Organization</UiDialogTitle>
             <UiDialogDescription>
               <div class="space-y-3">
                 <p>CRITICAL ACTION: Are you absolutely sure you want to delete this organization?</p>
-                <div class="rounded-md bg-destructive/10 p-3 text-sm font-medium text-destructive">
+                <div class="rounded-md bg-destructive/10 p-3 text-xs sm:text-sm font-medium text-destructive">
                   Warning: All wallets, transactions, and categories associated with this organization will be PERMANENTLY lost.
                 </div>
               </div>
             </UiDialogDescription>
           </UiDialogHeader>
-          <UiDialogFooter>
-            <UiButton variant="outline" @click="store.closeDeleteOrg()">Cancel</UiButton>
-            <UiButton variant="destructive" @click="handleDeleteOrg" :disabled="deleteOrgMutation.isPending.value">
+          <UiDialogFooter class="flex-col sm:flex-row gap-2">
+            <UiButton variant="outline" class="w-full sm:w-auto" @click="store.closeDeleteOrg()">Cancel</UiButton>
+            <UiButton variant="destructive" class="w-full sm:w-auto" @click="handleDeleteOrg" :disabled="deleteOrgMutation.isPending.value">
               <Icon v-if="deleteOrgMutation.isPending.value" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
               Permanently Delete
             </UiButton>

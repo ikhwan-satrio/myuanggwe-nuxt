@@ -13,6 +13,7 @@
     "@apollo/client": "3.11.8",
     "@apollo/server": "^5.5.1",
     "@as-integrations/h3": "^2.0.3",
+    "@internationalized/date": "^3.12.1",
     "@libsql/client": "^0.17.3",
     "@lucide/vue": "^1.16.0",
     "@nuxt/fonts": "0.14.0",

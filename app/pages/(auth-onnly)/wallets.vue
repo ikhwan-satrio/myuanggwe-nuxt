@@ -54,11 +54,11 @@ async function handleDelete(id: string) {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-wrap items-center justify-between gap-2">
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight">Dompet Saya</h1>
-        <p class="text-sm text-muted-foreground">
+  <div class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="min-w-0">
+        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Dompet Saya</h1>
+        <p class="text-xs text-muted-foreground sm:text-sm">
           Kelola rekening keuangan kamu.
         </p>
       </div>
