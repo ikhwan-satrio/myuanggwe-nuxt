@@ -19,7 +19,7 @@ useHead({
 </script>
 
 <template>
-  <div class="mx-auto flex min-h-screen items-center justify-center p-4">
+  <div class="mx-auto flex min-h-dvh items-center justify-center px-3 sm:px-4 py-6">
     <UiTabs
       defaultValue="register"
       v-model:modelValue="authTabsStore.activeTab"

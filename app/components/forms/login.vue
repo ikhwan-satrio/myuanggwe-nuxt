@@ -40,36 +40,35 @@ const form = useForm({
 </script>
 
 <template>
-  <UiCard class="w-87.5">
-    <UiCardHeader class="space-y-1 text-center">
-      <UiCardTitle class="text-2xl font-bold">Login</UiCardTitle>
-      <UiCardDescription>
+  <UiCard class="w-full">
+    <UiCardHeader class="space-y-1.5 text-center px-4 sm:px-6 pt-4 sm:pt-6">
+      <UiCardTitle class="text-xl sm:text-2xl font-bold">Login</UiCardTitle>
+      <UiCardDescription class="text-xs sm:text-sm">
         Selamat datang kembali! Masuk untuk mengelola keuangan kamu
       </UiCardDescription>
     </UiCardHeader>
 
-    <UiCardContent>
+    <UiCardContent class="px-4 sm:px-6">
       <form @submit.prevent="form.handleSubmit" class="space-y-4">
-        <!-- Email -->
         <form.Field name="email">
           <template #default="{ field }">
             <UiFormItem>
-              <UiLabel :for="field.name">Email</UiLabel>
+              <UiLabel :for="field.name" class="text-xs sm:text-sm">Email</UiLabel>
               <UiInput
                 :id="field.name"
                 :name="field.name"
                 type="email"
                 :value="field.state.value"
                 placeholder="john@example.com"
+                class="h-9 sm:h-10 text-xs sm:text-sm"
                 @input="
                   field.handleChange(($event.target as HTMLInputElement).value)
                 "
                 @blur="field.handleBlur"
               />
-
               <p
                 v-if="!field.state.meta.isValid"
-                class="text-sm text-destructive"
+                class="text-xs text-destructive"
               >
                 <span
                   v-for="(err, i) in field.state.meta.errors"
@@ -83,17 +82,17 @@ const form = useForm({
           </template>
         </form.Field>
 
-        <!-- Password -->
         <form.Field name="password">
           <template #default="{ field }">
             <UiFormItem>
-              <UiLabel :for="field.name">Password</UiLabel>
+              <UiLabel :for="field.name" class="text-xs sm:text-sm">Password</UiLabel>
               <UiInput
                 :id="field.name"
                 :name="field.name"
                 type="password"
                 :value="field.state.value"
                 placeholder="••••••••"
+                class="h-9 sm:h-10 text-xs sm:text-sm"
                 @input="
                   field.handleChange(($event.target as HTMLInputElement).value)
                 "
@@ -101,7 +100,7 @@ const form = useForm({
               />
               <p
                 v-if="!field.state.meta.isValid"
-                class="text-sm text-destructive"
+                class="text-xs text-destructive"
               >
                 <span
                   v-for="(err, i) in field.state.meta.errors"
@@ -115,24 +114,22 @@ const form = useForm({
           </template>
         </form.Field>
 
-        <!-- Submit Error -->
         <form.Subscribe>
           <template #default="{ errorMap }">
             <p
               v-if="errorMap.onSubmit"
-              class="text-sm text-destructive text-center"
+              class="text-xs sm:text-sm text-destructive text-center"
             >
               {{ errorMap.onSubmit }}
             </p>
           </template>
         </form.Subscribe>
 
-        <!-- Submit Button -->
         <form.Subscribe>
           <template #default="{ canSubmit, isSubmitting }">
             <UiButton
               type="submit"
-              class="w-full"
+              class="w-full h-9 sm:h-10 text-xs sm:text-sm"
               :disabled="!canSubmit || isSubmitting"
             >
               <Icon
@@ -148,11 +145,11 @@ const form = useForm({
       </form>
     </UiCardContent>
 
-    <UiCardFooter class="justify-center">
-      <p class="text-sm text-muted-foreground">
-        Sudah punya akun?
+    <UiCardFooter class="justify-center px-4 sm:px-6 pb-4 sm:pb-6">
+      <p class="text-xs sm:text-sm text-muted-foreground">
+        Belum punya akun?
         <button
-          class="text-foreground underline"
+          class="text-foreground underline font-medium"
           @click="authTabsStore.setActiveTab('register')"
         >
           Register
