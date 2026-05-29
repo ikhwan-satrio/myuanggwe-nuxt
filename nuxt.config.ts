@@ -74,7 +74,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/api/**': { cors: true }
+    '/api/**': { cors: true, security: { enabled: true } }
   },
 
   nuxtQuery: {
