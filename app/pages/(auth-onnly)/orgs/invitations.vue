@@ -38,7 +38,7 @@ const filteredInvitations = computed(() => {
 });
 
 useHead({
-  title: "Undangan - MyUangGwe | Gabung Organisasi",
+  title: "Undangan | Gabung Organisasi",
   meta: [
     {
       name: "description",
@@ -46,7 +46,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "undangan bergabung organisasi keuangan, invitation to join financial team, accept reject invitation kolaborasi, pending invitation management, team finance invite system, daftar undangan masuk organisasi, invitation ID based join mechanism, collaborative finance invitation tracker, undangan bergabung tim UKM, invitation management dashboard",
+      content: "myuanggwe app, undangan bergabung organisasi keuangan, invitation to join financial team, accept reject invitation kolaborasi, pending invitation management, team finance invite system, daftar undangan masuk organisasi, invitation ID based join mechanism, collaborative finance invitation tracker, undangan bergabung tim UKM, invitation management dashboard",
     },
   ],
 });

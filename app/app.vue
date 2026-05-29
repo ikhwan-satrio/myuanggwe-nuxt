@@ -4,6 +4,10 @@ import AppSidebar from "@/components/AppSidebar.vue";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
+useHead({
+  titleTemplate: (title) => title ? `${title} - MyUangGwe` : 'MyUangGwe — Kelola Keuangan dengan Tenang',
+})
+
 const router = useRouter();
 
 const isRoot = computed(() => {

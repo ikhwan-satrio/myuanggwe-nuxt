@@ -4,7 +4,7 @@ import { useAuthTabsStore } from "~/stores/auth-tabs";
 const authTabsStore = useAuthTabsStore();
 
 useHead({
-  title: "Masuk / Daftar - MyUangGwe | Kelola Keuangan dengan Tenang",
+  title: "Masuk / Daftar",
   meta: [
     {
       name: "description",
@@ -12,7 +12,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "daftar akun myuanggwe gratis, login aplikasi catat uang, sign up financial tracker no ads Indonesia, registrasi pengelola keuangan pribadi, buat akun nabung online, register personal expense manager, masuk akun dompet digital terintegrasi, alternative to spending tracker berbayar",
+      content: "myuanggwe app, daftar akun myuanggwe gratis, login aplikasi catat uang, sign up financial tracker no ads Indonesia, registrasi pengelola keuangan pribadi, buat akun nabung online, register personal expense manager, masuk akun dompet digital terintegrasi, alternative to spending tracker berbayar",
     },
   ],
 })

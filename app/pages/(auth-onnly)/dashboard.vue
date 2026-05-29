@@ -1,11 +1,15 @@
 <script setup lang="ts">
 useHead({
-  title: "Dasbor - MyUangGwe | Ringkasan Keuangan",
+  title: "Dasbor | Ringkasan Keuangan",
   meta: [
     {
       name: "description",
       content:
         "Pantau ringkasan keuangan Anda - saldo total, pemasukan, pengeluaran, dan anggaran bulanan dalam satu tampilan.",
+    },
+    {
+      name: "keywords",
+      content: "myuanggwe app, dashboard keuangan pribadi, ringkasan saldo pemasukan pengeluaran, financial overview gratis Indonesia, pantau keuangan harian",
     },
   ],
 });

@@ -8,7 +8,7 @@ const recurringCrudStore = useRecurringCrudStore()
 const { $apolloClient } = useNuxtApp()
 
 useHead({
-  title: "Transaksi Rutin - MyUangGwe | Otomatisasi Pencatatan Keuangan",
+  title: "Transaksi Rutin | Otomatisasi Pencatatan",
   meta: [
     {
       name: "description",
@@ -16,7 +16,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "transaksi berulang otomatis tagihan bulanan, auto debit subscription tracker, recurring payment scheduler Indonesia, langganan Netflix Spotify Gojek catat otomatis, gaji bulanan rutin pencatatan, atur cicilan kredit mobil rumah otomatis, bill reminder integrated dashboard, daily weekly monthly yearly frequency kustom, automated expense recording tool, langganan aplikasi berbayar tercatat, recurring income expense management, jangan sampai lupa bayar tagihan aplikasi catat",
+      content: "myuanggwe app, transaksi berulang otomatis tagihan bulanan, auto debit subscription tracker, recurring payment scheduler Indonesia, langganan Netflix Spotify Gojek catat otomatis, gaji bulanan rutin pencatatan, atur cicilan kredit mobil rumah otomatis, bill reminder integrated dashboard, daily weekly monthly yearly frequency kustom, automated expense recording tool, langganan aplikasi berbayar tercatat, recurring income expense management, jangan sampai lupa bayar tagihan aplikasi catat",
     },
   ],
 })

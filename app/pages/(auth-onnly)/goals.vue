@@ -7,7 +7,7 @@ import { useGoalsCrudStore } from "~/stores/crud/goals"
 const { $apolloClient } = useNuxtApp()
 
 useHead({
-  title: "Target Menabung - MyUangGwe | Financial Goals",
+  title: "Target Menabung | Financial Goals",
   meta: [
     {
       name: "description",
@@ -15,7 +15,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "target menabung otomatis alokasi dana, financial goal tracker Indonesia, nabung rutin mingguan bulanan, visual progress bar target finansial, capai tujuan keuangan liburan nikah rumah, separate savings goal per wallet, debt payoff goal tracking, aplikasi nabung untuk anak muda, savings goal dengan deadline, alokasi dana otomatis ke target, pantau progres nabung real-time, alternative celengan digital modern, goal-based saving app bahasa Indonesia",
+      content: "myuanggwe app, target menabung otomatis alokasi dana, financial goal tracker Indonesia, nabung rutin mingguan bulanan, visual progress bar target finansial, capai tujuan keuangan liburan nikah rumah, separate savings goal per wallet, debt payoff goal tracking, aplikasi nabung untuk anak muda, savings goal dengan deadline, alokasi dana otomatis ke target, pantau progres nabung real-time, alternative celengan digital modern, goal-based saving app bahasa Indonesia",
     },
   ],
 })

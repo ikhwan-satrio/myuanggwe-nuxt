@@ -6,7 +6,7 @@ import type { CategoryType } from "~~/server/lib/db/schemas"
 const { $apolloClient } = useNuxtApp()
 
 useHead({
-  title: "Kategori - MyUangGwe | Atur Jenis Transaksi Keuangan",
+  title: "Kategori | Atur Jenis Transaksi",
   meta: [
     {
       name: "description",
@@ -14,7 +14,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "kategori transaksi kustom ikon emoji, pengelompokan pemasukan pengeluaran otomatis, expense categorization Indonesia, tagar kategori belanja makan transportasi, jenis transaksi income expense transfer, category-based budget tracking, atur kategori sesuai gaya hidup, personal spending categories tidak ada di app lain, emoji category labels unik, financial category management system",
+      content: "myuanggwe app, kategori transaksi kustom ikon emoji, pengelompokan pemasukan pengeluaran otomatis, expense categorization Indonesia, tagar kategori belanja makan transportasi, jenis transaksi income expense transfer, category-based budget tracking, atur kategori sesuai gaya hidup, personal spending categories tidak ada di app lain, emoji category labels unik, financial category management system",
     },
   ],
 })

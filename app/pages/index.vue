@@ -2,7 +2,6 @@
 import { motion, AnimatePresence, useScroll, useTransform } from "motion-v";
 
 useHead({
-  title: "MyUangGwe — Kelola Keuangan dengan Tenang",
   meta: [
     {
       name: "description",
@@ -11,7 +10,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "aplikasi catat uang harian gratis Indonesia, personal finance tracker tanpa iklan, manajemen keuangan pribadi anak muda, budget planner中小学生, aplikasi amplop digital online, pencatatan pemasukan pengeluaran sederhana, nabung otomatis target menabung, multi-wallet e-wallet bank cash management, expense tracker bahasa Indonesia, free no-ad financial planning tool untuk pemula, dompet digital terintegrasi catatan transaksi, aplikasi ngatur duit anak kost, financial literacy app for Gen Z Indonesia",
+      content: "myuanggwe app, aplikasi catat uang harian gratis Indonesia, personal finance tracker tanpa iklan, manajemen keuangan pribadi anak muda, budget planner中小学生, aplikasi amplop digital online, pencatatan pemasukan pengeluaran sederhana, nabung otomatis target menabung, multi-wallet e-wallet bank cash management, expense tracker bahasa Indonesia, free no-ad financial planning tool untuk pemula, dompet digital terintegrasi catatan transaksi, aplikasi ngatur duit anak kost, financial literacy app for Gen Z Indonesia",
     },
   ],
 });
@@ -350,7 +349,7 @@ const openFaq = ref<number | null>(null);
             :whileInView="{ opacity: 1, x: 0 }"
             :transition="{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }"
             :viewport="{ once: true }"
-            :whileHover="{ x: 4, sm: { x: 8 }, transition: { duration: 0.2 } }"
+            :whileHover="{ x: 4, transition: { duration: 0.2 } }"
             class="flex items-start gap-4 sm:gap-6 rounded-xl border border-border bg-card p-4 sm:p-5 md:p-6 hover:border-primary/30 transition-colors cursor-default group"
           >
             <span class="text-2xl sm:text-3xl md:text-4xl font-bold text-muted-foreground group-hover:text-primary transition-colors shrink-0 leading-none">

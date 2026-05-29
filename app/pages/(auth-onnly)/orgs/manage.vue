@@ -99,7 +99,7 @@ const handleDeleteOrg = () => {
 }
 
 useHead({
-  title: "Kelola Organisasi - MyUangGwe | Manajemen Tim",
+  title: "Kelola Organisasi | Manajemen Tim",
   meta: [
     {
       name: "description",
@@ -107,7 +107,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "kelola anggota organisasi owner admin member, role-based team management keuangan, promote demote member role, hapus anggota organisasi tim, delete organization permanent data, manajemen tim bisnis kecil Indonesia, organization members table overview, collaborative finance admin panel, manage organization permissions Indonesia, team financial management dashboard untuk owner, UKM member management tool, keamanan data organisasi multi-level access",
+      content: "myuanggwe app, kelola anggota organisasi owner admin member, role-based team management keuangan, promote demote member role, hapus anggota organisasi tim, delete organization permanent data, manajemen tim bisnis kecil Indonesia, organization members table overview, collaborative finance admin panel, manage organization permissions Indonesia, team financial management dashboard untuk owner, UKM member management tool, keamanan data organisasi multi-level access",
     },
   ],
 })

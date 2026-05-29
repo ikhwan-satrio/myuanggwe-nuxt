@@ -6,7 +6,7 @@ const orgsTabStore = useOrgsTabsStore();
 const orgs = $authClient.useListOrganizations();
 
 useHead({
-  title: "Organisasi - MyUangGwe | Kelola Keuangan Tim",
+  title: "Organisasi | Kelola Keuangan Tim",
   meta: [
     {
       name: "description",
@@ -15,7 +15,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "manajemen keuangan organisasi tim UKM, collaborative finance app Indonesia, shared budget team expense tracking, bisnis kecil kelola uang bersama, organisasi karang taruna keuangan, UKM catat pemasukan pengeluaran tim, multi-user financial management gratis, kolaborasi catatan keuangan kelompok, owner admin member role-based access, keuangan transparan untuk organisasi, aplikasi kas organisasi digital, joint account digital untuk tim proyek, alternatif buku kas organisasi tradisional, shared financial dashboard untuk bisnis kecil",
+      content: "myuanggwe app, manajemen keuangan organisasi tim UKM, collaborative finance app Indonesia, shared budget team expense tracking, bisnis kecil kelola uang bersama, organisasi karang taruna keuangan, UKM catat pemasukan pengeluaran tim, multi-user financial management gratis, kolaborasi catatan keuangan kelompok, owner admin member role-based access, keuangan transparan untuk organisasi, aplikasi kas organisasi digital, joint account digital untuk tim proyek, alternatif buku kas organisasi tradisional, shared financial dashboard untuk bisnis kecil",
     },
   ],
 });

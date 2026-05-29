@@ -8,7 +8,7 @@ const { $apolloClient } = useNuxtApp()
 const store = useTransactionsCrudStore()
 
 useHead({
-  title: "Transaksi - MyUangGwe | Catat Pemasukan & Pengeluaran",
+  title: "Transaksi | Catat Pemasukan & Pengeluaran",
   meta: [
     {
       name: "description",
@@ -16,7 +16,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "catat transaksi harian gratis Indonesia, pencatatan pemasukan pengeluaran otomatis, transfer antar dompet cash bank e-wallet, recurring transaction scheduler, expense tracker multi kategori, income expense transfer log detail, financial transaction history lengkap, aplikasi catet uang harian, spending record keeping tool, transaction filtering by wallet category date, cash flow tracking pribadi, alternative to buku kas tradisional digital",
+      content: "myuanggwe app, catat transaksi harian gratis Indonesia, pencatatan pemasukan pengeluaran otomatis, transfer antar dompet cash bank e-wallet, recurring transaction scheduler, expense tracker multi kategori, income expense transfer log detail, financial transaction history lengkap, aplikasi catet uang harian, spending record keeping tool, transaction filtering by wallet category date, cash flow tracking pribadi, alternative to buku kas tradisional digital",
     },
   ],
 })

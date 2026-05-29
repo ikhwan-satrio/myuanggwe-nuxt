@@ -6,7 +6,7 @@ import type { BudgetType, CategoryType } from "~~/server/lib/db/schemas"
 const { $apolloClient } = useNuxtApp()
 
 useHead({
-  title: "Anggaran - MyUangGwe | Atur Batas Pengeluaran",
+  title: "Anggaran | Atur Batas Pengeluaran",
   meta: [
     {
       name: "description",
@@ -14,7 +14,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "anggaran bulanan per kategori real-time, budget planner Indonesia gratis, batas pengeluaran pintar notifikasi, yearly spending limit tracker, percentage-based budget monitoring, atur budget makan transport hiburan, early warning over budget alert, aplikasi amplop digital terbaru, envelope budgeting system bahasa Indonesia, anggaran cerdas untuk anak kos dan keluarga, budget vs actual comparison chart",
+      content: "myuanggwe app, anggaran bulanan per kategori real-time, budget planner Indonesia gratis, batas pengeluaran pintar notifikasi, yearly spending limit tracker, percentage-based budget monitoring, atur budget makan transport hiburan, early warning over budget alert, aplikasi amplop digital terbaru, envelope budgeting system bahasa Indonesia, anggaran cerdas untuk anak kos dan keluarga, budget vs actual comparison chart",
     },
   ],
 })

@@ -6,7 +6,7 @@ import type { WalletType } from "~~/server/lib/db/schemas";
 const { $apolloClient } = useNuxtApp();
 
 useHead({
-  title: "Dompet - MyUangGwe | Kelola Rekening & Saldo Keuangan",
+  title: "Dompet | Kelola Rekening & Saldo",
   meta: [
     {
       name: "description",
@@ -15,7 +15,7 @@ useHead({
     },
     {
       name: "keywords",
-      content: "multi-wallet management Indonesia, kelola dompet bank e-wallet tunai, aplikasi catat saldo rekening, credit card spending tracker gratis, cashless expense manager, dompet digital terintegrasi GoPay OVO DANA, bank account aggregation tool, kelompokkan dompet untuk anggaran terpisah, digital wallet balance overview real-time, manajemen saldo multi mata uang IDR USD",
+      content: "myuanggwe app, multi-wallet management Indonesia, kelola dompet bank e-wallet tunai, aplikasi catat saldo rekening, credit card spending tracker gratis, cashless expense manager, dompet digital terintegrasi GoPay OVO DANA, bank account aggregation tool, kelompokkan dompet untuk anggaran terpisah, digital wallet balance overview real-time, manajemen saldo multi mata uang IDR USD",
     },
   ],
 });
