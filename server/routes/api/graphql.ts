@@ -4,13 +4,13 @@ import { startServerAndCreateH3Handler } from '@as-integrations/h3'
 import { GraphQLScalarType, Kind } from 'graphql'
 import { createContext } from '~~/server/lib/graphql-context'
 import type { Context } from '~~/server/lib/graphql-context'
-import { Effect } from "effect"
 import { WalletService } from "~~/server/lib/services/wallet"
 import { CategoryService } from "~~/server/lib/services/category"
 import { TransactionService } from "~~/server/lib/services/transaction"
 import { BudgetService } from "~~/server/lib/services/budget"
 import { RecurringTransactionService } from "~~/server/lib/services/recurring"
 import { FinancialGoalService } from "~~/server/lib/services/goal"
+import { runEffect, requireAuth } from "~~/server/lib/composables"
 
 const DateTimeScalar = new GraphQLScalarType({
   name: 'DateTime',
@@ -29,303 +29,63 @@ const apollo = new ApolloServer<Context>({
       },
 
       // Wallets
-      wallets: async (_, __, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const wallet = yield* WalletService
-            return yield* Effect.promise(() => wallet.getAllWallets(c))
-          }).pipe(Effect.provide(WalletService.Default))
-        )
-      },
-
-      wallet: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const wallet = yield* WalletService
-            return yield* Effect.promise(() => wallet.getWallet(id, c))
-          }).pipe(Effect.provide(WalletService.Default))
-        )
-      },
+      wallets: (_, __, c) => { requireAuth(c); return runEffect(WalletService, (svc) => svc.getAllWallets(c)) },
+      wallet: (_, { id }, c) => { requireAuth(c); return runEffect(WalletService, (svc) => svc.getWallet(id, c)) },
 
       // Categories
-      categories: async (_, { type }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* CategoryService
-            return yield* Effect.promise(() => svc.getAllCategories(c, type))
-          }).pipe(Effect.provide(CategoryService.Default))
-        )
-      },
-      category: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* CategoryService
-            return yield* Effect.promise(() => svc.getCategory(id, c))
-          }).pipe(Effect.provide(CategoryService.Default))
-        )
-      },
+      categories: (_, { type }, c) => { requireAuth(c); return runEffect(CategoryService, (svc) => svc.getAllCategories(c, type)) },
+      category: (_, { id }, c) => { requireAuth(c); return runEffect(CategoryService, (svc) => svc.getCategory(id, c)) },
 
       // Transactions
-      transactions: async (_, { walletId, categoryId, type, from, to, limit, offset }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* TransactionService
-            return yield* Effect.promise(() =>
-              svc.getAllTransactions(c, { walletId, categoryId, type, from, to, limit, offset })
-            )
-          }).pipe(Effect.provide(TransactionService.Default))
-        )
+      transactions: (_, { walletId, categoryId, type, from, to, limit, offset }, c) => {
+        requireAuth(c)
+        return runEffect(TransactionService, (svc) => svc.getAllTransactions(c, { walletId, categoryId, type, from, to, limit, offset }))
       },
-      transaction: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* TransactionService
-            return yield* Effect.promise(() => svc.getTransaction(id, c))
-          }).pipe(Effect.provide(TransactionService.Default))
-        )
-      },
+      transaction: (_, { id }, c) => { requireAuth(c); return runEffect(TransactionService, (svc) => svc.getTransaction(id, c)) },
 
       // Budgets
-      budgets: async (_, __, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* BudgetService
-            return yield* Effect.promise(() => svc.getAllBudgets(c))
-          }).pipe(Effect.provide(BudgetService.Default))
-        )
-      },
-      budget: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* BudgetService
-            return yield* Effect.promise(() => svc.getBudget(id, c))
-          }).pipe(Effect.provide(BudgetService.Default))
-        )
-      },
+      budgets: (_, __, c) => { requireAuth(c); return runEffect(BudgetService, (svc) => svc.getAllBudgets(c)) },
+      budget: (_, { id }, c) => { requireAuth(c); return runEffect(BudgetService, (svc) => svc.getBudget(id, c)) },
 
       // Recurring Transactions
-      recurringTransactions: async (_, { isActive }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* RecurringTransactionService
-            return yield* Effect.promise(() => svc.getAllRecurringTransactions(c, isActive))
-          }).pipe(Effect.provide(RecurringTransactionService.Default))
-        )
-      },
-      recurringTransaction: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* RecurringTransactionService
-            return yield* Effect.promise(() => svc.getRecurringTransaction(id, c))
-          }).pipe(Effect.provide(RecurringTransactionService.Default))
-        )
-      },
+      recurringTransactions: (_, { isActive }, c) => { requireAuth(c); return runEffect(RecurringTransactionService, (svc) => svc.getAllRecurringTransactions(c, isActive)) },
+      recurringTransaction: (_, { id }, c) => { requireAuth(c); return runEffect(RecurringTransactionService, (svc) => svc.getRecurringTransaction(id, c)) },
 
       // Financial Goals
-      financialGoals: async (_, __, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* FinancialGoalService
-            return yield* Effect.promise(() => svc.getAllFinancialGoals(c))
-          }).pipe(Effect.provide(FinancialGoalService.Default))
-        )
-      },
-      financialGoal: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* FinancialGoalService
-            return yield* Effect.promise(() => svc.getFinancialGoal(id, c))
-          }).pipe(Effect.provide(FinancialGoalService.Default))
-        )
-      },
+      financialGoals: (_, __, c) => { requireAuth(c); return runEffect(FinancialGoalService, (svc) => svc.getAllFinancialGoals(c)) },
+      financialGoal: (_, { id }, c) => { requireAuth(c); return runEffect(FinancialGoalService, (svc) => svc.getFinancialGoal(id, c)) },
     },
 
     Mutation: {
       // Wallet
-      createWallet: async (_, { input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* WalletService
-            return yield* Effect.promise(() => svc.createWallet(input, c))
-          }).pipe(Effect.provide(WalletService.Default))
-        )
-      },
-      updateWallet: async (_, { id, input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* WalletService
-            return yield* Effect.promise(() => svc.updateWallet(id, input, c))
-          }).pipe(Effect.provide(WalletService.Default))
-        )
-      },
-      deleteWallet: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* WalletService
-            return yield* Effect.promise(() => svc.deleteWallet(id, c))
-          }).pipe(Effect.provide(WalletService.Default))
-        )
-      },
+      createWallet: (_, { input }, c) => { requireAuth(c); return runEffect(WalletService, (svc) => svc.createWallet(input, c)) },
+      updateWallet: (_, { id, input }, c) => { requireAuth(c); return runEffect(WalletService, (svc) => svc.updateWallet(id, input, c)) },
+      deleteWallet: (_, { id }, c) => { requireAuth(c); return runEffect(WalletService, (svc) => svc.deleteWallet(id, c)) },
 
       // Category
-      createCategory: async (_, { input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* CategoryService
-            return yield* Effect.promise(() => svc.createCategory(input, c))
-          }).pipe(Effect.provide(CategoryService.Default))
-        )
-      },
-      updateCategory: async (_, { id, input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* CategoryService
-            return yield* Effect.promise(() => svc.updateCategory(id, input, c))
-          }).pipe(Effect.provide(CategoryService.Default))
-        )
-      },
-      deleteCategory: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* CategoryService
-            return yield* Effect.promise(() => svc.deleteCategory(id, c))
-          }).pipe(Effect.provide(CategoryService.Default))
-        )
-      },
+      createCategory: (_, { input }, c) => { requireAuth(c); return runEffect(CategoryService, (svc) => svc.createCategory(input, c)) },
+      updateCategory: (_, { id, input }, c) => { requireAuth(c); return runEffect(CategoryService, (svc) => svc.updateCategory(id, input, c)) },
+      deleteCategory: (_, { id }, c) => { requireAuth(c); return runEffect(CategoryService, (svc) => svc.deleteCategory(id, c)) },
 
       // Transaction
-      createTransaction: async (_, { input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* TransactionService
-            return yield* Effect.promise(() => svc.createTransaction(input, c))
-          }).pipe(Effect.provide(TransactionService.Default))
-        )
-      },
-      updateTransaction: async (_, { id, input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* TransactionService
-            return yield* Effect.promise(() => svc.updateTransaction(id, input, c))
-          }).pipe(Effect.provide(TransactionService.Default))
-        )
-      },
-      deleteTransaction: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* TransactionService
-            return yield* Effect.promise(() => svc.deleteTransaction(id, c))
-          }).pipe(Effect.provide(TransactionService.Default))
-        )
-      },
+      createTransaction: (_, { input }, c) => { requireAuth(c); return runEffect(TransactionService, (svc) => svc.createTransaction(input, c)) },
+      updateTransaction: (_, { id, input }, c) => { requireAuth(c); return runEffect(TransactionService, (svc) => svc.updateTransaction(id, input, c)) },
+      deleteTransaction: (_, { id }, c) => { requireAuth(c); return runEffect(TransactionService, (svc) => svc.deleteTransaction(id, c)) },
 
       // Budget
-      createBudget: async (_, { input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* BudgetService
-            return yield* Effect.promise(() => svc.createBudget(input, c))
-          }).pipe(Effect.provide(BudgetService.Default))
-        )
-      },
-      updateBudget: async (_, { id, input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* BudgetService
-            return yield* Effect.promise(() => svc.updateBudget(id, input, c))
-          }).pipe(Effect.provide(BudgetService.Default))
-        )
-      },
-      deleteBudget: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* BudgetService
-            return yield* Effect.promise(() => svc.deleteBudget(id, c))
-          }).pipe(Effect.provide(BudgetService.Default))
-        )
-      },
+      createBudget: (_, { input }, c) => { requireAuth(c); return runEffect(BudgetService, (svc) => svc.createBudget(input, c)) },
+      updateBudget: (_, { id, input }, c) => { requireAuth(c); return runEffect(BudgetService, (svc) => svc.updateBudget(id, input, c)) },
+      deleteBudget: (_, { id }, c) => { requireAuth(c); return runEffect(BudgetService, (svc) => svc.deleteBudget(id, c)) },
 
       // Recurring Transaction
-      createRecurringTransaction: async (_, { input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* RecurringTransactionService
-            return yield* Effect.promise(() => svc.createRecurringTransaction(input, c))
-          }).pipe(Effect.provide(RecurringTransactionService.Default))
-        )
-      },
-      updateRecurringTransaction: async (_, { id, input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* RecurringTransactionService
-            return yield* Effect.promise(() => svc.updateRecurringTransaction(id, input, c))
-          }).pipe(Effect.provide(RecurringTransactionService.Default))
-        )
-      },
-      deleteRecurringTransaction: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* RecurringTransactionService
-            return yield* Effect.promise(() => svc.deleteRecurringTransaction(id, c))
-          }).pipe(Effect.provide(RecurringTransactionService.Default))
-        )
-      },
+      createRecurringTransaction: (_, { input }, c) => { requireAuth(c); return runEffect(RecurringTransactionService, (svc) => svc.createRecurringTransaction(input, c)) },
+      updateRecurringTransaction: (_, { id, input }, c) => { requireAuth(c); return runEffect(RecurringTransactionService, (svc) => svc.updateRecurringTransaction(id, input, c)) },
+      deleteRecurringTransaction: (_, { id }, c) => { requireAuth(c); return runEffect(RecurringTransactionService, (svc) => svc.deleteRecurringTransaction(id, c)) },
 
       // Financial Goal
-      createFinancialGoal: async (_, { input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* FinancialGoalService
-            return yield* Effect.promise(() => svc.createFinancialGoal(input, c))
-          }).pipe(Effect.provide(FinancialGoalService.Default))
-        )
-      },
-      updateFinancialGoal: async (_, { id, input }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* FinancialGoalService
-            return yield* Effect.promise(() => svc.updateFinancialGoal(id, input, c))
-          }).pipe(Effect.provide(FinancialGoalService.Default))
-        )
-      },
-      deleteFinancialGoal: async (_, { id }, c) => {
-        if (!c.user) throw new Error('Unauthorized')
-        return Effect.runPromise(
-          Effect.gen(function* () {
-            const svc = yield* FinancialGoalService
-            return yield* Effect.promise(() => svc.deleteFinancialGoal(id, c))
-          }).pipe(Effect.provide(FinancialGoalService.Default))
-        )
-      },
+      createFinancialGoal: (_, { input }, c) => { requireAuth(c); return runEffect(FinancialGoalService, (svc) => svc.createFinancialGoal(input, c)) },
+      updateFinancialGoal: (_, { id, input }, c) => { requireAuth(c); return runEffect(FinancialGoalService, (svc) => svc.updateFinancialGoal(id, input, c)) },
+      deleteFinancialGoal: (_, { id }, c) => { requireAuth(c); return runEffect(FinancialGoalService, (svc) => svc.deleteFinancialGoal(id, c)) },
     },
 
     DateTime: DateTimeScalar,

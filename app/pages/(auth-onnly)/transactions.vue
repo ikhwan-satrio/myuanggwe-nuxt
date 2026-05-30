@@ -2,10 +2,8 @@
 import { useMutation } from "@vue/apollo-composable"
 import { toast } from "vue-sonner"
 import type { TransactionMerge } from "~/lib/@types/transaction"
-import { useTransactionsCrudStore } from "~/stores/crud/transactions"
 
 const { $apolloClient } = useNuxtApp()
-const store = useTransactionsCrudStore()
 
 useHead({
   title: "Transaksi | Catat Pemasukan & Pengeluaran",
@@ -64,20 +62,7 @@ async function handleDelete(id: string) {
         <p class="text-xs text-muted-foreground sm:text-sm">Kelola transaksi.</p>
       </div>
 
-      <UiDialog :open="store.createOpen" @update:open="store.closeCreate()">
-        <UiDialogTrigger as-child>
-          <UiButton size="sm" class="w-full sm:w-auto">
-            <Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Catat Transaksi
-          </UiButton>
-        </UiDialogTrigger>
-        <UiDialogContent class="sm:max-w-md w-[95vw] max-w-[95vw] sm:max-w-md">
-          <UiDialogHeader>
-            <UiDialogTitle>Tambah Transaksi</UiDialogTitle>
-            <UiDialogDescription>Catat pemasukan, pengeluaran, atau transfer antar dompet.</UiDialogDescription>
-          </UiDialogHeader>
-          <FormsTransactionsCreate @created="refreshTransactions()" />
-        </UiDialogContent>
-      </UiDialog>
+      <FormsTransactionsCreate @created="refreshTransactions()" />
     </div>
 
     <TablesTransactionsList :transactions="transactions" :pending="pending" @delete="handleDelete" />
