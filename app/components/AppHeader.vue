@@ -1,10 +1,18 @@
 <script setup lang="ts">
 const { locale, locales, setLocale } = useI18n();
 
+const localeLabels: Record<string, string> = {
+  id: 'Indonesia',
+  en: 'English',
+  jp: '日本語',
+  my: 'Bahasa Melayu',
+  sg: 'English (SG)',
+}
+
 const availableLocales = computed(() =>
   (locales.value as any[]).map((l) => ({
     code: l.code,
-    label: l.currency,
+    label: localeLabels[l.code] ?? l.code,
   })),
 );
 </script>

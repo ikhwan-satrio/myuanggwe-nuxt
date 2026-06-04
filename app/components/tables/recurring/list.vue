@@ -2,8 +2,8 @@
 import type { RecurringTransactionType } from "~~/server/lib/db/schemas"
 
 type RecurringItem = RecurringTransactionType & {
-  wallet: { name: string }
-  toWallet: { name: string } | null
+  wallet: { name: string; currency: string }
+  toWallet: { name: string; currency: string } | null
   category: { name: string; icon: string | null } | null
 }
 
@@ -55,15 +55,15 @@ const { formatCurrency } = useCurrency()
             <p class="text-xs text-muted-foreground">
               {{ item.wallet.name }}
               <template v-if="item.toWallet">→ {{ item.toWallet.name }}</template>
-              • Berikutnya: {{ formatDate(String(item.nextRunDate)) }}
+              • Next: {{ formatDate(String(item.nextRunDate)) }}
             </p>
           </div>
         </div>
         <div class="flex items-center gap-4 text-right">
           <div>
-            <p class="font-bold">{{ formatCurrency(item.amount) }}</p>
+            <p class="font-bold">{{ formatCurrency(item.amount, item.wallet?.currency) }}</p>
             <p class="text-[10px]" :class="item.isActive ? 'text-green-500' : 'text-muted-foreground'">
-              {{ item.isActive ? "Aktif" : "Nonaktif" }}
+              {{ item.isActive ? "Active" : "Inactive" }}
             </p>
           </div>
           <UiDropdownMenu>
@@ -74,7 +74,7 @@ const { formatCurrency } = useCurrency()
             </UiDropdownMenuTrigger>
             <UiDropdownMenuContent align="end">
               <UiDropdownMenuItem class="text-destructive focus:text-destructive" @click="emit('delete', item.id)">
-                <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Hapus
+                <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Delete
               </UiDropdownMenuItem>
             </UiDropdownMenuContent>
           </UiDropdownMenu>
@@ -83,7 +83,7 @@ const { formatCurrency } = useCurrency()
     </template>
 
     <div v-else class="p-8 text-center text-muted-foreground">
-      Belum ada transaksi rutin.
+      No recurring transactions yet.
     </div>
   </div>
 </template>

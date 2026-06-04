@@ -1,15 +1,17 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 useHead({
-  title: "Dasbor | Ringkasan Keuangan",
+  title: t('dashboard.title'),
   meta: [
     {
       name: "description",
       content:
-        "Pantau ringkasan keuangan Anda - saldo total, pemasukan, pengeluaran, dan anggaran bulanan dalam satu tampilan.",
+        t('dashboard.meta.description'),
     },
     {
       name: "keywords",
-      content: "myuanggwe app, dashboard keuangan pribadi, ringkasan saldo pemasukan pengeluaran, financial overview gratis Indonesia, pantau keuangan harian",
+      content: t('dashboard.meta.keywords'),
     },
   ],
 });
@@ -19,7 +21,7 @@ definePageMeta({
 });
 
 const { $apolloClient } = useNuxtApp();
-const { formatCurrency, formatCurrencyFromCode } = useCurrency();
+const { formatCurrency } = useCurrency();
 const { downloadCsv } = useExportCsv();
 
 const now = new Date();
@@ -143,13 +145,13 @@ const searchedTransactions = computed(() => {
 
 function exportCsv() {
   const headers = [
-    "Tanggal",
-    "Tipe",
-    "Kategori",
-    "Deskripsi",
-    "Wallet",
-    "Jumlah",
-    "Mata Uang",
+    t('dashboard.csv.date'),
+    t('dashboard.csv.type'),
+    t('dashboard.csv.category'),
+    t('dashboard.csv.description'),
+    t('dashboard.csv.wallet'),
+    t('dashboard.csv.amount'),
+    t('dashboard.csv.currency'),
   ];
   const rows = searchedTransactions.value.map((tx: any) => [
     new Date(tx.date).toLocaleDateString("id-ID"),
@@ -187,48 +189,48 @@ function exportCsv() {
         <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
           <div class="space-y-1.5">
             <label class="text-xs font-medium text-muted-foreground"
-              >Periode Analisis</label
+                >{{ $t('dashboard.filter.period') }}</label
             >
-            <UtilsDateRangePicker v-model="dateRange" class="sm:w-[280px]" />
+            <UtilsDateRangePicker v-model="dateRange" class="sm:w-70" />
           </div>
           <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-end">
             <div class="space-y-1.5 flex-1">
               <label class="text-xs font-medium text-muted-foreground"
-                >Cari Transaksi</label
+                >{{ $t('dashboard.filter.search') }}</label
               >
               <UiInput
                 v-model="searchQuery"
-                placeholder="Cari deskripsi, kategori..."
+                :placeholder="$t('dashboard.filter.searchPlaceholder')"
                 class="w-full"
               />
             </div>
             <div class="flex flex-wrap items-end gap-3">
               <div class="space-y-1.5 min-w-0 flex-1 sm:flex-none">
                 <label class="text-xs font-medium text-muted-foreground"
-                  >Tipe</label
+                  >{{ $t('dashboard.filter.type') }}</label
                 >
                 <UiSelect v-model="filterType">
-                  <UiSelectTrigger class="w-full sm:w-[130px]">
-                    <UiSelectValue placeholder="Semua tipe" />
+                  <UiSelectTrigger class="w-full sm:w-32.5">
+                    <UiSelectValue :placeholder="$t('dashboard.filter.allTypes')" />
                   </UiSelectTrigger>
                   <UiSelectContent>
-                    <UiSelectItem value="all">Semua tipe</UiSelectItem>
-                    <UiSelectItem value="income">Pemasukan</UiSelectItem>
-                    <UiSelectItem value="expense">Pengeluaran</UiSelectItem>
-                    <UiSelectItem value="transfer">Transfer</UiSelectItem>
+                    <UiSelectItem value="all">{{ $t('dashboard.filter.allTypes') }}</UiSelectItem>
+                    <UiSelectItem value="income">{{ $t('dashboard.filter.income') }}</UiSelectItem>
+                    <UiSelectItem value="expense">{{ $t('dashboard.filter.expense') }}</UiSelectItem>
+                    <UiSelectItem value="transfer">{{ $t('dashboard.filter.transfer') }}</UiSelectItem>
                   </UiSelectContent>
                 </UiSelect>
               </div>
               <div class="space-y-1.5 min-w-0 flex-1 sm:flex-none">
                 <label class="text-xs font-medium text-muted-foreground"
-                  >Wallet</label
+                  >{{ $t('dashboard.filter.wallet') }}</label
                 >
                 <UiSelect v-model="filterWalletId">
-                  <UiSelectTrigger class="w-full sm:w-[150px]">
-                    <UiSelectValue placeholder="Semua wallet" />
+                  <UiSelectTrigger class="w-full sm:w-37.5">
+                    <UiSelectValue :placeholder="$t('dashboard.filter.allWallets')" />
                   </UiSelectTrigger>
                   <UiSelectContent>
-                    <UiSelectItem value="all">Semua wallet</UiSelectItem>
+                    <UiSelectItem value="all">{{ $t('dashboard.filter.allWallets') }}</UiSelectItem>
                     <UiSelectItem
                       v-for="w in wallets"
                       :key="w.id"
@@ -535,7 +537,7 @@ function exportCsv() {
                 "
               >
                 {{ getTransactionDisplay(tx).isExpense ? "-" : "+" }}
-                {{ formatCurrencyFromCode(tx.amount, tx.currency ?? "IDR") }}
+                {{ formatCurrency(tx.amount, tx.currency ?? "IDR") }}
               </div>
             </div>
           </template>
@@ -634,7 +636,7 @@ function exportCsv() {
                 "
               >
                 {{ getTransactionDisplay(tx).isExpense ? "-" : "+" }}
-                {{ formatCurrency(tx.amount) }}
+                {{ formatCurrency(tx.amount, tx.currency) }}
               </div>
             </div>
           </template>

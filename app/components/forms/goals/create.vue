@@ -49,12 +49,12 @@ const createForm = useForm({
             : null,
         },
       });
-      toast.success("Target berhasil dibuat");
+      toast.success("Goal created successfully");
       store.closeCreate();
       createForm.reset();
       emit("created");
     } catch {
-      toast.error("Terjadi kesalahan");
+      toast.error("An error occurred");
     }
   },
 });
@@ -63,7 +63,7 @@ const createFormValues = createForm.useStore((s) => s.values);
 const selectedWallet = computed(
   () =>
     wallets.value?.find((w) => w.id === createFormValues.value.walletId)
-      ?.name ?? "Pilih Dompet Sumber",
+      ?.name ?? "Select Source Wallet",
 );
 </script>
 
@@ -71,21 +71,20 @@ const selectedWallet = computed(
   <UiSheet :open="store.createOpen" @update:open="store.closeCreate()">
     <UiSheetContent side="right" class="overflow-y-auto">
       <UiSheetHeader>
-        <UiSheetTitle>Tambah Target Menabung</UiSheetTitle>
+        <UiSheetTitle>Add Savings Goal</UiSheetTitle>
         <UiSheetDescription
-          >Tentukan target tabungan Anda dan pilih dompet
-          sumbernya.</UiSheetDescription
+          >Set your savings target and choose a source wallet.</UiSheetDescription
         >
       </UiSheetHeader>
       <form class="space-y-4 p-4" @submit.prevent="createForm.handleSubmit()">
         <createForm.Field name="name">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="name">Nama Target</UiLabel>
+              <UiLabel for="name">Goal Name</UiLabel>
               <UiInput
                 id="name"
                 :value="field.state.value"
-                placeholder="Tabungan Rumah, Liburan, dsb"
+                placeholder="House Savings, Vacation, etc."
                 @blur="field.handleBlur()"
                 @input="
                   (e: Event) =>
@@ -110,7 +109,7 @@ const selectedWallet = computed(
         <createForm.Field name="targetAmount">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="targetAmount">Target Jumlah</UiLabel>
+              <UiLabel for="targetAmount">Target Amount</UiLabel>
               <UiInput
                 id="targetAmount"
                 type="number"
@@ -143,7 +142,7 @@ const selectedWallet = computed(
         <createForm.Field name="walletId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Dompet Sumber</UiLabel>
+              <UiLabel>Source Wallet</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ selectedWallet }}</UiSelectValue>
@@ -175,7 +174,7 @@ const selectedWallet = computed(
         <createForm.Field name="deadline">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="deadline">Tenggat Waktu (Opsional)</UiLabel>
+              <UiLabel for="deadline">Deadline (Optional)</UiLabel>
               <UiInput
                 id="deadline"
                 type="date"
@@ -200,7 +199,7 @@ const selectedWallet = computed(
                 name="lucide:loader-2"
                 class="mr-2 h-4 w-4 animate-spin"
               />
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Target" }}
+              {{ isSubmitting ? "Saving..." : "Save Goal" }}
             </UiButton>
           </template>
         </createForm.Subscribe>

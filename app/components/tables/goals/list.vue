@@ -2,7 +2,7 @@
 import type { FinancialGoalType } from "~~/server/lib/db/schemas"
 
 type GoalItem = FinancialGoalType & {
-  wallet: { id: string; name: string }
+  wallet: { id: string; name: string; currency: string }
 }
 
 defineProps<{
@@ -39,30 +39,30 @@ function calculateProgress(current: number, target: number) {
               <Icon name="lucide:trending-up" class="h-4 w-4" />
             </div>
           </div>
-          <UiCardDescription>Target: {{ formatCurrency(goal.targetAmount) }}</UiCardDescription>
+          <UiCardDescription>Target: {{ formatCurrency(goal.targetAmount, goal.wallet?.currency) }}</UiCardDescription>
         </UiCardHeader>
         <UiCardContent>
           <div class="mt-2 space-y-3">
             <div class="flex items-center justify-between text-sm">
-              <span class="text-muted-foreground">Terkumpul</span>
-              <span class="font-medium">{{ formatCurrency(goal.currentAmount) }}</span>
+              <span class="text-muted-foreground">Saved</span>
+              <span class="font-medium">{{ formatCurrency(goal.currentAmount, goal.wallet?.currency) }}</span>
             </div>
             <UiProgress :model-value="calculateProgress(goal.currentAmount, goal.targetAmount)" class="h-2" />
             <div class="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{{ calculateProgress(goal.currentAmount, goal.targetAmount) }}% Selesai</span>
+              <span>{{ calculateProgress(goal.currentAmount, goal.targetAmount) }}% Complete</span>
               <span v-if="goal.deadline">
-                Sisa waktu: {{ new Date(String(goal.deadline)).toLocaleDateString("id-ID") }}
+                Time left: {{ new Date(String(goal.deadline)).toLocaleDateString("id-ID") }}
               </span>
             </div>
             <div class="mt-4 flex items-center gap-1 text-xs text-muted-foreground">
               <Icon name="lucide:wallet" class="h-3 w-3" />
-              <span>{{ goal.wallet?.name ?? "Wallet tidak ditemukan" }}</span>
+              <span>{{ goal.wallet?.name ?? "Wallet not found" }}</span>
             </div>
           </div>
         </UiCardContent>
         <UiCardFooter class="flex justify-between border-t bg-muted/50 p-3">
           <UiButton variant="outline" size="sm" @click="emit('allocate', goal.id)">
-            Alokasi Dana
+            Allocate Funds
           </UiButton>
           <UiButton variant="ghost" size="icon" class="text-destructive hover:text-destructive" @click="emit('delete', goal.id)">
             <Icon name="lucide:trash-2" class="h-4 w-4" />
@@ -72,7 +72,7 @@ function calculateProgress(current: number, target: number) {
     </template>
 
     <div v-else class="col-span-3 flex h-50 flex-col items-center justify-center rounded-lg border border-dashed text-center">
-      <p class="text-muted-foreground">Belum ada target menabung</p>
+      <p class="text-muted-foreground">No savings goals yet.</p>
     </div>
   </div>
 </template>

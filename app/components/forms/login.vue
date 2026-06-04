@@ -42,9 +42,9 @@ const form = useForm({
 <template>
   <UiCard class="w-full">
     <UiCardHeader class="space-y-1.5 text-center px-4 sm:px-6 pt-4 sm:pt-6">
-      <UiCardTitle class="text-xl sm:text-2xl font-bold">Login</UiCardTitle>
+      <UiCardTitle class="text-xl sm:text-2xl font-bold">Sign In</UiCardTitle>
       <UiCardDescription class="text-xs sm:text-sm">
-        Selamat datang kembali! Masuk untuk mengelola keuangan kamu
+        Welcome back! Sign in to manage your finances
       </UiCardDescription>
     </UiCardHeader>
 
@@ -138,7 +138,7 @@ const form = useForm({
                 size="16"
                 class="animate-spin"
               />
-              {{ isSubmitting ? "Login..." : "Login" }}
+              {{ isSubmitting ? "Signing in..." : "Sign In" }}
             </UiButton>
           </template>
         </form.Subscribe>
@@ -147,7 +147,7 @@ const form = useForm({
 
     <UiCardFooter class="justify-center px-4 sm:px-6 pb-4 sm:pb-6">
       <p class="text-xs sm:text-sm text-muted-foreground">
-        Belum punya akun?
+        Don't have an account?
         <button
           class="text-foreground underline font-medium"
           @click="authTabsStore.setActiveTab('register')"

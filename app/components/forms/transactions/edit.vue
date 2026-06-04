@@ -75,11 +75,11 @@ const transactionForm = useForm({
 
       await mutate({ id: store.editingTransaction.id, input });
 
-      toast.success("Transaksi berhasil diubah");
+      toast.success("Transaction updated successfully");
       store.closeEdit();
       emit("updated");
     } catch (e) {
-      toast.error("Terjadi kesalahan");
+      toast.error("An error occurred");
     }
   },
 });
@@ -107,24 +107,24 @@ const formValues = transactionForm.useStore((s) => s.values);
 const selectedWallet = computed(
   () =>
     wallets.value.find((w) => w.id === formValues.value.walletId)?.name ??
-    "Pilih Dompet",
+    "Select Wallet",
 );
 const selectedToWallet = computed(
   () =>
     wallets.value.find((w) => w.id === formValues.value.toWalletId)?.name ??
-    "Pilih Dompet Tujuan",
+    "Select Destination Wallet",
 );
 const selectedCategory = computed(
   () =>
     categories.value.find((c) => c.id === formValues.value.categoryId)?.name ??
-    "Pilih Kategori",
+    "Select Category",
 );
 const filteredCategories = computed(() =>
   categories.value.filter((c) => c.type === formValues.value.type),
 );
 
 function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("id-ID");
+  return new Date(date).toLocaleDateString("en-US");
 }
 </script>
 
@@ -133,7 +133,7 @@ function formatDate(date: string) {
     <UiSheetContent side="right" class="overflow-y-auto">
       <UiSheetHeader>
         <UiSheetTitle
-          >Edit Transaksi
+          >Edit Transaction
           {{
             store.editingTransaction
               ? formatDate(String(store.editingTransaction.date))
@@ -141,7 +141,7 @@ function formatDate(date: string) {
           }}</UiSheetTitle
         >
         <UiSheetDescription
-          >Ubah informasi transaksi tanggal
+          >Update transaction info from
           {{
             store.editingTransaction
               ? formatDate(String(store.editingTransaction.date))
@@ -163,8 +163,8 @@ function formatDate(date: string) {
               "
             >
               <UiTabsList class="grid w-full grid-cols-3">
-                <UiTabsTrigger value="expense">Keluar</UiTabsTrigger>
-                <UiTabsTrigger value="income">Masuk</UiTabsTrigger>
+                <UiTabsTrigger value="expense">Expense</UiTabsTrigger>
+                <UiTabsTrigger value="income">Income</UiTabsTrigger>
                 <UiTabsTrigger value="transfer">Transfer</UiTabsTrigger>
               </UiTabsList>
             </UiTabs>
@@ -174,7 +174,7 @@ function formatDate(date: string) {
         <transactionForm.Field name="amount">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="edit-amount">Jumlah (Rp)</UiLabel>
+              <UiLabel for="edit-amount">Amount</UiLabel>
               <UiInput
                 id="edit-amount"
                 type="number"
@@ -203,7 +203,7 @@ function formatDate(date: string) {
           <template #default="{ field }">
             <div class="space-y-2">
               <UiLabel>{{
-                formValues.type === "transfer" ? "Dari Dompet" : "Dompet"
+                formValues.type === "transfer" ? "From Wallet" : "Wallet"
               }}</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
@@ -218,7 +218,7 @@ function formatDate(date: string) {
                     :key="wallet.id"
                     :value="wallet.id"
                   >
-                    {{ wallet.name }} ({{ formatCurrency(wallet.balance) }})
+                    {{ wallet.name }} ({{ formatCurrency(wallet.balance, wallet.currency) }})
                   </UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
@@ -238,7 +238,7 @@ function formatDate(date: string) {
         >
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Ke Dompet</UiLabel>
+              <UiLabel>To Wallet</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
                 @update:model-value="(v) => field.handleChange(v as string)"
@@ -254,7 +254,7 @@ function formatDate(date: string) {
                     :key="wallet.id"
                     :value="wallet.id"
                   >
-                    {{ wallet.name }} ({{ formatCurrency(wallet.balance) }})
+                    {{ wallet.name }} ({{ formatCurrency(wallet.balance, wallet.currency) }})
                   </UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
@@ -271,7 +271,7 @@ function formatDate(date: string) {
         <transactionForm.Field v-else name="categoryId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Kategori</UiLabel>
+              <UiLabel>Category</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
                 @update:model-value="(v) => field.handleChange(v as string)"
@@ -302,11 +302,11 @@ function formatDate(date: string) {
         <transactionForm.Field name="description">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="edit-description">Keterangan (Opsional)</UiLabel>
+              <UiLabel for="edit-description">Note (Optional)</UiLabel>
               <UiInput
                 id="edit-description"
                 :value="field.state.value"
-                placeholder="Makan siang, dsb"
+                placeholder="Lunch, etc."
                 @blur="field.handleBlur()"
                 @input="
                   (e: Event) =>
@@ -320,7 +320,7 @@ function formatDate(date: string) {
         <transactionForm.Field name="date">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="edit-date">Tanggal</UiLabel>
+              <UiLabel for="edit-date">Date</UiLabel>
               <UiInput
                 id="edit-date"
                 type="date"
@@ -343,7 +343,7 @@ function formatDate(date: string) {
                 name="lucide:loader-2"
                 class="mr-2 h-4 w-4 animate-spin"
               />
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Perubahan" }}
+              {{ isSubmitting ? "Saving..." : "Save Changes" }}
             </UiButton>
           </template>
         </transactionForm.Subscribe>

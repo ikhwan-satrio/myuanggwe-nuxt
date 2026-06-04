@@ -6,11 +6,11 @@ import type { TransactionMerge } from "~/lib/@types/transaction"
 const { $apolloClient } = useNuxtApp()
 
 useHead({
-  title: "Transaksi | Catat Pemasukan & Pengeluaran",
+  title: "Transactions | Track Income & Expenses",
   meta: [
     {
       name: "description",
-      content: "Catat dan kelola semua transaksi keuangan Anda - pemasukan, pengeluaran, dan transfer antar dompet di satu tempat.",
+      content: "Track and manage all your financial transactions - income, expenses, and transfers between wallets in one place.",
     },
     {
       name: "keywords",
@@ -45,11 +45,11 @@ const { mutate: deleteMutation } = useMutation(DELETE_TRANSACTION)
 async function handleDelete(id: string) {
   try {
     await deleteMutation({ id })
-    toast.success("Transaksi dihapus")
+    toast.success("Transaction deleted")
     await refreshTransactions()
     await refreshNuxtData("wallets")
   } catch {
-    toast.error("Gagal menghapus transaksi")
+    toast.error("Failed to delete transaction")
   }
 }
 </script>
@@ -58,8 +58,8 @@ async function handleDelete(id: string) {
   <div class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="min-w-0">
-        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Transaksi</h1>
-        <p class="text-xs text-muted-foreground sm:text-sm">Kelola transaksi.</p>
+        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Transactions</h1>
+        <p class="text-xs text-muted-foreground sm:text-sm">Manage your transactions.</p>
       </div>
 
       <FormsTransactionsCreate @created="refreshTransactions()" />

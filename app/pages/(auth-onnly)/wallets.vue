@@ -6,12 +6,12 @@ import type { WalletType } from "~~/server/lib/db/schemas";
 const { $apolloClient } = useNuxtApp();
 
 useHead({
-  title: "Dompet | Kelola Rekening & Saldo",
+  title: "Wallets | Manage Accounts & Balance",
   meta: [
     {
       name: "description",
       content:
-        "Kelola semua rekening dan dompet keuangan Anda - bank, kartu kredit, dan tunai - dalam satu tempat.",
+        "Manage all your financial accounts and wallets - bank, credit cards, and cash - in one place.",
     },
     {
       name: "keywords",
@@ -45,10 +45,10 @@ const { mutate: deleteMutate } = useMutation(DELETE_WALLET);
 async function handleDelete(id: string) {
   try {
     await deleteMutate({ id });
-    toast.success("Dompet dihapus");
+    toast.success("Wallet deleted");
     await refreshWallets();
   } catch {
-    toast.error("Gagal menghapus dompet");
+    toast.error("Failed to delete wallet");
   }
 }
 </script>
@@ -57,9 +57,9 @@ async function handleDelete(id: string) {
   <div class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="min-w-0">
-        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Dompet Saya</h1>
+        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">My Wallets</h1>
         <p class="text-xs text-muted-foreground sm:text-sm">
-          Kelola rekening keuangan kamu.
+          Manage your financial accounts.
         </p>
       </div>
       <FormsWalletsCreate @created="refreshWallets()" />

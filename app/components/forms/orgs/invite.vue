@@ -21,7 +21,7 @@ const inviteForm = useForm({
       await refreshNuxtData();
       inviteForm.reset();
     } else {
-      toast.error("Gagal mengirim undangan");
+      toast.error("Failed to send invitation");
     }
   },
 });
@@ -30,19 +30,19 @@ const inviteForm = useForm({
 <template>
   <UiCard>
     <UiCardHeader>
-      <UiCardTitle>Undang Anggota</UiCardTitle>
-      <UiCardDescription>Kirim undangan untuk bergabung ke organisasi Anda.</UiCardDescription>
+      <UiCardTitle>Invite Member</UiCardTitle>
+      <UiCardDescription>Send an invitation to join your organization.</UiCardDescription>
     </UiCardHeader>
     <UiCardContent>
       <form class="grid gap-4" @submit.prevent="inviteForm.handleSubmit()">
         <inviteForm.Field name="email">
           <template #default="{ field }">
             <div class="grid gap-2">
-              <UiLabel for="email">Alamat Email</UiLabel>
+              <UiLabel for="email">Email Address</UiLabel>
               <UiInput
                 id="email"
                 type="email"
-                placeholder="anggota@contoh.com"
+                placeholder="member@example.com"
                 :value="field.state.value"
                 required
                 autocomplete="email"
@@ -119,7 +119,7 @@ const inviteForm = useForm({
                 class="mr-2 h-4 w-4 animate-spin"
               />
               <Icon v-else name="lucide:send" class="mr-2 h-4 w-4" />
-              {{ isSubmitting ? "Mengirim..." : "Kirim Undangan" }}
+              {{ isSubmitting ? "Sending..." : "Send Invitation" }}
             </UiButton>
           </template>
         </inviteForm.Subscribe>

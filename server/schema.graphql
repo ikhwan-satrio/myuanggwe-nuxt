@@ -284,12 +284,12 @@ input CreateWalletInput {
   type: String!
   balance: Int
   currency: String
-  organizationId: ID
 }
 
 input UpdateWalletInput {
   name: String
   type: String
+  balance: Int
   currency: String
 }
 

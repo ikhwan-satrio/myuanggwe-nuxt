@@ -1,0 +1,95 @@
+{
+  "landing": {
+    "badge": "Selamat datang di era keuangan teratur",
+    "heading": "Uangmu, Hidupmu",
+    "headingHighlight": "Hidupmu",
+    "subtitle": "Catat pemasukan, kelola pengeluaran, dan wujudkan target finansialmu — semua dalam satu aplikasi yang sederhana dan bebas iklan.",
+    "cta": "Mulai Gratis Sekarang",
+    "demo": "Lihat Demo",
+    "stats": {
+      "free": "Gratis",
+      "features": "Fitur Utama",
+      "transactions": "Transaksi",
+      "secure": "Aman & Privat"
+    },
+    "preview": {
+      "totalBalance": "Total Saldo",
+      "income": "Pemasukan",
+      "expense": "Pengeluaran",
+      "recentTransactions": "Transaksi Terbaru",
+      "monthlyBudget": "Anggaran Bulan Ini"
+    },
+    "features": {
+      "badge": "Fitur Lengkap",
+      "title": "Semua yang kamu butuhkan,",
+      "subtitle": "tidak lebih, tidak kurang.",
+      "list": [
+        { "title": "Multi-Wallet", "desc": "Kelola semua dompet, rekening bank, dan e-wallet dalam satu tempat." },
+        { "title": "Anggaran Cerdas", "desc": "Set batas pengeluaran per kategori dan pantau secara real-time." },
+        { "title": "Transaksi Rutin", "desc": "Otomatisasi pencatatan tagihan dan langganan berulang." },
+        { "title": "Target Menabung", "desc": "Tetapkan tujuan finansial dan lacak progres menabung kamu." },
+        { "title": "Mode Organisasi", "desc": "Kelola keuangan tim atau bisnis kecilmu bersama-sama." },
+        { "title": "Multi Mata Uang", "desc": "Dukungan berbagai mata uang dengan konversi kurs real-time." }
+      ]
+    },
+    "how": {
+      "badge": "Cara Kerja",
+      "title": "Tiga langkah menuju",
+      "subtitle": "keuangan yang sehat",
+      "steps": [
+        { "title": "Buat Akun", "desc": "Daftar gratis dalam hitungan detik. Tidak perlu kartu kredit." },
+        { "title": "Tambah Dompet & Kategori", "desc": "Sambungkan rekening, atur kategori sesuai gaya hidupmu." },
+        { "title": "Catat & Analisis", "desc": "Mulai catat transaksi dan biarkan dashboard bekerja untukmu." }
+      ]
+    },
+    "cta": {
+      "title": "Mulai hari ini.",
+      "subtitle": "Gratis selamanya.",
+      "desc": "Bergabung dan rasakan perbedaan mengelola keuangan dengan benar.",
+      "button": "Buat Akun Gratis"
+    },
+    "faq": {
+      "title": "Pertanyaan Umum",
+      "items": [
+        { "q": "Apakah MyUangGwe gratis?", "a": "Ya, sepenuhnya gratis. Tidak ada biaya tersembunyi atau langganan." },
+        { "q": "Apakah data saya aman?", "a": "Data tersimpan aman dengan enkripsi. Kami tidak pernah menjual data kamu." },
+        { "q": "Bisakah saya pakai untuk bisnis?", "a": "Bisa! Mode organisasi memungkinkan manajemen keuangan tim bersama." },
+        { "q": "Apakah tersedia di mobile?", "a": "Saat ini berbasis web responsif. Aplikasi mobile sedang dalam pengembangan." }
+      ]
+    },
+    "footer": {
+      "text": "Dibuat dengan ❤️ untuk keuangan yang lebih baik",
+      "privacy": "Privasi",
+      "terms": "Ketentuan"
+    }
+  },
+  "dashboard": {
+    "title": "Dasbor | Ringkasan Keuangan",
+    "subtitle": "Financial overview",
+    "meta": {
+      "description": "Pantau ringkasan keuangan Anda - saldo total, pemasukan, pengeluaran, dan anggaran bulanan dalam satu tampilan.",
+      "keywords": "myuanggwe app, dashboard keuangan pribadi, ringkasan saldo pemasukan pengeluaran, financial overview gratis Indonesia, pantau keuangan harian"
+    },
+    "filter": {
+      "period": "Periode Analisis",
+      "search": "Cari Transaksi",
+      "searchPlaceholder": "Cari deskripsi, kategori...",
+      "type": "Tipe",
+      "allTypes": "Semua tipe",
+      "income": "Pemasukan",
+      "expense": "Pengeluaran",
+      "transfer": "Transfer",
+      "wallet": "Wallet",
+      "allWallets": "Semua wallet"
+    },
+    "csv": {
+      "date": "Tanggal",
+      "type": "Tipe",
+      "category": "Kategori",
+      "description": "Deskripsi",
+      "wallet": "Wallet",
+      "amount": "Jumlah",
+      "currency": "Mata Uang"
+    }
+  }
+}

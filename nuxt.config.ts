@@ -47,13 +47,14 @@ export default defineNuxtConfig({
 
   i18n: {
     locales: [
-      { code: 'id', language: 'id-ID', currency: 'IDR' },
-      { code: 'en', language: 'en-US', currency: 'USD' },
-      { code: 'jp', language: 'ja-JP', currency: 'JPY' },
-      { code: 'my', language: 'ms-MY', currency: 'MYR' },
-      { code: 'sg', language: 'en-SG', currency: 'SGD' },
+      { code: 'id', language: 'id-ID', currency: 'IDR', file: 'id.json' },
+      { code: 'en', language: 'en-US', currency: 'USD', file: 'en.json' },
+      { code: 'jp', language: 'ja-JP', currency: 'JPY', file: 'jp.json' },
+      { code: 'my', language: 'ms-MY', currency: 'MYR', file: 'id.json' },
+      { code: 'sg', language: 'en-SG', currency: 'SGD', file: 'en.json' },
     ],
-    defaultLocale: 'id',
+    defaultLocale: 'en',
+    langDir: 'locales',
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'i18n_locale',

@@ -1,54 +1,21 @@
 export const useCurrency = () => {
   const { locale, locales } = useI18n()
 
-  const currentLocale = computed(() =>
-    locales.value.find((l: any) => l.code === locale.value)
+  const fallbackLocale = computed(() =>
+    locales.value.find((l: any) => l.code === locale.value)?.language ?? 'id-ID'
   )
 
-  const currency = computed(() => currentLocale.value?.currency ?? 'IDR')
-  const language = computed(() => currentLocale.value?.language ?? 'id-ID')
-
-  const formatCurrency = (amount: number, overrideCurrency?: string) => {
-    return new Intl.NumberFormat(language.value, {
+  const formatCurrency = (amount: number, currencyCode?: string) => {
+    const code = currencyCode ?? 'IDR'
+    return new Intl.NumberFormat(fallbackLocale.value, {
       style: 'currency',
-      currency: String(overrideCurrency ?? currency.value),
+      currency: code,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount)
   }
 
-  const formatCurrencyFromCode = (amount: number, currencyCode: string) => {
-    // Detect locale dari currency code
-    const localeMap: Record<string, string> = {
-      IDR: 'id-ID',
-      USD: 'en-US',
-      JPY: 'ja-JP',
-      MYR: 'ms-MY',
-      SGD: 'en-SG',
-      EUR: 'de-DE',
-      GBP: 'en-GB',
-      AUD: 'en-AU',
-      CNY: 'zh-CN',
-      KRW: 'ko-KR',
-      THB: 'th-TH',
-      PHP: 'fil-PH',
-      VND: 'vi-VN',
-    }
-
-    return new Intl.NumberFormat(localeMap[currencyCode] ?? language.value, {
-      style: 'currency',
-      currency: currencyCode,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
-
-  return {
-    currency,
-    language,
-    formatCurrency,
-    formatCurrencyFromCode,
-  }
+  return { formatCurrency }
 }
 
 

@@ -12,17 +12,17 @@ const emit = defineEmits<{ created: [] }>()
 const { mutate: createMutate } = useMutation(CREATE_WALLET)
 
 const typeOptions = [
-  { value: "cash", label: "Tunai (Cash)" },
+  { value: "cash", label: "Cash" },
   { value: "bank", label: "Bank / E-Wallet" },
-  { value: "credit_card", label: "Kartu Kredit" },
+  { value: "credit_card", label: "Credit Card" },
 ]
 
 const currencyOptions = [
-  { value: "IDR", label: "IDR - Rupiah" },
-  { value: "USD", label: "USD - Dollar" },
-  { value: "EUR", label: "EUR - Euro" },
-  { value: "GBP", label: "GBP - Pound" },
-  { value: "JPY", label: "JPY - Yen" },
+  { value: "IDR", label: "IDR" },
+  { value: "USD", label: "USD" },
+  { value: "EUR", label: "EUR" },
+  { value: "GBP", label: "GBP" },
+  { value: "JPY", label: "JPY" },
 ]
 
 const createForm = useForm({
@@ -39,36 +39,38 @@ const createForm = useForm({
   onSubmit: async ({ value }) => {
     try {
       await createMutate({ input: value })
-      toast.success("Dompet berhasil dibuat")
+      toast.success("Wallet created successfully")
       store.closeCreate()
       createForm.reset()
       emit("created")
     } catch {
-      toast.error("Gagal membuat dompet")
+      toast.error("Failed to create wallet")
     }
   },
 })
+
+
 </script>
 
 <template>
   <UiDialog :open="store.createOpen" @update:open="store.closeCreate()">
     <UiDialogTrigger as-child>
       <UiButton class="gap-2" @click="store.openCreate()">
-        <Icon name="lucide:plus" class="h-4 w-4" /> Tambah Dompet
+        <Icon name="lucide:plus" class="h-4 w-4" /> Add Wallet
       </UiButton>
     </UiDialogTrigger>
     <UiDialogContent>
       <UiDialogHeader>
-        <UiDialogTitle>Buat Dompet Baru</UiDialogTitle>
+        <UiDialogTitle>Create New Wallet</UiDialogTitle>
       </UiDialogHeader>
       <form class="space-y-4 pt-4" @submit.prevent="createForm.handleSubmit()">
         <createForm.Field name="name">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel :for="field.name">Nama Dompet</UiLabel>
+              <UiLabel :for="field.name">Wallet Name</UiLabel>
               <UiInput
                 :id="field.name" type="text" :value="field.state.value"
-                placeholder="BCA, Dana, dll"
+                placeholder="BCA, GoPay, etc."
                 @blur="field.handleBlur()"
                 @input="(e: Event) => field.handleChange((e.target as HTMLInputElement).value)"
               />
@@ -84,7 +86,7 @@ const createForm = useForm({
         <createForm.Field name="balance">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel :for="field.name">Saldo Awal</UiLabel>
+              <UiLabel :for="field.name">Initial Balance</UiLabel>
               <UiInput
                 :id="field.name" type="number" :value="field.state.value"
                 placeholder="0" min="0"
@@ -104,7 +106,7 @@ const createForm = useForm({
           <createForm.Field name="type">
             <template #default="{ field }">
               <div class="space-y-2">
-                <UiLabel>Tipe</UiLabel>
+                <UiLabel>Type</UiLabel>
                 <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                   <UiSelectTrigger class="w-full">
                     <UiSelectValue>{{ typeOptions.find((t) => t.value === field.state.value)?.label }}</UiSelectValue>
@@ -122,10 +124,10 @@ const createForm = useForm({
           <createForm.Field name="currency">
             <template #default="{ field }">
               <div class="space-y-2">
-                <UiLabel>Mata Uang</UiLabel>
+                <UiLabel>Currency</UiLabel>
                 <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                   <UiSelectTrigger class="w-full">
-                    <UiSelectValue>{{ currencyOptions.find((c) => c.value === field.state.value)?.label ?? "Pilih Mata Uang" }}</UiSelectValue>
+                    <UiSelectValue>{{ currencyOptions.find((c) => c.value === field.state.value)?.label ?? "Select Currency" }}</UiSelectValue>
                   </UiSelectTrigger>
                   <UiSelectContent>
                     <UiSelectItem v-for="opt in currencyOptions" :key="opt.value" :value="opt.value">
@@ -142,7 +144,7 @@ const createForm = useForm({
           <template #default="{ isSubmitting, canSubmit }">
             <UiButton type="submit" class="w-full" :disabled="isSubmitting || !canSubmit">
               <Icon v-if="isSubmitting" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Dompet" }}
+              {{ isSubmitting ? "Saving..." : "Save Wallet" }}
             </UiButton>
           </template>
         </createForm.Subscribe>

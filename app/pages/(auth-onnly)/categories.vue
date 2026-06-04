@@ -6,11 +6,11 @@ import type { CategoryType } from "~~/server/lib/db/schemas"
 const { $apolloClient } = useNuxtApp()
 
 useHead({
-  title: "Kategori | Atur Jenis Transaksi",
+  title: "Categories | Manage Transaction Types",
   meta: [
     {
       name: "description",
-      content: "Atur kategori transaksi keuangan Anda - pemasukan dan pengeluaran - untuk pengelompokan yang lebih rapi dan pelacakan anggaran yang lebih baik.",
+      content: "Manage your financial transaction categories - income and expense - for better grouping and budget tracking.",
     },
     {
       name: "keywords",
@@ -44,10 +44,10 @@ const { mutate: deleteMutate } = useMutation(DELETE_CATEGORY)
 async function handleDelete(id: string) {
   try {
     await deleteMutate({ id })
-    toast.success("Kategori dihapus")
+    toast.success("Category deleted")
     await refreshCategories()
   } catch {
-    toast.error("Gagal menghapus kategori")
+    toast.error("Failed to delete category")
   }
 }
 </script>
@@ -56,8 +56,8 @@ async function handleDelete(id: string) {
   <div class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="min-w-0">
-        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Kategori</h1>
-        <p class="text-xs text-muted-foreground sm:text-sm">Pisahkan transaksi berdasarkan jenisnya.</p>
+        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Categories</h1>
+        <p class="text-xs text-muted-foreground sm:text-sm">Organize transactions by type.</p>
       </div>
       <FormsCategoriesCreate @created="refreshCategories()" />
     </div>

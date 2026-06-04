@@ -17,15 +17,15 @@ const emit = defineEmits<{ created: [] }>()
 const { mutate: createMutate } = useMutation(CREATE_RECURRING_TRANSACTION)
 
 const frequencyOptions = [
-  { value: "daily", label: "Harian" },
-  { value: "weekly", label: "Mingguan" },
-  { value: "monthly", label: "Bulanan" },
-  { value: "yearly", label: "Tahunan" },
+  { value: "daily", label: "Daily" },
+  { value: "weekly", label: "Weekly" },
+  { value: "monthly", label: "Monthly" },
+  { value: "yearly", label: "Yearly" },
 ]
 
 const typeOptions = [
-  { value: "income", label: "Pemasukan" },
-  { value: "expense", label: "Pengeluaran" },
+  { value: "income", label: "Income" },
+  { value: "expense", label: "Expense" },
   { value: "transfer", label: "Transfer" },
 ]
 
@@ -49,12 +49,12 @@ const createForm = useForm({
       await createMutate({
         input: { ...value, startDate: new Date(value.startDate).toISOString() },
       })
-      toast.success("Transaksi rutin berhasil dibuat")
+      toast.success("Recurring transaction created successfully")
       store.closeCreate()
       createForm.reset()
       emit("created")
     } catch {
-      toast.error("Terjadi kesalahan")
+      toast.error("An error occurred")
     }
   },
 })
@@ -62,13 +62,13 @@ const createForm = useForm({
 const createFormValues = createForm.useStore((s) => s.values)
 
 const selectedWallet = computed(
-  () => props.wallets.find((w) => w.id === createFormValues.value.walletId)?.name ?? "Pilih Dompet",
+  () => props.wallets.find((w) => w.id === createFormValues.value.walletId)?.name ?? "Select Wallet",
 )
 const selectedToWallet = computed(
-  () => props.wallets.find((w) => w.id === createFormValues.value.toWalletId)?.name ?? "Pilih Dompet Tujuan",
+  () => props.wallets.find((w) => w.id === createFormValues.value.toWalletId)?.name ?? "Select Destination Wallet",
 )
 const selectedCategory = computed(
-  () => props.categories.find((c) => c.id === createFormValues.value.categoryId)?.name ?? "Pilih Kategori",
+  () => props.categories.find((c) => c.id === createFormValues.value.categoryId)?.name ?? "Select Category",
 )
 const filteredCategories = computed(() =>
   props.categories.filter((c) => c.type === createFormValues.value.type),
@@ -79,18 +79,18 @@ const filteredCategories = computed(() =>
   <UiDialog :open="store.createOpen" @update:open="store.closeCreate()">
     <UiDialogTrigger as-child>
       <UiButton class="gap-2" @click="store.openCreate()">
-        <Icon name="lucide:plus" class="h-4 w-4" /> Tambah Transaksi Rutin
+        <Icon name="lucide:plus" class="h-4 w-4" /> Add Recurring Transaction
       </UiButton>
     </UiDialogTrigger>
     <UiDialogContent class="max-h-[90vh] overflow-y-auto">
       <UiDialogHeader>
-        <UiDialogTitle>Tambah Transaksi Rutin</UiDialogTitle>
+        <UiDialogTitle>Add Recurring Transaction</UiDialogTitle>
       </UiDialogHeader>
       <form class="space-y-4 p-4" @submit.prevent="createForm.handleSubmit()">
         <createForm.Field name="amount">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="amount">Jumlah</UiLabel>
+              <UiLabel for="amount">Amount</UiLabel>
               <UiInput
                 id="amount" type="number" :value="field.state.value"
                 placeholder="0" min="0"
@@ -107,7 +107,7 @@ const filteredCategories = computed(() =>
         <createForm.Field name="type">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Tipe</UiLabel>
+              <UiLabel>Type</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ typeOptions.find((t) => t.value === field.state.value)?.label }}</UiSelectValue>
@@ -123,7 +123,7 @@ const filteredCategories = computed(() =>
         <createForm.Field name="frequency">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Frekuensi</UiLabel>
+              <UiLabel>Frequency</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ frequencyOptions.find((f) => f.value === field.state.value)?.label }}</UiSelectValue>
@@ -139,7 +139,7 @@ const filteredCategories = computed(() =>
         <createForm.Field name="startDate">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="startDate">Tanggal Mulai</UiLabel>
+              <UiLabel for="startDate">Start Date</UiLabel>
               <UiInput
                 id="startDate" type="date" :value="field.state.value"
                 @blur="field.handleBlur()"
@@ -155,7 +155,7 @@ const filteredCategories = computed(() =>
         <createForm.Field name="walletId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>{{ createFormValues.type === "transfer" ? "Dari Dompet" : "Dompet" }}</UiLabel>
+              <UiLabel>{{ createFormValues.type === "transfer" ? "From Wallet" : "Wallet" }}</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ selectedWallet }}</UiSelectValue>
@@ -171,7 +171,7 @@ const filteredCategories = computed(() =>
         <createForm.Field v-if="createFormValues.type === 'transfer'" name="toWalletId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Ke Dompet</UiLabel>
+              <UiLabel>To Wallet</UiLabel>
               <UiSelect :model-value="field.state.value ?? ''" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full border-dashed border-primary">
                   <UiSelectValue>{{ selectedToWallet }}</UiSelectValue>
@@ -190,7 +190,7 @@ const filteredCategories = computed(() =>
         <createForm.Field v-else name="categoryId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Kategori</UiLabel>
+              <UiLabel>Category</UiLabel>
               <UiSelect :model-value="field.state.value ?? ''" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ selectedCategory }}</UiSelectValue>
@@ -208,10 +208,10 @@ const filteredCategories = computed(() =>
         <createForm.Field name="description">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="description">Keterangan (Opsional)</UiLabel>
+              <UiLabel for="description">Note (Optional)</UiLabel>
               <UiInput
                 id="description" :value="field.state.value ?? ''"
-                placeholder="Misal: Bayar Listrik, Langganan Netflix"
+                placeholder="e.g., Electricity Bill, Netflix"
                 @blur="field.handleBlur()"
                 @input="(e: Event) => field.handleChange((e.target as HTMLInputElement).value || null)"
               />
@@ -223,7 +223,7 @@ const filteredCategories = computed(() =>
           <template #default="{ isSubmitting }">
             <UiButton type="submit" class="w-full" :disabled="isSubmitting">
               <Icon v-if="isSubmitting" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Transaksi Rutin" }}
+              {{ isSubmitting ? "Saving..." : "Save Recurring Transaction" }}
             </UiButton>
           </template>
         </createForm.Subscribe>

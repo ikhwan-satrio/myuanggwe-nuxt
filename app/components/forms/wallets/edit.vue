@@ -12,17 +12,17 @@ const emit = defineEmits<{ updated: [] }>()
 const { mutate: updateMutate } = useMutation(UPDATE_WALLET)
 
 const typeOptions = [
-  { value: "cash", label: "Tunai (Cash)" },
+  { value: "cash", label: "Cash" },
   { value: "bank", label: "Bank / E-Wallet" },
-  { value: "credit_card", label: "Kartu Kredit" },
+  { value: "credit_card", label: "Credit Card" },
 ]
 
 const currencyOptions = [
-  { value: "IDR", label: "IDR - Rupiah" },
-  { value: "USD", label: "USD - Dollar" },
-  { value: "EUR", label: "EUR - Euro" },
-  { value: "GBP", label: "GBP - Pound" },
-  { value: "JPY", label: "JPY - Yen" },
+  { value: "IDR", label: "IDR" },
+  { value: "USD", label: "USD" },
+  { value: "EUR", label: "EUR" },
+  { value: "GBP", label: "GBP" },
+  { value: "JPY", label: "JPY" },
 ]
 
 const editForm = useForm({
@@ -40,11 +40,12 @@ const editForm = useForm({
     if (!store.editingItem) return
     try {
       await updateMutate({ id: store.editingItem.id, input: value })
-      toast.success("Dompet berhasil diubah")
+      toast.success("Wallet updated successfully")
       store.closeEdit()
       emit("updated")
-    } catch {
-      toast.error("Gagal mengubah dompet")
+    } catch (e) {
+      console.log(e)
+      toast.error("Failed to update wallet")
     }
   },
 })
@@ -56,6 +57,8 @@ watch(() => store.editingItem, (item) => {
   editForm.setFieldValue("balance", item.balance)
   editForm.setFieldValue("currency", item.currency)
 }, { immediate: true })
+
+
 </script>
 
 <template>
@@ -63,16 +66,16 @@ watch(() => store.editingItem, (item) => {
     <UiSheetContent side="right" class="overflow-y-auto">
       <UiSheetHeader>
         <UiSheetTitle>Edit {{ store.editingItem?.name }}</UiSheetTitle>
-        <UiSheetDescription>Ubah informasi dompet {{ store.editingItem?.name }}</UiSheetDescription>
+        <UiSheetDescription>Update wallet info for {{ store.editingItem?.name }}</UiSheetDescription>
       </UiSheetHeader>
       <form class="space-y-4 p-4" @submit.prevent="editForm.handleSubmit()">
         <editForm.Field name="name">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel :for="field.name">Nama Dompet</UiLabel>
+              <UiLabel :for="field.name">Wallet Name</UiLabel>
               <UiInput
                 :id="field.name" type="text" :value="field.state.value"
-                placeholder="BCA, Dana, dll"
+                placeholder="BCA, GoPay, etc."
                 @blur="field.handleBlur()"
                 @input="(e: Event) => field.handleChange((e.target as HTMLInputElement).value)"
               />
@@ -86,7 +89,7 @@ watch(() => store.editingItem, (item) => {
         <editForm.Field name="balance">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel :for="field.name">Saldo</UiLabel>
+              <UiLabel :for="field.name">Balance</UiLabel>
               <UiInput
                 :id="field.name" type="number" :value="field.state.value"
                 placeholder="0" min="0"
@@ -104,7 +107,7 @@ watch(() => store.editingItem, (item) => {
           <editForm.Field name="type">
             <template #default="{ field }">
               <div class="space-y-2">
-                <UiLabel>Tipe</UiLabel>
+                <UiLabel>Type</UiLabel>
                 <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                   <UiSelectTrigger class="w-full">
                     <UiSelectValue>{{ typeOptions.find((t) => t.value === field.state.value)?.label }}</UiSelectValue>
@@ -120,10 +123,10 @@ watch(() => store.editingItem, (item) => {
           <editForm.Field name="currency">
             <template #default="{ field }">
               <div class="space-y-2">
-                <UiLabel>Mata Uang</UiLabel>
+                <UiLabel>Currency</UiLabel>
                 <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                   <UiSelectTrigger class="w-full">
-                    <UiSelectValue>{{ currencyOptions.find((c) => c.value === field.state.value)?.label ?? "Pilih Mata Uang" }}</UiSelectValue>
+                    <UiSelectValue>{{ currencyOptions.find((c) => c.value === field.state.value)?.label ?? "Select Currency" }}</UiSelectValue>
                   </UiSelectTrigger>
                   <UiSelectContent>
                     <UiSelectItem v-for="opt in currencyOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</UiSelectItem>
@@ -138,7 +141,7 @@ watch(() => store.editingItem, (item) => {
           <template #default="{ isSubmitting }">
             <UiButton type="submit" class="w-full" :disabled="isSubmitting">
               <Icon v-if="isSubmitting" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Perubahan" }}
+              {{ isSubmitting ? "Saving..." : "Save Changes" }}
             </UiButton>
           </template>
         </editForm.Subscribe>

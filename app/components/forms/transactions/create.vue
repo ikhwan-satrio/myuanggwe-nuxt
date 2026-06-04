@@ -74,12 +74,12 @@ const transactionForm = useForm({
 
       await mutate({ input });
 
-      toast.success("Transaksi berhasil dicatat");
+      toast.success("Transaction recorded successfully");
       store.closeCreate();
       transactionForm.reset();
       emit("created");
     } catch {
-      toast.error("Terjadi kesalahan");
+      toast.error("An error occurred");
     }
   },
 });
@@ -89,17 +89,17 @@ const formValues = transactionForm.useStore((s) => s.values);
 const selectedWallet = computed(
   () =>
     wallets.value.find((w) => w.id === formValues.value.walletId)?.name ??
-    "Pilih Dompet",
+    "Select Wallet",
 );
 const selectedToWallet = computed(
   () =>
     wallets.value.find((w) => w.id === formValues.value.toWalletId)?.name ??
-    "Pilih Dompet Tujuan",
+    "Select Destination Wallet",
 );
 const selectedCategory = computed(
   () =>
     categories.value.find((c) => c.id === formValues.value.categoryId)?.name ??
-    "Pilih Kategori",
+    "Select Category",
 );
 const filteredCategories = computed(() =>
   categories.value.filter((c) => c.type === formValues.value.type),
@@ -110,13 +110,13 @@ const filteredCategories = computed(() =>
   <UiDialog :open="store.createOpen" @update:open="store.closeCreate()">
     <UiDialogTrigger as-child>
       <UiButton size="sm" class="gap-2" @click="store.openCreate()">
-        <Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Catat Transaksi
+        <Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Record Transaction
       </UiButton>
     </UiDialogTrigger>
     <UiDialogContent class="sm:max-w-md w-[95vw] max-w-[95vw] sm:max-w-md">
       <UiDialogHeader>
-        <UiDialogTitle>Tambah Transaksi</UiDialogTitle>
-        <UiDialogDescription>Catat pemasukan, pengeluaran, atau transfer antar dompet.</UiDialogDescription>
+        <UiDialogTitle>Add Transaction</UiDialogTitle>
+        <UiDialogDescription>Record income, expenses, or transfers between wallets.</UiDialogDescription>
       </UiDialogHeader>
       <form class="space-y-4" @submit.prevent="transactionForm.handleSubmit()">
         <transactionForm.Field name="type">
@@ -126,8 +126,8 @@ const filteredCategories = computed(() =>
               @update:model-value="(v) => field.handleChange(v as TransactionType)"
             >
               <UiTabsList class="grid w-full grid-cols-3">
-                <UiTabsTrigger value="expense">Keluar</UiTabsTrigger>
-                <UiTabsTrigger value="income">Masuk</UiTabsTrigger>
+                <UiTabsTrigger value="expense">Expense</UiTabsTrigger>
+                <UiTabsTrigger value="income">Income</UiTabsTrigger>
                 <UiTabsTrigger value="transfer">Transfer</UiTabsTrigger>
               </UiTabsList>
             </UiTabs>
@@ -137,7 +137,7 @@ const filteredCategories = computed(() =>
         <transactionForm.Field name="amount">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="amount">Jumlah (Rp)</UiLabel>
+              <UiLabel for="amount">Amount</UiLabel>
               <UiInput
                 id="amount"
                 type="number"
@@ -164,7 +164,7 @@ const filteredCategories = computed(() =>
           <template #default="{ field }">
             <div class="space-y-2">
               <UiLabel>{{
-                formValues.type === "transfer" ? "Dari Dompet" : "Dompet"
+                formValues.type === "transfer" ? "From Wallet" : "Wallet"
               }}</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
@@ -179,7 +179,7 @@ const filteredCategories = computed(() =>
                     :key="wallet.id"
                     :value="wallet.id"
                   >
-                    {{ wallet.name }} ({{ formatCurrency(wallet.balance) }})
+                    {{ wallet.name }} ({{ formatCurrency(wallet.balance, wallet.currency) }})
                   </UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
@@ -199,7 +199,7 @@ const filteredCategories = computed(() =>
         >
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Ke Dompet</UiLabel>
+              <UiLabel>To Wallet</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
                 @update:model-value="(v) => field.handleChange(v as string)"
@@ -215,7 +215,7 @@ const filteredCategories = computed(() =>
                     :key="wallet.id"
                     :value="wallet.id"
                   >
-                    {{ wallet.name }} ({{ formatCurrency(wallet.balance) }})
+                    {{ wallet.name }} ({{ formatCurrency(wallet.balance, wallet.currency) }})
                   </UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
@@ -232,7 +232,7 @@ const filteredCategories = computed(() =>
         <transactionForm.Field v-else name="categoryId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Kategori</UiLabel>
+              <UiLabel>Category</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
                 @update:model-value="(v)=> field.handleChange(v as string)"
@@ -263,11 +263,11 @@ const filteredCategories = computed(() =>
         <transactionForm.Field name="description">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="description">Keterangan (Opsional)</UiLabel>
+              <UiLabel for="description">Note (Optional)</UiLabel>
               <UiInput
                 id="description"
                 :value="field.state.value"
-                placeholder="Makan siang, dsb"
+                placeholder="Lunch, etc."
                 @blur="field.handleBlur()"
                 @input="
                   (e: Event) =>
@@ -281,7 +281,7 @@ const filteredCategories = computed(() =>
         <transactionForm.Field name="date">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="date">Tanggal</UiLabel>
+              <UiLabel for="date">Date</UiLabel>
               <UiInput
                 id="date"
                 type="date"
@@ -304,7 +304,7 @@ const filteredCategories = computed(() =>
                 name="lucide:loader-2"
                 class="mr-2 h-4 w-4 animate-spin"
               />
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Transaksi" }}
+              {{ isSubmitting ? "Saving..." : "Save Transaction" }}
             </UiButton>
           </template>
         </transactionForm.Subscribe>

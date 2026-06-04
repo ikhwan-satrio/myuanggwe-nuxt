@@ -71,7 +71,7 @@ const { formatCurrency } = useCurrency()
               }"
             >
               {{ tx.type === "income" ? "+" : "-" }}
-              {{ formatCurrency(tx.amount) }}
+              {{ formatCurrency(tx.amount, tx.currency) }}
             </p>
             <p class="text-[10px] text-muted-foreground">{{ formatDate(String(tx.date)) }}</p>
           </div>
@@ -87,7 +87,7 @@ const { formatCurrency } = useCurrency()
                 <Icon name="lucide:pencil" class="mr-2 h-4 w-4" /> Edit
               </UiDropdownMenuItem>
               <UiDropdownMenuItem class="text-destructive focus:text-destructive" @click="emit('delete', tx.id)">
-                <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Hapus
+                <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Delete
               </UiDropdownMenuItem>
             </UiDropdownMenuContent>
           </UiDropdownMenu>
@@ -96,7 +96,7 @@ const { formatCurrency } = useCurrency()
     </template>
 
     <div v-else class="p-8 text-center text-muted-foreground">
-      Belum ada transaksi.
+      No transactions yet.
     </div>
   </div>
 </template>

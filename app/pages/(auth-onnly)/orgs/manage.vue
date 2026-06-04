@@ -99,11 +99,11 @@ const handleDeleteOrg = () => {
 }
 
 useHead({
-  title: "Kelola Organisasi | Manajemen Tim",
+  title: "Manage Organization | Team Management",
   meta: [
     {
       name: "description",
-      content: "Kelola anggota tim, atur peran, dan monitoring keuangan organisasi atau bisnis kecil Anda bersama-sama.",
+      content: "Manage team members, assign roles, and monitor your organization's finances collaboratively.",
     },
     {
       name: "keywords",

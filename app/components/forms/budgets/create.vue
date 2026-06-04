@@ -16,8 +16,8 @@ const emit = defineEmits<{ created: [] }>()
 const { mutate: createMutate } = useMutation(CREATE_BUDGET)
 
 const periodOptions = [
-  { value: "monthly", label: "Bulanan (Monthly)" },
-  { value: "yearly", label: "Tahunan (Yearly)" },
+  { value: "monthly", label: "Monthly" },
+  { value: "yearly", label: "Yearly" },
 ]
 
 const createForm = useForm({
@@ -33,19 +33,19 @@ const createForm = useForm({
   onSubmit: async ({ value }) => {
     try {
       await createMutate({ input: value })
-      toast.success("Anggaran berhasil dibuat")
+      toast.success("Budget created successfully")
       store.closeCreate()
       createForm.reset()
       emit("created")
     } catch {
-      toast.error("Terjadi kesalahan")
+      toast.error("An error occurred")
     }
   },
 })
 
 const createFormValues = createForm.useStore((s) => s.values)
 const selectedCreateCategory = computed(
-  () => props.expenseCategories.find((c) => c.id === createFormValues.value.categoryId)?.name ?? "Pilih Kategori",
+  () => props.expenseCategories.find((c) => c.id === createFormValues.value.categoryId)?.name ?? "Select Category",
 )
 </script>
 
@@ -53,18 +53,18 @@ const selectedCreateCategory = computed(
   <UiDialog :open="store.createOpen" @update:open="store.closeCreate()">
     <UiDialogTrigger as-child>
       <UiButton class="gap-2" @click="store.openCreate()">
-        <Icon name="lucide:plus" class="h-4 w-4" /> Tambah Anggaran
+        <Icon name="lucide:plus" class="h-4 w-4" /> Add Budget
       </UiButton>
     </UiDialogTrigger>
     <UiDialogContent>
       <UiDialogHeader>
-        <UiDialogTitle>Tambah Anggaran</UiDialogTitle>
+        <UiDialogTitle>Add Budget</UiDialogTitle>
       </UiDialogHeader>
       <form class="space-y-4 p-4" @submit.prevent="createForm.handleSubmit()">
         <createForm.Field name="amount">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="amount">Jumlah Anggaran</UiLabel>
+              <UiLabel for="amount">Budget Amount</UiLabel>
               <UiInput
                 id="amount" type="number" :value="field.state.value"
                 placeholder="0" min="0"
@@ -81,7 +81,7 @@ const selectedCreateCategory = computed(
         <createForm.Field name="categoryId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Kategori</UiLabel>
+              <UiLabel>Category</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ selectedCreateCategory }}</UiSelectValue>
@@ -102,7 +102,7 @@ const selectedCreateCategory = computed(
         <createForm.Field name="period">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Periode</UiLabel>
+              <UiLabel>Period</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ periodOptions.find((p) => p.value === field.state.value)?.label }}</UiSelectValue>
@@ -122,7 +122,7 @@ const selectedCreateCategory = computed(
           <template #default="{ isSubmitting }">
             <UiButton type="submit" class="w-full" :disabled="isSubmitting">
               <Icon v-if="isSubmitting" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Anggaran" }}
+              {{ isSubmitting ? "Saving..." : "Save Budget" }}
             </UiButton>
           </template>
         </createForm.Subscribe>

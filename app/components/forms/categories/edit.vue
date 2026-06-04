@@ -11,26 +11,26 @@ const emit = defineEmits<{ updated: [] }>()
 const { mutate: updateMutate } = useMutation(UPDATE_CATEGORY)
 
 const typeOptions = [
-  { value: "income", label: "Pemasukan" },
-  { value: "expense", label: "Pengeluaran" },
+  { value: "income", label: "Income" },
+  { value: "expense", label: "Expense" },
 ]
 
 const iconOptions = [
-  { value: "🍔", label: "🍔 Makanan" },
-  { value: "🚗", label: "🚗 Transportasi" },
-  { value: "🏠", label: "🏠 Rumah" },
-  { value: "💼", label: "💼 Kerja" },
-  { value: "🎮", label: "🎮 Hiburan" },
-  { value: "🏥", label: "🏥 Kesehatan" },
-  { value: "📚", label: "📚 Pendidikan" },
-  { value: "👕", label: "👕 Pakaian" },
-  { value: "✈️", label: "✈️ Perjalanan" },
-  { value: "🛒", label: "🛒 Belanja" },
-  { value: "💰", label: "💰 Gaji" },
-  { value: "🎁", label: "🎁 Hadiah" },
-  { value: "💳", label: "💳 Tagihan" },
-  { value: "🔧", label: "🔧 Perbaikan" },
-  { value: "📱", label: "📱 Teknologi" },
+  { value: "🍔", label: "🍔 Food" },
+  { value: "🚗", label: "🚗 Transport" },
+  { value: "🏠", label: "🏠 Housing" },
+  { value: "💼", label: "💼 Work" },
+  { value: "🎮", label: "🎮 Entertainment" },
+  { value: "🏥", label: "🏥 Health" },
+  { value: "📚", label: "📚 Education" },
+  { value: "👕", label: "👕 Clothing" },
+  { value: "✈️", label: "✈️ Travel" },
+  { value: "🛒", label: "🛒 Shopping" },
+  { value: "💰", label: "💰 Salary" },
+  { value: "🎁", label: "🎁 Gift" },
+  { value: "💳", label: "💳 Bills" },
+  { value: "🔧", label: "🔧 Repairs" },
+  { value: "📱", label: "📱 Technology" },
 ]
 
 const editForm = useForm({
@@ -47,11 +47,11 @@ const editForm = useForm({
     if (!store.editingItem) return
     try {
       await updateMutate({ id: store.editingItem.id, input: value })
-      toast.success("Kategori berhasil diubah")
+      toast.success("Category updated successfully")
       store.closeEdit()
       emit("updated")
     } catch {
-      toast.error("Gagal mengubah kategori")
+      toast.error("Failed to update category")
     }
   },
 })
@@ -69,13 +69,13 @@ watch(() => store.editingItem, (item) => {
     <UiSheetContent side="right" class="overflow-y-auto">
       <UiSheetHeader>
         <UiSheetTitle>Edit {{ store.editingItem?.name }}</UiSheetTitle>
-        <UiSheetDescription>Ubah informasi kategori {{ store.editingItem?.name }}</UiSheetDescription>
+        <UiSheetDescription>Update category info for {{ store.editingItem?.name }}</UiSheetDescription>
       </UiSheetHeader>
       <form class="space-y-4 p-4" @submit.prevent="editForm.handleSubmit()">
         <editForm.Field name="name">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel :for="field.name">Nama Kategori</UiLabel>
+              <UiLabel :for="field.name">Category Name</UiLabel>
               <UiInput
                 :id="field.name" type="text" :value="field.state.value"
                 placeholder="Makanan, Transportasi, dll"
@@ -92,7 +92,7 @@ watch(() => store.editingItem, (item) => {
         <editForm.Field name="type">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Jenis</UiLabel>
+              <UiLabel>Type</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ typeOptions.find((t) => t.value === field.state.value)?.label }}</UiSelectValue>
@@ -114,7 +114,7 @@ watch(() => store.editingItem, (item) => {
               <UiLabel>Icon</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
-                  <UiSelectValue>{{ iconOptions.find((i) => i.value === field.state.value)?.label ?? "Pilih Icon" }}</UiSelectValue>
+                  <UiSelectValue>{{ iconOptions.find((i) => i.value === field.state.value)?.label ?? "Select Icon" }}</UiSelectValue>
                 </UiSelectTrigger>
                 <UiSelectContent class="max-h-60 overflow-y-auto">
                   <UiSelectItem v-for="opt in iconOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</UiSelectItem>
@@ -131,7 +131,7 @@ watch(() => store.editingItem, (item) => {
           <template #default="{ isSubmitting }">
             <UiButton type="submit" class="w-full" :disabled="isSubmitting">
               <Icon v-if="isSubmitting" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Perubahan" }}
+              {{ isSubmitting ? "Saving..." : "Save Changes" }}
             </UiButton>
           </template>
         </editForm.Subscribe>

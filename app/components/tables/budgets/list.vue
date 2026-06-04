@@ -62,7 +62,7 @@ function getProgressClass(spending: number, amount: number) {
                 <Icon name="lucide:pencil" class="mr-2 h-4 w-4" /> Edit
               </UiDropdownMenuItem>
               <UiDropdownMenuItem class="text-destructive focus:text-destructive" @click="emit('delete', budget.id)">
-                <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Hapus
+                <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Delete
               </UiDropdownMenuItem>
             </UiDropdownMenuContent>
           </UiDropdownMenu>
@@ -84,7 +84,7 @@ function getProgressClass(spending: number, amount: number) {
     </template>
 
     <div v-else class="rounded-md border border-dashed p-8 text-center text-muted-foreground">
-      Belum ada anggaran.
+      No budgets yet.
     </div>
   </div>
 </template>

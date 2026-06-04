@@ -45,9 +45,9 @@ const form = useForm({
 <template>
   <UiCard class="w-full">
     <UiCardHeader class="space-y-1.5 text-center px-4 sm:px-6 pt-4 sm:pt-6">
-      <UiCardTitle class="text-xl sm:text-2xl font-bold">Buat Akun</UiCardTitle>
+      <UiCardTitle class="text-xl sm:text-2xl font-bold">Create Account</UiCardTitle>
       <UiCardDescription class="text-xs sm:text-sm">
-        Daftar untuk mulai mengelola keuangan kamu
+        Register to start managing your finances
       </UiCardDescription>
     </UiCardHeader>
 
@@ -56,7 +56,7 @@ const form = useForm({
         <form.Field name="name">
           <template #default="{ field }">
             <UiFormItem>
-              <UiLabel :for="field.name" class="text-xs sm:text-sm">Nama Lengkap</UiLabel>
+              <UiLabel :for="field.name" class="text-xs sm:text-sm">Full Name</UiLabel>
               <UiInput
                 :id="field.name"
                 :name="field.name"
@@ -151,7 +151,7 @@ const form = useForm({
         <form.Field name="confirmPassword">
           <template #default="{ field }">
             <UiFormItem>
-              <UiLabel :for="field.name" class="text-xs sm:text-sm">Konfirmasi Password</UiLabel>
+              <UiLabel :for="field.name" class="text-xs sm:text-sm">Confirm Password</UiLabel>
               <UiInput
                 :id="field.name"
                 :name="field.name"
@@ -204,7 +204,7 @@ const form = useForm({
                 size="16"
                 class="animate-spin"
               />
-              {{ isSubmitting ? "Mendaftar..." : "Daftar" }}
+              {{ isSubmitting ? "Creating account..." : "Sign Up" }}
             </UiButton>
           </template>
         </form.Subscribe>
@@ -213,7 +213,7 @@ const form = useForm({
 
     <UiCardFooter class="justify-center px-4 sm:px-6 pb-4 sm:pb-6">
       <p class="text-xs sm:text-sm text-muted-foreground">
-        Sudah punya akun?
+        Already have an account?
         <button
           class="text-foreground underline font-medium"
           @click="authTabsStore.setActiveTab('login')"

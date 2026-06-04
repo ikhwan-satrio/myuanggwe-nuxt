@@ -1,8 +1,8 @@
 import { Effect } from "effect";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { DBServices } from "../db/context";
 import { RedisService } from "../redis/context";
-import { transactions } from "../db/schemas";
+import { wallets, transactions } from "../db/schemas";
 import type { Context } from "../graphql-context"
 
 const toDate = (date: string | Date): Date => new Date(date)
@@ -12,6 +12,26 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
   effect: Effect.gen(function* () {
     const db = yield* DBServices
     const redis = yield* RedisService
+
+    async function applyBalanceChange(txType: string, amount: number, walletId: string, toWalletId: string | null | undefined, reverse: boolean, txnDb: typeof db = db) {
+      const sign = reverse ? -1 : 1
+      if (txType === 'expense') {
+        await txnDb.update(wallets).set({ balance: sql`${wallets.balance} - ${amount * sign}` }).where(eq(wallets.id, walletId))
+      } else if (txType === 'income') {
+        await txnDb.update(wallets).set({ balance: sql`${wallets.balance} + ${amount * sign}` }).where(eq(wallets.id, walletId))
+      } else if (txType === 'transfer') {
+        await txnDb.update(wallets).set({ balance: sql`${wallets.balance} - ${amount * sign}` }).where(eq(wallets.id, walletId))
+        if (toWalletId) {
+          await txnDb.update(wallets).set({ balance: sql`${wallets.balance} + ${amount * sign}` }).where(eq(wallets.id, toWalletId))
+        }
+      }
+    }
+
+    async function checkSufficientBalance(walletId: string, amount: number) {
+      const wallet = await db.query.wallets.findFirst({ where: eq(wallets.id, walletId) })
+      if (!wallet) throw new Error('Dompet tidak ditemukan')
+      if (wallet.balance < amount) throw new Error(`Saldo ${wallet.name} tidak mencukupi (tersedia: ${wallet.balance})`)
+    }
 
     return {
       async getAllTransactions(
@@ -83,23 +103,61 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
 
       async createTransaction(input: Record<string, any>, c: Context) {
         const orgId = c.session?.activeOrganizationId
-        const result = await db.insert(transactions).values({
-          ...input,
-          userId: c.user?.id!,
-          organizationId: orgId ?? input.organizationId ?? null,
-          date: toDate(input.date),
-          currency: input.currency ?? 'IDR',
-          exchangeRate: input.exchangeRate ?? 1000000,
-        } as any).returning()
+
+        if (input.type === 'expense' || input.type === 'transfer') {
+          await checkSufficientBalance(input.walletId, input.amount)
+        }
+        if (input.type === 'transfer' && input.toWalletId) {
+          const destWallet = await db.query.wallets.findFirst({ where: eq(wallets.id, input.toWalletId) })
+          if (!destWallet) throw new Error('Dompet tujuan tidak ditemukan')
+        }
+
+        const result = await db.transaction(async (tx) => {
+          const [txn] = await tx.insert(transactions).values({
+            ...input,
+            userId: c.user?.id!,
+            organizationId: orgId ?? input.organizationId ?? null,
+            date: toDate(input.date),
+            currency: input.currency ?? 'IDR',
+            exchangeRate: input.exchangeRate ?? 1000000,
+          } as any).returning()
+
+          if (txn) {
+            const txType = txn.type
+            const amt = txn.amount
+            await applyBalanceChange(txType, amt, txn.walletId, txn.toWalletId, false, tx)
+          }
+
+          return txn
+        })
+
         await redis.invalidateUserCache(c.user?.id!, orgId)
-        return result[0]
+        return result
       },
 
       async updateTransaction(id: string, input: Record<string, any>, c: Context) {
-        try {
+        const orgId = c.session?.activeOrganizationId
 
-          const orgId = c.session?.activeOrganizationId
-          const result = await db.update(transactions)
+        const oldTxn = await db.query.transactions.findFirst({
+          where: eq(transactions.id, id)
+        })
+        if (!oldTxn) throw new Error('Transaksi tidak ditemukan')
+
+        const newType = input.type ?? oldTxn.type
+        const newAmount = input.amount ?? oldTxn.amount
+        const newWalletId = input.walletId ?? oldTxn.walletId
+        const newToWalletId = input.toWalletId !== undefined ? input.toWalletId : oldTxn.toWalletId
+
+        const result = await db.transaction(async (tx) => {
+          await applyBalanceChange(oldTxn.type, oldTxn.amount, oldTxn.walletId, oldTxn.toWalletId, true, tx)
+
+          if (newType === 'expense' || newType === 'transfer') {
+            const wallet = await tx.query.wallets.findFirst({ where: eq(wallets.id, newWalletId) })
+            if (!wallet) throw new Error('Dompet tidak ditemukan')
+            if (wallet.balance < newAmount) throw new Error(`Saldo ${wallet.name} tidak mencukupi (tersedia: ${wallet.balance})`)
+          }
+
+          const updated = await tx.update(transactions)
             .set({
               ...input,
               date: input.date ? toDate(input.date) : undefined,
@@ -110,21 +168,35 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
                 : and(eq(transactions.id, id), eq(transactions.userId, c.user?.id!))
             )
             .returning()
-          if (!result[0]) throw new Error('Transaction not found')
-          await redis.invalidateUserCache(c.user?.id!, orgId)
-          return result[0]
-        } catch (e) {
-          return {}
-        }
+          if (!updated[0]) throw new Error('Transaksi tidak ditemukan')
+
+          await applyBalanceChange(newType, newAmount, newWalletId, newToWalletId, false, tx)
+
+          return updated[0]
+        })
+
+        await redis.invalidateUserCache(c.user?.id!, orgId)
+        return result
       },
 
       async deleteTransaction(id: string, c: Context) {
         const orgId = c.session?.activeOrganizationId
-        await db.delete(transactions).where(
-          orgId
-            ? and(eq(transactions.id, id), eq(transactions.organizationId, orgId))
-            : and(eq(transactions.id, id), eq(transactions.userId, c.user?.id!))
-        )
+
+        const txn = await db.query.transactions.findFirst({
+          where: eq(transactions.id, id)
+        })
+        if (!txn) throw new Error('Transaksi tidak ditemukan')
+
+        await db.transaction(async (tx) => {
+          await tx.delete(transactions).where(
+            orgId
+              ? and(eq(transactions.id, id), eq(transactions.organizationId, orgId))
+              : and(eq(transactions.id, id), eq(transactions.userId, c.user?.id!))
+          )
+
+          await applyBalanceChange(txn.type, txn.amount, txn.walletId, txn.toWalletId, true, tx)
+        })
+
         await redis.invalidateUserCache(c.user?.id!, orgId)
         return true
       },

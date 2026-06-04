@@ -4,11 +4,11 @@ import { useAuthTabsStore } from "~/stores/auth-tabs";
 const authTabsStore = useAuthTabsStore();
 
 useHead({
-  title: "Masuk / Daftar",
+  title: "Sign In / Register",
   meta: [
     {
       name: "description",
-      content: "Daftar atau masuk ke akun MyUangGwe untuk mulai mencatat pemasukan, mengelola pengeluaran, dan mewujudkan target finansial.",
+      content: "Sign up or sign in to your MyUangGwe account to start tracking income, managing expenses, and achieving your financial goals.",
     },
     {
       name: "keywords",

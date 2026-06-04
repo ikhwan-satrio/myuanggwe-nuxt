@@ -18,11 +18,11 @@ const joinOrgForm = useForm({
       invitationId: value.invitationId,
     });
     if (!error) {
-      toast.success("Berhasil bergabung dengan organisasi");
+      toast.success("Successfully joined organization");
       await refreshNuxtData()
       await navigateTo("/dashboard");
     } else {
-      toast.error("Gagal bergabung dengan organisasi");
+      toast.error("Failed to join organization");
     }
   },
 });
@@ -31,19 +31,19 @@ const joinOrgForm = useForm({
 <template>
   <UiCard class="w-full max-w-md">
     <UiCardHeader>
-      <UiCardTitle class="text-2xl">Gabung Organisasi</UiCardTitle>
-      <UiCardDescription>Masukkan ID undangan untuk bergabung.</UiCardDescription>
+      <UiCardTitle class="text-2xl">Join Organization</UiCardTitle>
+      <UiCardDescription>Enter the invitation ID to join.</UiCardDescription>
     </UiCardHeader>
     <UiCardContent>
       <form class="grid gap-4" @submit.prevent="joinOrgForm.handleSubmit()">
         <joinOrgForm.Field name="invitationId">
           <template #default="{ field }">
             <div class="grid gap-2">
-              <UiLabel for="invitationId">ID Undangan</UiLabel>
+              <UiLabel for="invitationId">Invitation ID</UiLabel>
               <UiInput
                 id="invitationId"
                 type="text"
-                placeholder="Masukkan ID undangan"
+                placeholder="Enter invitation ID"
                 :value="field.state.value"
                 required
                 class="text-center"
@@ -62,7 +62,7 @@ const joinOrgForm = useForm({
             <UiButton type="submit" class="w-full" :disabled="isSubmitting">
               <Icon v-if="isSubmitting" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
               <Icon v-else name="lucide:users" class="mr-2 h-4 w-4" />
-              {{ isSubmitting ? "Bergabung..." : "Gabung Organisasi" }}
+              {{ isSubmitting ? "Joining..." : "Join Organization" }}
             </UiButton>
           </template>
         </joinOrgForm.Subscribe>
@@ -71,9 +71,9 @@ const joinOrgForm = useForm({
     <UiCardFooter class="flex flex-col gap-4">
       <UiSeparator />
       <div class="text-center">
-        <p class="text-sm text-muted-foreground">Tidak punya ID undangan?</p>
+        <p class="text-sm text-muted-foreground">Don't have an invitation ID?</p>
         <button class="text-sm font-medium text-primary underline hover:no-underline cursor-pointer" @click="orgsTabStore.setActiveTab('create')">
-          Buat organisasi sendiri
+          Create your own organization
         </button>
       </div>
     </UiCardFooter>

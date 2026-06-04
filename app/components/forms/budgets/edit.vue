@@ -16,8 +16,8 @@ const emit = defineEmits<{ updated: [] }>()
 const { mutate: updateMutate } = useMutation(UPDATE_BUDGET)
 
 const periodOptions = [
-  { value: "monthly", label: "Bulanan (Monthly)" },
-  { value: "yearly", label: "Tahunan (Yearly)" },
+  { value: "monthly", label: "Monthly" },
+  { value: "yearly", label: "Yearly" },
 ]
 
 const editForm = useForm({
@@ -34,18 +34,18 @@ const editForm = useForm({
     if (!store.editingItem) return
     try {
       await updateMutate({ id: store.editingItem.id, input: value })
-      toast.success("Anggaran berhasil diubah")
+      toast.success("Budget updated successfully")
       store.closeEdit()
       emit("updated")
     } catch {
-      toast.error("Terjadi kesalahan")
+      toast.error("An error occurred")
     }
   },
 })
 
 const editFormValues = editForm.useStore((s) => s.values)
 const selectedEditCategory = computed(
-  () => props.expenseCategories.find((c) => c.id === editFormValues.value.categoryId)?.name ?? "Pilih Kategori",
+  () => props.expenseCategories.find((c) => c.id === editFormValues.value.categoryId)?.name ?? "Select Category",
 )
 
 watch(() => store.editingItem, (item) => {
@@ -60,14 +60,14 @@ watch(() => store.editingItem, (item) => {
   <UiSheet :open="store.editOpen" @update:open="store.closeEdit()">
     <UiSheetContent side="right" class="overflow-y-auto">
       <UiSheetHeader>
-        <UiSheetTitle>Edit Anggaran</UiSheetTitle>
-        <UiSheetDescription>Ubah anggaran untuk kategori {{ store.editingItem?.category?.name }}</UiSheetDescription>
+        <UiSheetTitle>Edit Budget</UiSheetTitle>
+        <UiSheetDescription>Update budget for {{ store.editingItem?.category?.name }} category</UiSheetDescription>
       </UiSheetHeader>
       <form class="space-y-4 p-4" @submit.prevent="editForm.handleSubmit()">
         <editForm.Field name="amount">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="edit-amount">Jumlah Anggaran</UiLabel>
+              <UiLabel for="edit-amount">Budget Amount</UiLabel>
               <UiInput
                 id="edit-amount" type="number" :value="field.state.value"
                 placeholder="0" min="0"
@@ -84,7 +84,7 @@ watch(() => store.editingItem, (item) => {
         <editForm.Field name="categoryId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Kategori</UiLabel>
+              <UiLabel>Category</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ selectedEditCategory }}</UiSelectValue>
@@ -105,7 +105,7 @@ watch(() => store.editingItem, (item) => {
         <editForm.Field name="period">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel>Periode</UiLabel>
+              <UiLabel>Period</UiLabel>
               <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ periodOptions.find((p) => p.value === field.state.value)?.label }}</UiSelectValue>
@@ -125,7 +125,7 @@ watch(() => store.editingItem, (item) => {
           <template #default="{ isSubmitting }">
             <UiButton type="submit" class="w-full" :disabled="isSubmitting">
               <Icon v-if="isSubmitting" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Perubahan" }}
+              {{ isSubmitting ? "Saving..." : "Save Changes" }}
             </UiButton>
           </template>
         </editForm.Subscribe>

@@ -38,11 +38,11 @@ const filteredInvitations = computed(() => {
 });
 
 useHead({
-  title: "Undangan | Gabung Organisasi",
+  title: "Invitations | Join Organization",
   meta: [
     {
       name: "description",
-      content: "Lihat dan kelola undangan bergabung ke organisasi atau tim kolaborasi keuangan.",
+      content: "View and manage invitations to join organizations or collaborative finance teams.",
     },
     {
       name: "keywords",

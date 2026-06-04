@@ -6,12 +6,12 @@ const orgsTabStore = useOrgsTabsStore();
 const orgs = $authClient.useListOrganizations();
 
 useHead({
-  title: "Organisasi | Kelola Keuangan Tim",
+  title: "Organizations | Manage Team Finances",
   meta: [
     {
       name: "description",
       content:
-        "Buat atau kelola organisasi untuk kolaborasi keuangan tim, bisnis kecil, atau kelompok.",
+        "Create or manage organizations for team, small business, or group financial collaboration.",
     },
     {
       name: "keywords",
@@ -29,9 +29,9 @@ definePageMeta({
   <div class="mx-auto flex min-h-[60vh] items-center justify-center p-4">
     <UiTabs v-model:modelValue="orgsTabStore.activeTab" default-value="create" class="w-full max-w-md">
       <UiTabsList class="w-full">
-        <UiTabsTrigger value="create" class="flex-1 text-xs sm:text-sm">Buat</UiTabsTrigger>
-        <UiTabsTrigger value="enter" class="flex-1 text-xs sm:text-sm">Gabung</UiTabsTrigger>
-        <UiTabsTrigger value="invite" class="flex-1 text-xs sm:text-sm" :disabled="!orgs?.data">Undang</UiTabsTrigger>
+        <UiTabsTrigger value="create" class="flex-1 text-xs sm:text-sm">Create</UiTabsTrigger>
+        <UiTabsTrigger value="enter" class="flex-1 text-xs sm:text-sm">Join</UiTabsTrigger>
+        <UiTabsTrigger value="invite" class="flex-1 text-xs sm:text-sm" :disabled="!orgs?.data">Invite</UiTabsTrigger>
       </UiTabsList>
       <UiTabsContent value="create"><FormsOrgsCreate /></UiTabsContent>
       <UiTabsContent value="enter"><FormsOrgsEnter /></UiTabsContent>

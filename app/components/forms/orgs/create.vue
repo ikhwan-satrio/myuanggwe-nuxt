@@ -15,11 +15,11 @@ const orgForm = useForm({
   onSubmit: async ({ value }) => {
     const { error } = await $authClient.organization.create(value);
     if (!error) {
-      toast.success("Organisasi berhasil dibuat");
+      toast.success("Organization created successfully");
       await refreshNuxtData();
       await navigateTo("/dashboard");
     } else {
-      toast.error("Gagal membuat organisasi");
+      toast.error("Failed to create organization");
     }
   },
 });
@@ -28,19 +28,19 @@ const orgForm = useForm({
 <template>
   <UiCard class="w-full max-w-sm">
     <UiCardHeader>
-      <UiCardTitle class="text-2xl">Buat Organisasi</UiCardTitle>
-      <UiCardDescription>Masukkan nama dan slug untuk membuat organisasi baru.</UiCardDescription>
+      <UiCardTitle class="text-2xl">Create Organization</UiCardTitle>
+      <UiCardDescription>Enter a name and slug to create a new organization.</UiCardDescription>
     </UiCardHeader>
     <UiCardContent>
       <form class="grid gap-4" @submit.prevent="orgForm.handleSubmit()">
         <orgForm.Field name="name">
           <template #default="{ field }">
             <div class="grid gap-2">
-              <UiLabel for="name">Nama</UiLabel>
+              <UiLabel for="name">Name</UiLabel>
               <UiInput
                 id="name"
                 type="text"
-                placeholder="Nama Organisasi"
+                placeholder="Organization Name"
                 :value="field.state.value"
                 required
                 @blur="field.handleBlur()"
@@ -66,7 +66,7 @@ const orgForm = useForm({
               <UiInput
                 id="slug"
                 type="text"
-                placeholder="nama-organisasi"
+                placeholder="organization-name"
                 :value="field.state.value"
                 required
                 @blur="field.handleBlur()"
@@ -97,7 +97,7 @@ const orgForm = useForm({
                 name="lucide:loader-2"
                 class="mr-2 h-4 w-4 animate-spin"
               />
-              {{ isSubmitting ? "Menyimpan..." : "Buat Organisasi" }}
+              {{ isSubmitting ? "Saving..." : "Create Organization" }}
             </UiButton>
           </template>
         </orgForm.Subscribe>

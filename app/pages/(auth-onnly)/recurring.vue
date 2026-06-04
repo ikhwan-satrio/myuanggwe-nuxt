@@ -2,17 +2,15 @@
 import { useMutation } from "@vue/apollo-composable"
 import { toast } from "vue-sonner"
 import type { WalletType, CategoryType, RecurringTransactionType } from "~~/server/lib/db/schemas"
-import { useRecurringCrudStore } from "~/stores/crud/recurring"
 
-const recurringCrudStore = useRecurringCrudStore()
 const { $apolloClient } = useNuxtApp()
 
 useHead({
-  title: "Transaksi Rutin | Otomatisasi Pencatatan",
+  title: "Recurring Transactions | Automated Tracking",
   meta: [
     {
       name: "description",
-      content: "Kelola transaksi berulang Anda seperti tagihan, langganan, atau gaji agar pencatatan keuangan menjadi otomatis dan tidak terlewat.",
+      content: "Manage your recurring transactions like bills, subscriptions, or salary to automate your financial tracking and never miss a record.",
     },
     {
       name: "keywords",
@@ -24,8 +22,8 @@ useHead({
 definePageMeta({ middleware: ["auth"] })
 
 type RecurringItem = RecurringTransactionType & {
-  wallet: { name: string }
-  toWallet: { name: string } | null
+  wallet: { name: string; currency: string }
+  toWallet: { name: string; currency: string } | null
   category: { name: string; icon: string | null } | null
 }
 
@@ -78,10 +76,10 @@ const { mutate: deleteMutate } = useMutation(DELETE_RECURRING_TRANSACTION)
 async function handleDelete(id: string) {
   try {
     await deleteMutate({ id })
-    toast.success("Transaksi rutin dihapus")
+    toast.success("Recurring transaction deleted")
     await refreshRecurring()
   } catch {
-    toast.error("Gagal menghapus transaksi rutin")
+    toast.error("Failed to delete recurring transaction")
   }
 }
 </script>
@@ -90,8 +88,8 @@ async function handleDelete(id: string) {
   <div class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="min-w-0">
-        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Transaksi Rutin</h1>
-        <p class="text-xs text-muted-foreground sm:text-sm">Otomatisasi transaksi yang terjadi berulang kali.</p>
+        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Recurring Transactions</h1>
+        <p class="text-xs text-muted-foreground sm:text-sm">Automate transactions that occur repeatedly.</p>
       </div>
       <FormsRecurringCreate :wallets="wallets" :categories="categories" @created="refreshRecurring()" />
     </div>

@@ -43,7 +43,7 @@ const store = useCategoriesCrudStore()
                   <Icon name="lucide:pencil" class="mr-2 h-4 w-4" /> Edit
                 </UiDropdownMenuItem>
                 <UiDropdownMenuItem class="text-destructive focus:text-destructive" @click="emit('delete', cat.id)">
-                  <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Hapus
+                  <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Delete
                 </UiDropdownMenuItem>
               </UiDropdownMenuContent>
             </UiDropdownMenu>
@@ -52,7 +52,7 @@ const store = useCategoriesCrudStore()
       </UiCard>
 
       <div v-if="categories.length === 0" class="col-span-4 py-10 text-center text-muted-foreground">
-        Belum ada kategori. Tambah kategori pertama kamu!
+        No categories yet. Add your first category!
       </div>
     </template>
   </div>

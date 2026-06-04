@@ -55,7 +55,7 @@ const icons: Record<string, string> = {
                   <Icon name="lucide:pencil" class="mr-2 h-4 w-4" /> Edit
                 </UiDropdownMenuItem>
                 <UiDropdownMenuItem class="text-destructive focus:text-destructive" @click="emit('delete', wallet.id)">
-                  <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Hapus
+                  <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" /> Delete
                 </UiDropdownMenuItem>
               </UiDropdownMenuContent>
             </UiDropdownMenu>
@@ -68,7 +68,7 @@ const icons: Record<string, string> = {
       </UiCard>
 
       <div v-if="wallets.length === 0" class="col-span-3 py-10 text-center text-muted-foreground">
-        Belum ada dompet. Tambah dompet pertama kamu!
+        No wallets yet. Add your first wallet!
       </div>
     </template>
   </div>
