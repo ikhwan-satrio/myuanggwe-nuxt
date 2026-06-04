@@ -12,7 +12,5 @@ export default defineEventHandler(async (): Promise<Record<string, number>> => {
     `https://v6.exchangerate-api.com/v6/${apiKey}/latest/IDR`
   )
 
-  console.log("exhange")
-
   return data.conversion_rates
 })

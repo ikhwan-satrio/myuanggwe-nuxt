@@ -320,9 +320,12 @@ input CreateTransactionInput {
 }
 
 input UpdateTransactionInput {
+  type: TransactionType
   amount: Int
   description: String
   date: DateTime
+  walletId: ID
+  toWalletId: ID
   categoryId: ID
 }
 

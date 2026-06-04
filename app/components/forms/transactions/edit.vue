@@ -78,7 +78,7 @@ const transactionForm = useForm({
       toast.success("Transaksi berhasil diubah");
       store.closeEdit();
       emit("updated");
-    } catch {
+    } catch (e) {
       toast.error("Terjadi kesalahan");
     }
   },

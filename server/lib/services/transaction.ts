@@ -96,21 +96,26 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
       },
 
       async updateTransaction(id: string, input: Record<string, any>, c: Context) {
-        const orgId = c.session?.activeOrganizationId
-        const result = await db.update(transactions)
-          .set({
-            ...input,
-            date: input.date ? toDate(input.date) : undefined,
-          })
-          .where(
-            orgId
-              ? and(eq(transactions.id, id), eq(transactions.organizationId, orgId))
-              : and(eq(transactions.id, id), eq(transactions.userId, c.user?.id!))
-          )
-          .returning()
-        if (!result[0]) throw new Error('Transaction not found')
-        await redis.invalidateUserCache(c.user?.id!, orgId)
-        return result[0]
+        try {
+
+          const orgId = c.session?.activeOrganizationId
+          const result = await db.update(transactions)
+            .set({
+              ...input,
+              date: input.date ? toDate(input.date) : undefined,
+            })
+            .where(
+              orgId
+                ? and(eq(transactions.id, id), eq(transactions.organizationId, orgId))
+                : and(eq(transactions.id, id), eq(transactions.userId, c.user?.id!))
+            )
+            .returning()
+          if (!result[0]) throw new Error('Transaction not found')
+          await redis.invalidateUserCache(c.user?.id!, orgId)
+          return result[0]
+        } catch (e) {
+          return {}
+        }
       },
 
       async deleteTransaction(id: string, c: Context) {

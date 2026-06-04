@@ -1,6 +1,6 @@
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
-import { username, organization } from "better-auth/plugins";
+import { username, organization, role } from "better-auth/plugins";
 import { betterAuth } from "better-auth";
 
 const runtimeConfig = useRuntimeConfig();
