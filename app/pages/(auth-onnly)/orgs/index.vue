@@ -33,9 +33,9 @@ definePageMeta({
         <UiTabsTrigger value="enter" class="flex-1 text-xs sm:text-sm">Join</UiTabsTrigger>
         <UiTabsTrigger value="invite" class="flex-1 text-xs sm:text-sm" :disabled="!orgs?.data">Invite</UiTabsTrigger>
       </UiTabsList>
-      <UiTabsContent value="create"><FormsOrgsCreate /></UiTabsContent>
-      <UiTabsContent value="enter"><FormsOrgsEnter /></UiTabsContent>
-      <UiTabsContent value="invite"><FormsOrgsInvite /></UiTabsContent>
+      <UiTabsContent value="create"><OrgsFormsCreate /></UiTabsContent>
+      <UiTabsContent value="enter"><OrgsFormsEnter /></UiTabsContent>
+      <UiTabsContent value="invite"><OrgsFormsInvite /></UiTabsContent>
     </UiTabs>
   </div>
 </template>

@@ -101,7 +101,7 @@ async function handleDelete(id: string) {
         <Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Add Goal
       </UiButton>
     </div>
-    <FormsGoalsCreate :wallets="wallets" @created="refreshGoals()" />
-    <TablesGoalsList :goals="goals" :pending="pending" @delete="handleDelete" @allocate="handleAllocate" />
+    <GoalsFormsCreate :wallets="wallets" @created="refreshGoals()" />
+    <GoalsTableList :goals="goals" :pending="pending" @delete="handleDelete" @allocate="handleAllocate" />
   </div>
 </template>

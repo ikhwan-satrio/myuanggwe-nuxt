@@ -80,7 +80,9 @@
       "expense": "Pengeluaran",
       "transfer": "Transfer",
       "wallet": "Wallet",
-      "allWallets": "Semua wallet"
+      "allWallets": "Semua wallet",
+      "currency": "Mata Uang",
+      "allCurrencies": "Semua mata uang"
     },
     "csv": {
       "date": "Tanggal",

@@ -3,17 +3,19 @@ import { useMutation } from "@vue/apollo-composable"
 import { toast } from "vue-sonner"
 import { useForm } from "@tanstack/vue-form"
 import { budgetSchema } from "~/lib/@type-schemas/budget"
-import type { CategoryType } from "~~/server/lib/db/schemas"
+import type { CategoryType, WalletType } from "~~/server/lib/db/schemas"
 import { useBudgetsCrudStore } from "~/stores/crud/budgets"
 
 const props = defineProps<{
   expenseCategories: CategoryType[]
+  wallets: WalletType[]
 }>()
 
 const store = useBudgetsCrudStore()
 const emit = defineEmits<{ created: [] }>()
 
 const { mutate: createMutate } = useMutation(CREATE_BUDGET)
+const { formatCurrency } = useCurrency()
 
 const periodOptions = [
   { value: "monthly", label: "Monthly" },
@@ -24,6 +26,7 @@ const createForm = useForm({
   defaultValues: {
     amount: 0,
     period: "monthly" as string,
+    walletId: "",
     categoryId: "",
   },
   validators: {
@@ -47,6 +50,9 @@ const createFormValues = createForm.useStore((s) => s.values)
 const selectedCreateCategory = computed(
   () => props.expenseCategories.find((c) => c.id === createFormValues.value.categoryId)?.name ?? "Select Category",
 )
+const selectedCreateWallet = computed(
+  () => props.wallets.find((w) => w.id === createFormValues.value.walletId)?.name ?? "Select Wallet",
+)
 </script>
 
 <template>
@@ -61,16 +67,20 @@ const selectedCreateCategory = computed(
         <UiDialogTitle>Add Budget</UiDialogTitle>
       </UiDialogHeader>
       <form class="space-y-4 p-4" @submit.prevent="createForm.handleSubmit()">
-        <createForm.Field name="amount">
+        <createForm.Field name="walletId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="amount">Budget Amount</UiLabel>
-              <UiInput
-                id="amount" type="number" :value="field.state.value"
-                placeholder="0" min="0"
-                @blur="field.handleBlur()"
-                @input="(e: Event) => field.handleChange(Number((e.target as HTMLInputElement).value))"
-              />
+              <UiLabel>Wallet</UiLabel>
+              <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
+                <UiSelectTrigger class="w-full">
+                  <UiSelectValue>{{ selectedCreateWallet }}</UiSelectValue>
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem v-for="wallet in wallets" :key="wallet.id" :value="wallet.id">
+                    {{ wallet.name }} ({{ formatCurrency(wallet.balance, wallet.currency) }})
+                  </UiSelectItem>
+                </UiSelectContent>
+              </UiSelect>
               <p v-if="!field.state.meta.isValid" class="text-xs text-destructive">
                 <span v-for="(err, i) in field.state.meta.errors" :key="i" class="block">* {{ err?.message }}</span>
               </p>
@@ -92,6 +102,23 @@ const selectedCreateCategory = computed(
                   </UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
+              <p v-if="!field.state.meta.isValid" class="text-xs text-destructive">
+                <span v-for="(err, i) in field.state.meta.errors" :key="i" class="block">* {{ err?.message }}</span>
+              </p>
+            </div>
+          </template>
+        </createForm.Field>
+
+        <createForm.Field name="amount">
+          <template #default="{ field }">
+            <div class="space-y-2">
+              <UiLabel for="amount">Budget Amount</UiLabel>
+              <UiInput
+                id="amount" type="number" :value="field.state.value"
+                placeholder="0" min="0"
+                @blur="field.handleBlur()"
+                @input="(e: Event) => field.handleChange(Number((e.target as HTMLInputElement).value))"
+              />
               <p v-if="!field.state.meta.isValid" class="text-xs text-destructive">
                 <span v-for="(err, i) in field.state.meta.errors" :key="i" class="block">* {{ err?.message }}</span>
               </p>

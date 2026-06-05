@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useMutation } from "@vue/apollo-composable"
 import { toast } from "vue-sonner"
-import type { BudgetType, CategoryType } from "~~/server/lib/db/schemas"
+import type { BudgetType, CategoryType, WalletType } from "~~/server/lib/db/schemas"
 
 const { $apolloClient } = useNuxtApp()
 
@@ -23,6 +23,7 @@ definePageMeta({ middleware: ["auth"] })
 
 type BudgetWithCategory = BudgetType & {
   category: { id: string; name: string; icon: string | null; type: string }
+  wallet: { id: string; name: string; currency: string }
 }
 
 const {
@@ -53,10 +54,23 @@ const { data: categoriesData } = useAsyncData<CategoryType[]>(
   { server: false, lazy: true },
 )
 
+const { data: walletsData } = useAsyncData<WalletType[]>(
+  "wallets-budget",
+  async () => {
+    const result = await $apolloClient.query({
+      query: GET_WALLETS,
+      fetchPolicy: "network-only",
+    })
+    return result.data.wallets
+  },
+  { server: false, lazy: true },
+)
+
 const budgets = computed(() => budgetsData.value ?? [])
 const expenseCategories = computed(() =>
   (categoriesData.value ?? []).filter((c) => c.type === "expense"),
 )
+const wallets = computed(() => walletsData.value ?? [])
 
 const { mutate: deleteMutate } = useMutation(DELETE_BUDGET)
 
@@ -78,9 +92,9 @@ async function handleDelete(id: string) {
         <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Budgets</h1>
         <p class="text-xs text-muted-foreground sm:text-sm">Set spending limits for each category.</p>
       </div>
-      <FormsBudgetsCreate :expense-categories="expenseCategories" @created="refreshBudgets()" />
+      <BudgetsFormsCreate :expense-categories="expenseCategories" :wallets="wallets" @created="refreshBudgets()" />
     </div>
-    <FormsBudgetsEdit :expense-categories="expenseCategories" @updated="refreshBudgets()" />
-    <TablesBudgetsList :budgets="budgets" :pending="pending" @delete="handleDelete" />
+    <BudgetsFormsEdit :expense-categories="expenseCategories" :wallets="wallets" @updated="refreshBudgets()" />
+    <BudgetsTableList :budgets="budgets" :pending="pending" @delete="handleDelete" />
   </div>
 </template>

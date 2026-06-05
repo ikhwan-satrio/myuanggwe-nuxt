@@ -20,7 +20,7 @@ export class BudgetService extends Effect.Service<BudgetService>()('BudgetServic
           return db.query.budgets.findMany({
             where: (b, { eq }) =>
               orgId ? eq(b.organizationId, orgId) : eq(b.userId, c.user?.id!),
-            with: { category: true },
+            with: { category: true, wallet: true },
           })
         })
       },
@@ -35,7 +35,7 @@ export class BudgetService extends Effect.Service<BudgetService>()('BudgetServic
               orgId
                 ? and(eq(b.id, id), eq(b.organizationId, orgId))
                 : and(eq(b.id, id), eq(b.userId, c.user?.id!)),
-            with: { category: true },
+            with: { category: true, wallet: true },
           }) ?? null
         })
       },

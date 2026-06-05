@@ -80,7 +80,9 @@
       "expense": "Expense",
       "transfer": "Transfer",
       "wallet": "Wallet",
-      "allWallets": "All wallets"
+      "allWallets": "All wallets",
+      "currency": "Currency",
+      "allCurrencies": "All currencies"
     },
     "csv": {
       "date": "Date",

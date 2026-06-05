@@ -80,7 +80,9 @@
       "expense": "支出",
       "transfer": "振替",
       "wallet": "ウォレット",
-      "allWallets": "すべてのウォレット"
+      "allWallets": "すべてのウォレット",
+      "currency": "通貨",
+      "allCurrencies": "すべての通貨"
     },
     "csv": {
       "date": "日付",

@@ -29,8 +29,8 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
 
     async function checkSufficientBalance(walletId: string, amount: number) {
       const wallet = await db.query.wallets.findFirst({ where: eq(wallets.id, walletId) })
-      if (!wallet) throw new Error('Dompet tidak ditemukan')
-      if (wallet.balance < amount) throw new Error(`Saldo ${wallet.name} tidak mencukupi (tersedia: ${wallet.balance})`)
+      if (!wallet) throw new Error('Wallet not found')
+      if (wallet.balance < amount) throw new Error(`Insufficient balance in ${wallet.name} (available: ${wallet.balance})`)
     }
 
     return {
@@ -109,7 +109,7 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
         }
         if (input.type === 'transfer' && input.toWalletId) {
           const destWallet = await db.query.wallets.findFirst({ where: eq(wallets.id, input.toWalletId) })
-          if (!destWallet) throw new Error('Dompet tujuan tidak ditemukan')
+          if (!destWallet) throw new Error('Destination wallet not found')
         }
 
         const result = await db.transaction(async (tx) => {
@@ -141,7 +141,7 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
         const oldTxn = await db.query.transactions.findFirst({
           where: eq(transactions.id, id)
         })
-        if (!oldTxn) throw new Error('Transaksi tidak ditemukan')
+        if (!oldTxn) throw new Error('Transaction not found')
 
         const newType = input.type ?? oldTxn.type
         const newAmount = input.amount ?? oldTxn.amount
@@ -153,8 +153,8 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
 
           if (newType === 'expense' || newType === 'transfer') {
             const wallet = await tx.query.wallets.findFirst({ where: eq(wallets.id, newWalletId) })
-            if (!wallet) throw new Error('Dompet tidak ditemukan')
-            if (wallet.balance < newAmount) throw new Error(`Saldo ${wallet.name} tidak mencukupi (tersedia: ${wallet.balance})`)
+            if (!wallet) throw new Error('Wallet not found')
+            if (wallet.balance < newAmount) throw new Error(`Insufficient balance in ${wallet.name} (available: ${wallet.balance})`)
           }
 
           const updated = await tx.update(transactions)
@@ -168,7 +168,7 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
                 : and(eq(transactions.id, id), eq(transactions.userId, c.user?.id!))
             )
             .returning()
-          if (!updated[0]) throw new Error('Transaksi tidak ditemukan')
+          if (!updated[0]) throw new Error('Transaction not found')
 
           await applyBalanceChange(newType, newAmount, newWalletId, newToWalletId, false, tx)
 
@@ -185,7 +185,7 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
         const txn = await db.query.transactions.findFirst({
           where: eq(transactions.id, id)
         })
-        if (!txn) throw new Error('Transaksi tidak ditemukan')
+        if (!txn) throw new Error('Transaction not found')
 
         await db.transaction(async (tx) => {
           await tx.delete(transactions).where(

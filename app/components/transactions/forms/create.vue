@@ -8,7 +8,7 @@ import { useTransactionsCrudStore } from "~/stores/crud/transactions";
 import { transactionSchema } from "~/lib/@type-schemas/transactions";
 
 const store = useTransactionsCrudStore();
-const emit = defineEmits<{ updated: [] }>();
+const emit = defineEmits<{ created: [] }>();
 
 const { formatCurrency } = useCurrency();
 const { $apolloClient } = useNuxtApp();
@@ -40,7 +40,7 @@ const { data: categoriesData } = useAsyncData<CategoryType[]>(
 const wallets = computed(() => walletsData.value ?? []);
 const categories = computed(() => categoriesData.value ?? []);
 
-const { mutate } = useMutation(UPDATE_TRANSACTION);
+const { mutate } = useMutation(CREATE_TRANSACTION);
 
 const transactionForm = useForm({
   validators: {
@@ -57,12 +57,13 @@ const transactionForm = useForm({
     date: new Date().toISOString().split("T")[0],
   },
   onSubmit: async ({ value }) => {
-    if (!store.editingTransaction) return;
     try {
+      const wallet = wallets.value.find((w) => w.id === value.walletId)
       const input: any = {
         type: value.type,
         amount: value.amount,
         walletId: value.walletId,
+        currency: wallet?.currency ?? 'IDR',
         description: value.description || null,
         date: new Date(value.date!).toISOString(),
       };
@@ -73,34 +74,17 @@ const transactionForm = useForm({
         input.categoryId = value.categoryId;
       }
 
-      await mutate({ id: store.editingTransaction.id, input });
+      await mutate({ input });
 
-      toast.success("Transaction updated successfully");
-      store.closeEdit();
-      emit("updated");
-    } catch (e) {
+      toast.success("Transaction recorded successfully");
+      store.closeCreate();
+      transactionForm.reset();
+      emit("created");
+    } catch {
       toast.error("An error occurred");
     }
   },
 });
-
-watch(
-  () => store.editingTransaction,
-  (tx) => {
-    if (!tx) return;
-    transactionForm.setFieldValue("type", tx.type as TransactionType);
-    transactionForm.setFieldValue("amount", tx.amount);
-    transactionForm.setFieldValue("walletId", tx.wallet.id);
-    transactionForm.setFieldValue("toWalletId", tx.toWallet?.id ?? "");
-    transactionForm.setFieldValue("categoryId", tx.category?.id ?? "");
-    transactionForm.setFieldValue("description", tx.description ?? "");
-    transactionForm.setFieldValue(
-      "date",
-      new Date(tx.date).toISOString().split("T")[0],
-    );
-  },
-  { immediate: true },
-);
 
 const formValues = transactionForm.useStore((s) => s.values);
 
@@ -122,45 +106,26 @@ const selectedCategory = computed(
 const filteredCategories = computed(() =>
   categories.value.filter((c) => c.type === formValues.value.type),
 );
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("en-US");
-}
 </script>
 
 <template>
-  <UiSheet :open="store.editOpen" @update:open="store.closeEdit()">
-    <UiSheetContent side="right" class="overflow-y-auto">
-      <UiSheetHeader>
-        <UiSheetTitle
-          >Edit Transaction
-          {{
-            store.editingTransaction
-              ? formatDate(String(store.editingTransaction.date))
-              : ""
-          }}</UiSheetTitle
-        >
-        <UiSheetDescription
-          >Update transaction info from
-          {{
-            store.editingTransaction
-              ? formatDate(String(store.editingTransaction.date))
-              : ""
-          }}</UiSheetDescription
-        >
-      </UiSheetHeader>
-
-      <form
-        class="space-y-4 p-4"
-        @submit.prevent="transactionForm.handleSubmit()"
-      >
+  <UiDialog :open="store.createOpen" @update:open="store.closeCreate()">
+    <UiDialogTrigger as-child>
+      <UiButton size="sm" class="gap-2" @click="store.openCreate()">
+        <Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Record Transaction
+      </UiButton>
+    </UiDialogTrigger>
+    <UiDialogContent class="sm:max-w-md w-[95vw] max-w-[95vw] sm:max-w-md">
+      <UiDialogHeader>
+        <UiDialogTitle>Add Transaction</UiDialogTitle>
+        <UiDialogDescription>Record income, expenses, or transfers between wallets.</UiDialogDescription>
+      </UiDialogHeader>
+      <form class="space-y-4" @submit.prevent="transactionForm.handleSubmit()">
         <transactionForm.Field name="type">
           <template #default="{ field }">
             <UiTabs
               :model-value="field.state.value"
-              @update:model-value="
-                (v) => field.handleChange(v as TransactionType)
-              "
+              @update:model-value="(v) => field.handleChange(v as TransactionType)"
             >
               <UiTabsList class="grid w-full grid-cols-3">
                 <UiTabsTrigger value="expense">Expense</UiTabsTrigger>
@@ -174,9 +139,9 @@ function formatDate(date: string) {
         <transactionForm.Field name="amount">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="edit-amount">Amount</UiLabel>
+              <UiLabel for="amount">Amount</UiLabel>
               <UiInput
-                id="edit-amount"
+                id="amount"
                 type="number"
                 :value="field.state.value"
                 placeholder="0"
@@ -184,9 +149,7 @@ function formatDate(date: string) {
                 @blur="field.handleBlur()"
                 @input="
                   (e: Event) =>
-                    field.handleChange(
-                      Number((e.target as HTMLInputElement).value),
-                    )
+                    field.handleChange(Number((e.target as HTMLInputElement).value))
                 "
               />
               <p
@@ -274,8 +237,8 @@ function formatDate(date: string) {
               <UiLabel>Category</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
-                @update:model-value="(v) => field.handleChange(v as string)"
-              >
+                @update:model-value="(v)=> field.handleChange(v as string)"
+                >
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ selectedCategory }}</UiSelectValue>
                 </UiSelectTrigger>
@@ -302,9 +265,9 @@ function formatDate(date: string) {
         <transactionForm.Field name="description">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="edit-description">Note (Optional)</UiLabel>
+              <UiLabel for="description">Note (Optional)</UiLabel>
               <UiInput
-                id="edit-description"
+                id="description"
                 :value="field.state.value"
                 placeholder="Lunch, etc."
                 @blur="field.handleBlur()"
@@ -320,9 +283,9 @@ function formatDate(date: string) {
         <transactionForm.Field name="date">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="edit-date">Date</UiLabel>
+              <UiLabel for="date">Date</UiLabel>
               <UiInput
-                id="edit-date"
+                id="date"
                 type="date"
                 :value="field.state.value"
                 @blur="field.handleBlur()"
@@ -343,11 +306,11 @@ function formatDate(date: string) {
                 name="lucide:loader-2"
                 class="mr-2 h-4 w-4 animate-spin"
               />
-              {{ isSubmitting ? "Saving..." : "Save Changes" }}
+              {{ isSubmitting ? "Saving..." : "Save Transaction" }}
             </UiButton>
           </template>
         </transactionForm.Subscribe>
       </form>
-    </UiSheetContent>
-  </UiSheet>
+    </UiDialogContent>
+  </UiDialog>
 </template>

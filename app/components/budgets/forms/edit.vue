@@ -3,17 +3,19 @@ import { useMutation } from "@vue/apollo-composable"
 import { toast } from "vue-sonner"
 import { useForm } from "@tanstack/vue-form"
 import { budgetSchema } from "~/lib/@type-schemas/budget"
-import type { CategoryType } from "~~/server/lib/db/schemas"
+import type { CategoryType, WalletType } from "~~/server/lib/db/schemas"
 import { useBudgetsCrudStore } from "~/stores/crud/budgets"
 
 const props = defineProps<{
   expenseCategories: CategoryType[]
+  wallets: WalletType[]
 }>()
 
 const store = useBudgetsCrudStore()
 const emit = defineEmits<{ updated: [] }>()
 
 const { mutate: updateMutate } = useMutation(UPDATE_BUDGET)
+const { formatCurrency } = useCurrency()
 
 const periodOptions = [
   { value: "monthly", label: "Monthly" },
@@ -24,6 +26,7 @@ const editForm = useForm({
   defaultValues: {
     amount: 0,
     period: "monthly" as string,
+    walletId: "",
     categoryId: "",
   },
   validators: {
@@ -47,11 +50,15 @@ const editFormValues = editForm.useStore((s) => s.values)
 const selectedEditCategory = computed(
   () => props.expenseCategories.find((c) => c.id === editFormValues.value.categoryId)?.name ?? "Select Category",
 )
+const selectedEditWallet = computed(
+  () => props.wallets.find((w) => w.id === editFormValues.value.walletId)?.name ?? "Select Wallet",
+)
 
 watch(() => store.editingItem, (item) => {
   if (!item) return
   editForm.setFieldValue("amount", item.amount)
   editForm.setFieldValue("period", item.period)
+  editForm.setFieldValue("walletId", item.walletId)
   editForm.setFieldValue("categoryId", item.categoryId)
 }, { immediate: true })
 </script>
@@ -64,16 +71,20 @@ watch(() => store.editingItem, (item) => {
         <UiSheetDescription>Update budget for {{ store.editingItem?.category?.name }} category</UiSheetDescription>
       </UiSheetHeader>
       <form class="space-y-4 p-4" @submit.prevent="editForm.handleSubmit()">
-        <editForm.Field name="amount">
+        <editForm.Field name="walletId">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="edit-amount">Budget Amount</UiLabel>
-              <UiInput
-                id="edit-amount" type="number" :value="field.state.value"
-                placeholder="0" min="0"
-                @blur="field.handleBlur()"
-                @input="(e: Event) => field.handleChange(Number((e.target as HTMLInputElement).value))"
-              />
+              <UiLabel>Wallet</UiLabel>
+              <UiSelect :model-value="field.state.value" @update:model-value="(v) => field.handleChange(v as string)">
+                <UiSelectTrigger class="w-full">
+                  <UiSelectValue>{{ selectedEditWallet }}</UiSelectValue>
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectItem v-for="wallet in wallets" :key="wallet.id" :value="wallet.id">
+                    {{ wallet.name }} ({{ formatCurrency(wallet.balance, wallet.currency) }})
+                  </UiSelectItem>
+                </UiSelectContent>
+              </UiSelect>
               <p v-if="!field.state.meta.isValid" class="text-xs text-destructive">
                 <span v-for="(err, i) in field.state.meta.errors" :key="i" class="block">* {{ err?.message }}</span>
               </p>
@@ -95,6 +106,23 @@ watch(() => store.editingItem, (item) => {
                   </UiSelectItem>
                 </UiSelectContent>
               </UiSelect>
+              <p v-if="!field.state.meta.isValid" class="text-xs text-destructive">
+                <span v-for="(err, i) in field.state.meta.errors" :key="i" class="block">* {{ err?.message }}</span>
+              </p>
+            </div>
+          </template>
+        </editForm.Field>
+
+        <editForm.Field name="amount">
+          <template #default="{ field }">
+            <div class="space-y-2">
+              <UiLabel for="edit-amount">Budget Amount</UiLabel>
+              <UiInput
+                id="edit-amount" type="number" :value="field.state.value"
+                placeholder="0" min="0"
+                @blur="field.handleBlur()"
+                @input="(e: Event) => field.handleChange(Number((e.target as HTMLInputElement).value))"
+              />
               <p v-if="!field.state.meta.isValid" class="text-xs text-destructive">
                 <span v-for="(err, i) in field.state.meta.errors" :key="i" class="block">* {{ err?.message }}</span>
               </p>

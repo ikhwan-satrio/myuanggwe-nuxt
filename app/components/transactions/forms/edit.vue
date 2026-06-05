@@ -8,7 +8,7 @@ import { useTransactionsCrudStore } from "~/stores/crud/transactions";
 import { transactionSchema } from "~/lib/@type-schemas/transactions";
 
 const store = useTransactionsCrudStore();
-const emit = defineEmits<{ created: [] }>();
+const emit = defineEmits<{ updated: [] }>();
 
 const { formatCurrency } = useCurrency();
 const { $apolloClient } = useNuxtApp();
@@ -40,7 +40,7 @@ const { data: categoriesData } = useAsyncData<CategoryType[]>(
 const wallets = computed(() => walletsData.value ?? []);
 const categories = computed(() => categoriesData.value ?? []);
 
-const { mutate } = useMutation(CREATE_TRANSACTION);
+const { mutate } = useMutation(UPDATE_TRANSACTION);
 
 const transactionForm = useForm({
   validators: {
@@ -57,11 +57,14 @@ const transactionForm = useForm({
     date: new Date().toISOString().split("T")[0],
   },
   onSubmit: async ({ value }) => {
+    if (!store.editingTransaction) return;
     try {
+      const wallet = wallets.value.find((w) => w.id === value.walletId)
       const input: any = {
         type: value.type,
         amount: value.amount,
         walletId: value.walletId,
+        currency: wallet?.currency ?? 'IDR',
         description: value.description || null,
         date: new Date(value.date!).toISOString(),
       };
@@ -72,17 +75,34 @@ const transactionForm = useForm({
         input.categoryId = value.categoryId;
       }
 
-      await mutate({ input });
+      await mutate({ id: store.editingTransaction.id, input });
 
-      toast.success("Transaction recorded successfully");
-      store.closeCreate();
-      transactionForm.reset();
-      emit("created");
-    } catch {
+      toast.success("Transaction updated successfully");
+      store.closeEdit();
+      emit("updated");
+    } catch (e) {
       toast.error("An error occurred");
     }
   },
 });
+
+watch(
+  () => store.editingTransaction,
+  (tx) => {
+    if (!tx) return;
+    transactionForm.setFieldValue("type", tx.type as TransactionType);
+    transactionForm.setFieldValue("amount", tx.amount);
+    transactionForm.setFieldValue("walletId", tx.wallet.id);
+    transactionForm.setFieldValue("toWalletId", tx.toWallet?.id ?? "");
+    transactionForm.setFieldValue("categoryId", tx.category?.id ?? "");
+    transactionForm.setFieldValue("description", tx.description ?? "");
+    transactionForm.setFieldValue(
+      "date",
+      new Date(tx.date).toISOString().split("T")[0],
+    );
+  },
+  { immediate: true },
+);
 
 const formValues = transactionForm.useStore((s) => s.values);
 
@@ -104,26 +124,45 @@ const selectedCategory = computed(
 const filteredCategories = computed(() =>
   categories.value.filter((c) => c.type === formValues.value.type),
 );
+
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString("en-US");
+}
 </script>
 
 <template>
-  <UiDialog :open="store.createOpen" @update:open="store.closeCreate()">
-    <UiDialogTrigger as-child>
-      <UiButton size="sm" class="gap-2" @click="store.openCreate()">
-        <Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Record Transaction
-      </UiButton>
-    </UiDialogTrigger>
-    <UiDialogContent class="sm:max-w-md w-[95vw] max-w-[95vw] sm:max-w-md">
-      <UiDialogHeader>
-        <UiDialogTitle>Add Transaction</UiDialogTitle>
-        <UiDialogDescription>Record income, expenses, or transfers between wallets.</UiDialogDescription>
-      </UiDialogHeader>
-      <form class="space-y-4" @submit.prevent="transactionForm.handleSubmit()">
+  <UiSheet :open="store.editOpen" @update:open="store.closeEdit()">
+    <UiSheetContent side="right" class="overflow-y-auto">
+      <UiSheetHeader>
+        <UiSheetTitle
+          >Edit Transaction
+          {{
+            store.editingTransaction
+              ? formatDate(String(store.editingTransaction.date))
+              : ""
+          }}</UiSheetTitle
+        >
+        <UiSheetDescription
+          >Update transaction info from
+          {{
+            store.editingTransaction
+              ? formatDate(String(store.editingTransaction.date))
+              : ""
+          }}</UiSheetDescription
+        >
+      </UiSheetHeader>
+
+      <form
+        class="space-y-4 p-4"
+        @submit.prevent="transactionForm.handleSubmit()"
+      >
         <transactionForm.Field name="type">
           <template #default="{ field }">
             <UiTabs
               :model-value="field.state.value"
-              @update:model-value="(v) => field.handleChange(v as TransactionType)"
+              @update:model-value="
+                (v) => field.handleChange(v as TransactionType)
+              "
             >
               <UiTabsList class="grid w-full grid-cols-3">
                 <UiTabsTrigger value="expense">Expense</UiTabsTrigger>
@@ -137,9 +176,9 @@ const filteredCategories = computed(() =>
         <transactionForm.Field name="amount">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="amount">Amount</UiLabel>
+              <UiLabel for="edit-amount">Amount</UiLabel>
               <UiInput
-                id="amount"
+                id="edit-amount"
                 type="number"
                 :value="field.state.value"
                 placeholder="0"
@@ -147,7 +186,9 @@ const filteredCategories = computed(() =>
                 @blur="field.handleBlur()"
                 @input="
                   (e: Event) =>
-                    field.handleChange(Number((e.target as HTMLInputElement).value))
+                    field.handleChange(
+                      Number((e.target as HTMLInputElement).value),
+                    )
                 "
               />
               <p
@@ -235,8 +276,8 @@ const filteredCategories = computed(() =>
               <UiLabel>Category</UiLabel>
               <UiSelect
                 :model-value="field.state.value"
-                @update:model-value="(v)=> field.handleChange(v as string)"
-                >
+                @update:model-value="(v) => field.handleChange(v as string)"
+              >
                 <UiSelectTrigger class="w-full">
                   <UiSelectValue>{{ selectedCategory }}</UiSelectValue>
                 </UiSelectTrigger>
@@ -263,9 +304,9 @@ const filteredCategories = computed(() =>
         <transactionForm.Field name="description">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="description">Note (Optional)</UiLabel>
+              <UiLabel for="edit-description">Note (Optional)</UiLabel>
               <UiInput
-                id="description"
+                id="edit-description"
                 :value="field.state.value"
                 placeholder="Lunch, etc."
                 @blur="field.handleBlur()"
@@ -281,9 +322,9 @@ const filteredCategories = computed(() =>
         <transactionForm.Field name="date">
           <template #default="{ field }">
             <div class="space-y-2">
-              <UiLabel for="date">Date</UiLabel>
+              <UiLabel for="edit-date">Date</UiLabel>
               <UiInput
-                id="date"
+                id="edit-date"
                 type="date"
                 :value="field.state.value"
                 @blur="field.handleBlur()"
@@ -304,11 +345,11 @@ const filteredCategories = computed(() =>
                 name="lucide:loader-2"
                 class="mr-2 h-4 w-4 animate-spin"
               />
-              {{ isSubmitting ? "Saving..." : "Save Transaction" }}
+              {{ isSubmitting ? "Saving..." : "Save Changes" }}
             </UiButton>
           </template>
         </transactionForm.Subscribe>
       </form>
-    </UiDialogContent>
-  </UiDialog>
+    </UiSheetContent>
+  </UiSheet>
 </template>

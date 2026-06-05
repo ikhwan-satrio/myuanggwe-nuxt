@@ -31,11 +31,9 @@ useHead({
       </UiTabsList>
 
       <UiTabsContent value="register">
-        <FormsRegister />
-      </UiTabsContent>
+        <AuthFormsRegister />
 
-      <UiTabsContent value="login">
-        <FormsLogin />
+        <AuthFormsLogin />
       </UiTabsContent>
     </UiTabs>
   </div>

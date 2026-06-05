@@ -62,10 +62,10 @@ async function handleDelete(id: string) {
           Manage your financial accounts.
         </p>
       </div>
-      <FormsWalletsCreate @created="refreshWallets()" />
+      <WalletsFormsCreate @created="refreshWallets()" />
     </div>
-    <FormsWalletsEdit @updated="refreshWallets()" />
-    <TablesWalletsList
+    <WalletsFormsEdit @updated="refreshWallets()" />
+    <WalletsTableList
       :wallets="wallets"
       :pending="pending"
       @delete="handleDelete"

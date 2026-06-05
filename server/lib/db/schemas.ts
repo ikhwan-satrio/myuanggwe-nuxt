@@ -215,6 +215,9 @@ export const budgets = sqliteTable('budgets', {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   amount: integer('amount').notNull(),
+  walletId: text('wallet_id')
+    .notNull()
+    .references(() => wallets.id, { onDelete: 'cascade' }),
   period: text('period', { enum: ['monthly', 'yearly'] })
     .default('monthly')
     .notNull(),
@@ -373,6 +376,10 @@ export const categoryRelations = relations(categories, ({ one, many }) => ({
 }));
 
 export const budgetRelations = relations(budgets, ({ one }) => ({
+  wallet: one(wallets, {
+    fields: [budgets.walletId],
+    references: [wallets.id]
+  }),
   category: one(categories, {
     fields: [budgets.categoryId],
     references: [categories.id]

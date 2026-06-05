@@ -4,6 +4,7 @@ import { useBudgetsCrudStore } from "~/stores/crud/budgets"
 
 type BudgetWithCategory = BudgetType & {
   category: { id: string; name: string; icon: string | null; type: string }
+  wallet: { id: string; name: string; currency: string }
 }
 
 defineProps<{
@@ -50,6 +51,7 @@ function getProgressClass(spending: number, amount: number) {
             <span v-if="budget.category?.icon">{{ budget.category.icon }}</span>
             <span class="font-semibold">{{ budget.category?.name }}</span>
             <UiBadge variant="outline" class="text-[10px] capitalize">{{ budget.period }}</UiBadge>
+            <span class="text-xs text-muted-foreground">{{ budget.wallet?.name }}</span>
           </div>
           <UiDropdownMenu>
             <UiDropdownMenuTrigger as-child>
@@ -76,7 +78,7 @@ function getProgressClass(spending: number, amount: number) {
             />
           </div>
           <div class="flex justify-between text-xs">
-            <span>{{ formatCurrency(0) }} / {{ formatCurrency(budget.amount) }}</span>
+            <span>{{ formatCurrency(0, budget.wallet?.currency) }} / {{ formatCurrency(budget.amount, budget.wallet?.currency) }}</span>
             <span class="text-muted-foreground">{{ Math.round((0 / budget.amount) * 100) }}%</span>
           </div>
         </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm } from "@tanstack/vue-form";
 import { toast } from "vue-sonner";
-import { registerSchema } from "~/lib/@type-schemas/register";
+import { loginSchema } from "~/lib/@type-schemas/login";
 import { useAuthTabsStore } from "~/stores/auth-tabs";
 
 const { $authClient } = useNuxtApp();
@@ -10,33 +10,30 @@ const authTabsStore = useAuthTabsStore();
 
 const form = useForm({
   defaultValues: {
-    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
   },
   validators: {
-    onChange: registerSchema,
-    onSubmit: registerSchema,
+    onChange: loginSchema,
+    onSubmit: loginSchema,
   },
   onSubmit: async ({ value }) => {
-    if (value.password !== value.confirmPassword) {
-      toast.error("password doesnt match");
-      return;
-    }
-
-    const { error } = await $authClient.signUp.email({
-      name: value.name,
+    const { error } = await $authClient.signIn.email({
       email: value.email,
       password: value.password,
+      fetchOptions: {
+        onError: ({ error }) => {
+          toast.error(error.message || "Failed to login");
+        },
+      },
     });
 
     if (error) {
-      toast.error(error.message || "failed to register");
+      toast.error(error.message || "Failed to login");
       return;
     }
-
-    await refreshNuxtData();
+    
+    await refreshNuxtData()
     navigateTo("/dashboard");
   },
 });
@@ -45,45 +42,14 @@ const form = useForm({
 <template>
   <UiCard class="w-full">
     <UiCardHeader class="space-y-1.5 text-center px-4 sm:px-6 pt-4 sm:pt-6">
-      <UiCardTitle class="text-xl sm:text-2xl font-bold">Create Account</UiCardTitle>
+      <UiCardTitle class="text-xl sm:text-2xl font-bold">Sign In</UiCardTitle>
       <UiCardDescription class="text-xs sm:text-sm">
-        Register to start managing your finances
+        Welcome back! Sign in to manage your finances
       </UiCardDescription>
     </UiCardHeader>
 
     <UiCardContent class="px-4 sm:px-6">
       <form @submit.prevent="form.handleSubmit" class="space-y-4">
-        <form.Field name="name">
-          <template #default="{ field }">
-            <UiFormItem>
-              <UiLabel :for="field.name" class="text-xs sm:text-sm">Full Name</UiLabel>
-              <UiInput
-                :id="field.name"
-                :name="field.name"
-                :value="field.state.value"
-                placeholder="John Doe"
-                class="h-9 sm:h-10 text-xs sm:text-sm"
-                @input="
-                  field.handleChange(($event.target as HTMLInputElement).value)
-                "
-                @blur="field.handleBlur"
-              />
-              <p
-                v-if="!field.state.meta.isValid"
-                class="text-xs text-destructive"
-              >
-                <span
-                  v-for="(err, i) in field.state.meta.errors"
-                  :key="i"
-                  class="block"
-                >
-                  * {{ err?.message }}
-                </span>
-              </p>
-            </UiFormItem>
-          </template>
-        </form.Field>
-
         <form.Field name="email">
           <template #default="{ field }">
             <UiFormItem>
@@ -148,38 +114,6 @@ const form = useForm({
           </template>
         </form.Field>
 
-        <form.Field name="confirmPassword">
-          <template #default="{ field }">
-            <UiFormItem>
-              <UiLabel :for="field.name" class="text-xs sm:text-sm">Confirm Password</UiLabel>
-              <UiInput
-                :id="field.name"
-                :name="field.name"
-                type="password"
-                :value="field.state.value"
-                placeholder="••••••••"
-                class="h-9 sm:h-10 text-xs sm:text-sm"
-                @input="
-                  field.handleChange(($event.target as HTMLInputElement).value)
-                "
-                @blur="field.handleBlur"
-              />
-              <p
-                v-if="!field.state.meta.isValid"
-                class="text-xs text-destructive"
-              >
-                <span
-                  v-for="(err, i) in field.state.meta.errors"
-                  :key="i"
-                  class="block"
-                >
-                  * {{ err?.message }}
-                </span>
-              </p>
-            </UiFormItem>
-          </template>
-        </form.Field>
-
         <form.Subscribe>
           <template #default="{ errorMap }">
             <p
@@ -204,7 +138,7 @@ const form = useForm({
                 size="16"
                 class="animate-spin"
               />
-              {{ isSubmitting ? "Creating account..." : "Sign Up" }}
+              {{ isSubmitting ? "Signing in..." : "Sign In" }}
             </UiButton>
           </template>
         </form.Subscribe>
@@ -213,12 +147,12 @@ const form = useForm({
 
     <UiCardFooter class="justify-center px-4 sm:px-6 pb-4 sm:pb-6">
       <p class="text-xs sm:text-sm text-muted-foreground">
-        Already have an account?
+        Don't have an account?
         <button
           class="text-foreground underline font-medium"
-          @click="authTabsStore.setActiveTab('login')"
+          @click="authTabsStore.setActiveTab('register')"
         >
-          Login
+          Register
         </button>
       </p>
     </UiCardFooter>

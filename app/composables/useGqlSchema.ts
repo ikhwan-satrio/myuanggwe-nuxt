@@ -225,6 +225,7 @@ export const GET_BUDGETS = gql`
       amount
       period
       createdAt
+      wallet { id name currency }
       category { id name icon type }
     }
   }
@@ -237,6 +238,7 @@ export const GET_BUDGET = gql`
       amount
       period
       createdAt
+      wallet { id name currency }
       category { id name icon type }
     }
   }

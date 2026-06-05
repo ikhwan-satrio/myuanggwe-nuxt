@@ -59,9 +59,9 @@ async function handleDelete(id: string) {
         <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Categories</h1>
         <p class="text-xs text-muted-foreground sm:text-sm">Organize transactions by type.</p>
       </div>
-      <FormsCategoriesCreate @created="refreshCategories()" />
+      <CategoriesFormsCreate @created="refreshCategories()" />
     </div>
-    <FormsCategoriesEdit @updated="refreshCategories()" />
-    <TablesCategoriesList :categories="categories" :pending="pending" @delete="handleDelete" />
+    <CategoriesFormsEdit @updated="refreshCategories()" />
+    <CategoriesTableList :categories="categories" :pending="pending" @delete="handleDelete" />
   </div>
 </template>

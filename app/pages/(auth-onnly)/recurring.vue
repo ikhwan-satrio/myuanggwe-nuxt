@@ -91,8 +91,8 @@ async function handleDelete(id: string) {
         <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Recurring Transactions</h1>
         <p class="text-xs text-muted-foreground sm:text-sm">Automate transactions that occur repeatedly.</p>
       </div>
-      <FormsRecurringCreate :wallets="wallets" :categories="categories" @created="refreshRecurring()" />
+      <RecurringFormsCreate :wallets="wallets" :categories="categories" @created="refreshRecurring()" />
     </div>
-    <TablesRecurringList :items="recurringItems" :pending="pending" @delete="handleDelete" />
+    <RecurringTableList :items="recurringItems" :pending="pending" @delete="handleDelete" />
   </div>
 </template>

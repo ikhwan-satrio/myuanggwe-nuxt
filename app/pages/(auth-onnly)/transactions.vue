@@ -62,9 +62,9 @@ async function handleDelete(id: string) {
         <p class="text-xs text-muted-foreground sm:text-sm">Manage your transactions.</p>
       </div>
 
-      <FormsTransactionsCreate @created="refreshTransactions()" />
+      <TransactionsFormsCreate @created="refreshTransactions()" />
     </div>
 
-    <TablesTransactionsList :transactions="transactions" :pending="pending" @delete="handleDelete" />
+    <TransactionsTableList :transactions="transactions" :pending="pending" @delete="handleDelete" />
   </div>
 </template>
