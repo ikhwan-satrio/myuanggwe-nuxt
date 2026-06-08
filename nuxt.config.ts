@@ -62,6 +62,13 @@ export default defineNuxtConfig({
     },
   },
 
+  image: {
+    domains: [
+      "awsimages.detik.net.id",
+      "images.cnbcindonesia.com",
+    ],
+  },
+
   security: {
     corsHandler: {
       origin: [
@@ -71,6 +78,11 @@ export default defineNuxtConfig({
       ].filter(Boolean) as string[],
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       credentials: true,
+    },
+    headers: {
+      contentSecurityPolicy: {
+        "img-src": ["'self'", "data:", "https:"],
+      },
     },
   },
 

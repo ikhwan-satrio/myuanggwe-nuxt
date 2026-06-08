@@ -47,6 +47,7 @@
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
     "effect": "^3.21.2",
+    "fast-xml-parser": "^5.8.0",
     "graphql": "^16.14.1",
     "graphql-tag": "^2.12.6",
     "lucide-vue-next": "^1.0.0",

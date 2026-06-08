@@ -36,6 +36,8 @@ const menuItems = [
   { title: "Target Menabung", url: "/goals", icon: "lucide:target" },
 ];
 
+const publicItems = [{ title: "News", url: "/news", icon: "lucide:newspaper" }];
+
 const orgItems = [
   { title: "Buat Grup Baru", url: "/orgs", icon: "lucide:plus" },
   {
@@ -178,12 +180,11 @@ const signOutMutation = useMutation({
     </SidebarHeader>
 
     <SidebarContent>
-      <!-- Main Navigation -->
       <SidebarGroup>
-        <SidebarGroupLabel>Menu</SidebarGroupLabel>
+        <SidebarGroupLabel>public</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
-            <SidebarMenuItem v-for="item in menuItems" :key="item.url">
+            <SidebarMenuItem v-for="item in publicItems" :key="item.url">
               <SidebarMenuButton
                 as-child
                 :is-active="route.path === item.url"
@@ -201,9 +202,51 @@ const signOutMutation = useMutation({
         </SidebarGroupContent>
       </SidebarGroup>
 
+      <!-- Main Navigation -->
+      <SidebarGroup>
+        <SidebarGroupLabel>Menu</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem v-for="item in menuItems" :key="item.url">
+              <SidebarMenuButton
+                as-child
+                v-if="session.data?.user"
+                :is-active="route.path === item.url"
+                :tooltip="item.title"
+              >
+                <NuxtLink :to="item.url">
+                  <Icon :name="item.icon" size="20" />
+                  <span class="group-data-[collapsible=icon]:hidden">
+                    {{ item.title }}
+                  </span>
+                </NuxtLink>
+              </SidebarMenuButton>
+
+              <SidebarMenuButton
+                as-child
+                v-else
+                :is-active="route.path === item.url"
+                :tooltip="item.title"
+              >
+                <span>
+                  <Icon :name="item.icon" size="20" />
+                  <span class="group-data-[collapsible=icon]:hidden">
+                    {{ item.title }}
+                  </span>
+                </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+
       <!-- ✅ Wrap Collapsible dengan ClientOnly untuk fix hydration mismatch -->
       <ClientOnly>
-        <Collapsible v-model:open="isOrgOpen" as-child>
+        <Collapsible
+          v-model:open="isOrgOpen"
+          :disabled="!session.data?.user"
+          as-child
+        >
           <SidebarGroup>
             <SidebarGroupLabel as-child>
               <CollapsibleTrigger
