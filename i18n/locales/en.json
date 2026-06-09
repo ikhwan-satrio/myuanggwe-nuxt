@@ -4,7 +4,11 @@
     "heading": "Your Money, Your Life",
     "headingHighlight": "Your Life",
     "subtitle": "Track income, manage expenses, and achieve your financial goals — all in one simple, ad-free app.",
-    "cta": "Get Started Free",
+    "heroCta": "Get Started Free",
+    "meta": {
+      "description": "MyUangGwe — Free personal finance app to track income, manage expenses, and achieve your financial goals.",
+      "keywords": "myuanggwe, personal finance, track income, manage expenses, budget planner, financial management"
+    },
     "demo": "View Demo",
     "stats": {
       "free": "Free",

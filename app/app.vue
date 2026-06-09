@@ -5,8 +5,17 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
 useHead({
-  titleTemplate: (title) => title ? `${title} - MyUangGwe` : 'MyUangGwe — Kelola Keuangan dengan Tenang',
-})
+  titleTemplate: (title) =>
+    title
+      ? `${title} - MyUangGwe`
+      : "MyUangGwe — Kelola Keuangan dengan Tenang",
+  meta: [
+    {
+      name: "google-site-verification",
+      content: "bWRaoFVlyB345Wietszb9IvK4x9MIN9hvtEA9ChIgoQ",
+    },
+  ],
+});
 
 const router = useRouter();
 

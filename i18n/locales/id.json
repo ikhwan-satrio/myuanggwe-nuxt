@@ -4,7 +4,11 @@
     "heading": "Uangmu, Hidupmu",
     "headingHighlight": "Hidupmu",
     "subtitle": "Catat pemasukan, kelola pengeluaran, dan wujudkan target finansialmu — semua dalam satu aplikasi yang sederhana dan bebas iklan.",
-    "cta": "Mulai Gratis Sekarang",
+    "heroCta": "Mulai Gratis Sekarang",
+    "meta": {
+      "description": "MyUangGwe — Aplikasi keuangan pribadi gratis untuk mencatat pemasukan, mengelola pengeluaran, dan mencapai target finansial.",
+      "keywords": "myuanggwe, aplikasi keuangan, catat pemasukan, kelola pengeluaran, budget planner, finansial pribadi"
+    },
     "demo": "Lihat Demo",
     "stats": {
       "free": "Gratis",

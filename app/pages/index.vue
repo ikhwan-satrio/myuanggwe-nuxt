@@ -117,7 +117,7 @@ const openFaq = ref<number | null>(null);
         >
           <UiButton size="lg" class="w-full sm:w-auto" as-child>
             <NuxtLink to="/auth">
-              {{ $t('landing.cta') }}
+              {{ $t('landing.heroCta') }}
               <Icon name="lucide:arrow-right" class="ml-2 h-4 w-4" />
             </NuxtLink>
           </UiButton>
