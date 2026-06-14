@@ -38,6 +38,10 @@ const menuItems = [
 
 const publicItems = [{ title: "News", url: "/news", icon: "lucide:newspaper" }];
 
+const adminItems = [
+  { title: "Admin Panel", url: "/admin", icon: "lucide:shield" },
+];
+
 const orgItems = [
   { title: "Buat Grup Baru", url: "/orgs", icon: "lucide:plus" },
   {
@@ -234,6 +238,29 @@ const signOutMutation = useMutation({
                     {{ item.title }}
                   </span>
                 </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+
+      <!-- Admin Navigation (developer only) -->
+      <SidebarGroup v-if="session.data?.user?.role === 'developer'">
+        <SidebarGroupLabel>Admin</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem v-for="item in adminItems" :key="item.url">
+              <SidebarMenuButton
+                as-child
+                :is-active="route.path === item.url"
+                :tooltip="item.title"
+              >
+                <NuxtLink :to="item.url">
+                  <Icon :name="item.icon" size="20" />
+                  <span class="group-data-[collapsible=icon]:hidden">
+                    {{ item.title }}
+                  </span>
+                </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

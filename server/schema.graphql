@@ -50,6 +50,7 @@ type User {
   image: String
   username: String
   displayUsername: String
+  role: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 
@@ -196,11 +197,35 @@ type FinancialGoal {
   organization: Organization
 }
 
+# ============= ADMIN =============
+
+type AdminOverview {
+  totalUsers: Int!
+  totalOrganizations: Int!
+  totalWallets: Int!
+  totalTransactions: Int!
+  totalBudgets: Int!
+  totalRecurring: Int!
+  totalGoals: Int!
+  usersByRole: [RoleCount!]!
+  recentUsers: [User!]!
+  recentOrganizations: [Organization!]!
+}
+
+type RoleCount {
+  role: String!
+  count: Int!
+}
+
 # ============= QUERIES =============
 
 type Query {
   # User
   me: User
+
+  # Admin (developer only)
+  users: [User!]!
+  adminOverview: AdminOverview!
 
   # Wallets
   wallets: [Wallet!]!

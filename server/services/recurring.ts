@@ -1,9 +1,9 @@
 import { Effect } from "effect";
 import { eq, and } from "drizzle-orm";
-import { DBServices } from "../db/context";
-import { RedisService } from "../redis/context";
-import { recurringTransactions } from "../db/schemas";
-import type { Context } from "../graphql-context"
+import { DBServices } from "../lib/db/context";
+import { RedisService } from "../lib/redis/context";
+import { recurringTransactions } from "../lib/db/schemas";
+import type { Context } from "../lib/graphql-context"
 
 export class RecurringTransactionService extends Effect.Service<RecurringTransactionService>()('RecurringTransactionService', {
   dependencies: [DBServices.Live, RedisService.Live],

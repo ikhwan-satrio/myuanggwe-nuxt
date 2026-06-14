@@ -1,9 +1,9 @@
 import { Effect } from "effect";
 import { eq, and, sql } from "drizzle-orm";
-import { DBServices } from "../db/context";
-import { RedisService } from "../redis/context";
-import { wallets, transactions } from "../db/schemas";
-import type { Context } from "../graphql-context"
+import { DBServices } from "../lib/db/context";
+import { RedisService } from "../lib/redis/context";
+import { wallets, transactions } from "../lib/db/schemas";
+import type { Context } from "../lib/graphql-context"
 
 const toDate = (date: string | Date): Date => new Date(date)
 

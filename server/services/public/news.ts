@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import { RedisService } from "../../redis/context";
+import { RedisService } from "../../lib/redis/context";
 import { H3Event } from "h3"
 import { XMLParser } from 'fast-xml-parser'
 

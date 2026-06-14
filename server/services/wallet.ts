@@ -1,9 +1,9 @@
 import { Effect } from "effect";
 import { eq, and } from "drizzle-orm";
-import { DBServices } from "../db/context";
-import { RedisService } from "../redis/context";
-import { wallets } from "../db/schemas";
-import type { Context } from "../graphql-context"
+import { DBServices } from "../lib/db/context";
+import { RedisService } from "../lib/redis/context";
+import { wallets } from "../lib/db/schemas";
+import type { Context } from "../lib/graphql-context"
 
 export class WalletService extends Effect.Service<WalletService>()('WalletService', {
   dependencies: [DBServices.Live, RedisService.Live],

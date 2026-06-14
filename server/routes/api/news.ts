@@ -1,5 +1,5 @@
 import { runEffect } from "~~/server/lib/composables"
-import { NewsService } from "~~/server/lib/services/public/news"
+import { NewsService } from "~~/server/services/public/news"
 
 
 export default defineEventHandler(async (event) => {

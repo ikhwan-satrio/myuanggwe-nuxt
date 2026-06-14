@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { eq, and } from "drizzle-orm";
-import { DBServices } from "../db/context";
-import type { Context } from "../graphql-context"
+import { DBServices } from "../lib/db/context";
+import type { Context } from "../lib/graphql-context"
 
 export class OrganizationService extends Effect.Service<OrganizationService>()('OrganizationService', {
   dependencies: [DBServices.Live],

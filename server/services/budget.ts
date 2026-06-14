@@ -1,9 +1,9 @@
 import { Effect } from "effect";
 import { eq, and } from "drizzle-orm";
-import { DBServices } from "../db/context";
-import { RedisService } from "../redis/context";
-import { budgets } from "../db/schemas";
-import type { Context } from "../graphql-context"
+import { DBServices } from "../lib/db/context";
+import { RedisService } from "../lib/redis/context";
+import { budgets } from "../lib/db/schemas";
+import type { Context } from "../lib/graphql-context"
 
 export class BudgetService extends Effect.Service<BudgetService>()('BudgetService', {
   dependencies: [DBServices.Live, RedisService.Live],

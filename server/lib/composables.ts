@@ -6,6 +6,11 @@ export function requireAuth(c: Context): asserts c is Context & { user: NonNulla
   if (!c.user) throw new Error("Unauthorized")
 }
 
+export function requireDeveloper(c: Context): asserts c is Context & { user: NonNullable<Context["user"]> } {
+  requireAuth(c)
+  if ((c.user as Record<string, unknown>).role !== "developer") throw new Error("Forbidden")
+}
+
 type ServiceWithDefault<S> = Effect.Effect<S, never, S> & { Default: Layer.Layer<S> }
 
 export function runEffect<S, T>(

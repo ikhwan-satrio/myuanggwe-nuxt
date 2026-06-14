@@ -16,6 +16,16 @@ export const auth = betterAuth({
     }),
     username()
   ],
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "user",
+        input: false,
+      }
+    }
+  },
   secret: runtimeConfig.betterAuthSecret,
   emailAndPassword: {
     enabled: true

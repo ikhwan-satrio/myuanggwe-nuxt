@@ -4,13 +4,14 @@ import { startServerAndCreateH3Handler } from '@as-integrations/h3'
 import { GraphQLScalarType, Kind } from 'graphql'
 import { createContext } from '~~/server/lib/graphql-context'
 import type { Context } from '~~/server/lib/graphql-context'
-import { WalletService } from "~~/server/lib/services/wallet"
-import { CategoryService } from "~~/server/lib/services/category"
-import { TransactionService } from "~~/server/lib/services/transaction"
-import { BudgetService } from "~~/server/lib/services/budget"
-import { RecurringTransactionService } from "~~/server/lib/services/recurring"
-import { FinancialGoalService } from "~~/server/lib/services/goal"
-import { runEffect, requireAuth } from "~~/server/lib/composables"
+import { WalletService } from "~~/server/services/wallet"
+import { CategoryService } from "~~/server/services/category"
+import { TransactionService } from "~~/server/services/transaction"
+import { BudgetService } from "~~/server/services/budget"
+import { RecurringTransactionService } from "~~/server/services/recurring"
+import { FinancialGoalService } from "~~/server/services/goal"
+import { AdminService } from "~~/server/services/admin"
+import { runEffect, requireAuth, requireDeveloper } from "~~/server/lib/composables"
 
 const DateTimeScalar = new GraphQLScalarType({
   name: 'DateTime',
@@ -26,6 +27,17 @@ const apollo = new ApolloServer<Context>({
       me: async (_, __, { user }) => {
         if (!user) return null
         return user
+      },
+
+      // Admin
+      users: (_, __, c) => {
+        requireDeveloper(c)
+        return runEffect(AdminService, (svc) => svc.getUsers(c))
+      },
+
+      adminOverview: (_, __, c) => {
+        requireDeveloper(c)
+        return runEffect(AdminService, (svc) => svc.getAdminOverview(c))
       },
 
       // Wallets
