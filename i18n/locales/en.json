@@ -67,6 +67,42 @@
       "terms": "Terms"
     }
   },
+  "sidebar": {
+    "groups": {
+      "public": "Public",
+      "menu": "Menu",
+      "admin": "Admin",
+      "organization": "Organization"
+    },
+    "public": {
+      "news": "News"
+    },
+    "menu": {
+      "dashboard": "Dashboard",
+      "transactions": "Transactions",
+      "wallets": "Wallets",
+      "categories": "Categories",
+      "budgets": "Budgets",
+      "recurring": "Recurring",
+      "goals": "Savings Goals"
+    },
+    "admin": {
+      "panel": "Admin Panel"
+    },
+    "organization": {
+      "create": "Create New Group",
+      "invitations": "Invitations",
+      "management": "Management"
+    },
+    "footer": {
+      "logout": "Logout",
+      "login": "Login",
+      "getStarted": "Get started",
+      "settings": "Settings"
+    },
+    "personal": "Personal",
+    "empty": "empty"
+  },
   "dashboard": {
     "title": "Dashboard | Financial Overview",
     "subtitle": "Financial overview",

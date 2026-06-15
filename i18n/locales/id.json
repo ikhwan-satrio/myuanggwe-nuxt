@@ -67,6 +67,42 @@
       "terms": "Ketentuan"
     }
   },
+  "sidebar": {
+    "groups": {
+      "public": "Publik",
+      "menu": "Menu",
+      "admin": "Admin",
+      "organization": "Organisasi"
+    },
+    "public": {
+      "news": "Berita"
+    },
+    "menu": {
+      "dashboard": "Dasbor",
+      "transactions": "Transaksi",
+      "wallets": "Dompet",
+      "categories": "Kategori",
+      "budgets": "Anggaran",
+      "recurring": "Berulang",
+      "goals": "Target Menabung"
+    },
+    "admin": {
+      "panel": "Panel Admin"
+    },
+    "organization": {
+      "create": "Buat Grup Baru",
+      "invitations": "Undangan",
+      "management": "Manajemen"
+    },
+    "footer": {
+      "logout": "Keluar",
+      "login": "Masuk",
+      "getStarted": "Mulai",
+      "settings": "Pengaturan"
+    },
+    "personal": "Pribadi",
+    "empty": "kosong"
+  },
   "dashboard": {
     "title": "Dasbor | Ringkasan Keuangan",
     "subtitle": "Financial overview",

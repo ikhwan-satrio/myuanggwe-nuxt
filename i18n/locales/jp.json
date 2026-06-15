@@ -67,6 +67,42 @@
       "terms": "利用規約"
     }
   },
+  "sidebar": {
+    "groups": {
+      "public": "公開",
+      "menu": "メニュー",
+      "admin": "管理",
+      "organization": "組織"
+    },
+    "public": {
+      "news": "ニュース"
+    },
+    "menu": {
+      "dashboard": "ダッシュボード",
+      "transactions": "取引",
+      "wallets": "ウォレット",
+      "categories": "カテゴリ",
+      "budgets": "予算",
+      "recurring": "定期",
+      "goals": "貯蓄目標"
+    },
+    "admin": {
+      "panel": "管理パネル"
+    },
+    "organization": {
+      "create": "新規グループ作成",
+      "invitations": "招待",
+      "management": "管理"
+    },
+    "footer": {
+      "logout": "ログアウト",
+      "login": "ログイン",
+      "getStarted": "始める",
+      "settings": "設定"
+    },
+    "personal": "個人",
+    "empty": "空"
+  },
   "dashboard": {
     "title": "ダッシュボード | 財務概要",
     "subtitle": "財務概要",
