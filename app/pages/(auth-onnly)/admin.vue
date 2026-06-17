@@ -19,9 +19,23 @@ const ADMIN_OVERVIEW = gql`
       totalBudgets
       totalRecurring
       totalGoals
-      usersByRole { role count }
-      recentUsers { id name email role createdAt }
-      recentOrganizations { id name slug createdAt }
+      usersByRole {
+        role
+        count
+      }
+      recentUsers {
+        id
+        name
+        email
+        role
+        createdAt
+      }
+      recentOrganizations {
+        id
+        name
+        slug
+        createdAt
+      }
     }
   }
 `;
@@ -42,8 +56,19 @@ const { data, pending } = useAsyncData(
       totalRecurring: number;
       totalGoals: number;
       usersByRole: { role: string; count: number }[];
-      recentUsers: { id: string; name: string; email: string; role: string; createdAt: string }[];
-      recentOrganizations: { id: string; name: string; slug: string; createdAt: string }[];
+      recentUsers: {
+        id: string;
+        name: string;
+        email: string;
+        role: string;
+        createdAt: string;
+      }[];
+      recentOrganizations: {
+        id: string;
+        name: string;
+        slug: string;
+        createdAt: string;
+      }[];
     };
   },
   { server: false, lazy: true },
@@ -53,13 +78,41 @@ const overview = computed(() => data.value);
 const isLoading = computed(() => pending.value);
 
 const statsCards = computed(() => [
-  { label: "Total Users", value: overview.value?.totalUsers ?? 0, icon: "lucide:users" },
-  { label: "Organizations", value: overview.value?.totalOrganizations ?? 0, icon: "lucide:building-2" },
-  { label: "Wallets", value: overview.value?.totalWallets ?? 0, icon: "lucide:wallet" },
-  { label: "Transactions", value: overview.value?.totalTransactions ?? 0, icon: "lucide:arrow-left-right" },
-  { label: "Budgets", value: overview.value?.totalBudgets ?? 0, icon: "lucide:piggy-bank" },
-  { label: "Recurring", value: overview.value?.totalRecurring ?? 0, icon: "lucide:repeat" },
-  { label: "Goals", value: overview.value?.totalGoals ?? 0, icon: "lucide:target" },
+  {
+    label: "Total Users",
+    value: overview.value?.totalUsers ?? 0,
+    icon: "lucide:users",
+  },
+  {
+    label: "Organizations",
+    value: overview.value?.totalOrganizations ?? 0,
+    icon: "lucide:building-2",
+  },
+  {
+    label: "Wallets",
+    value: overview.value?.totalWallets ?? 0,
+    icon: "lucide:wallet",
+  },
+  {
+    label: "Transactions",
+    value: overview.value?.totalTransactions ?? 0,
+    icon: "lucide:arrow-left-right",
+  },
+  {
+    label: "Budgets",
+    value: overview.value?.totalBudgets ?? 0,
+    icon: "lucide:piggy-bank",
+  },
+  {
+    label: "Recurring",
+    value: overview.value?.totalRecurring ?? 0,
+    icon: "lucide:repeat",
+  },
+  {
+    label: "Goals",
+    value: overview.value?.totalGoals ?? 0,
+    icon: "lucide:target",
+  },
 ]);
 
 const sessionUser = computed(() => session?.value?.data?.user);
@@ -69,17 +122,25 @@ const sessionUser = computed(() => session?.value?.data?.user);
   <div class="mx-auto max-w-7xl space-y-6">
     <div>
       <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Admin Panel</h1>
-      <p class="text-xs text-muted-foreground sm:text-sm">Developer-only analytics dashboard</p>
+      <p class="text-xs text-muted-foreground sm:text-sm">
+        Developer-only analytics dashboard
+      </p>
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div v-for="stat in statsCards" :key="stat.label" class="rounded-lg border p-4">
+      <div
+        v-for="stat in statsCards"
+        :key="stat.label"
+        class="rounded-lg border p-4"
+      >
         <div class="flex items-center gap-2 text-sm text-muted-foreground">
           <Icon :name="stat.icon" class="h-4 w-4" />
           <span>{{ stat.label }}</span>
         </div>
         <UiSkeleton v-if="isLoading" class="mt-1 h-7 w-16" />
-        <p v-else class="mt-1 text-2xl font-bold">{{ stat.value.toLocaleString() }}</p>
+        <p v-else class="mt-1 text-2xl font-bold">
+          {{ stat.value.toLocaleString() }}
+        </p>
       </div>
     </div>
 
@@ -94,7 +155,9 @@ const sessionUser = computed(() => session?.value?.data?.user);
             class="flex items-center justify-between rounded-md bg-muted px-3 py-2"
           >
             <span class="font-medium capitalize">{{ r.role }}</span>
-            <span class="text-sm text-muted-foreground">{{ r.count }} user{{ r.count !== 1 ? "s" : "" }}</span>
+            <span class="text-sm text-muted-foreground"
+              >{{ r.count }} user{{ r.count !== 1 ? "s" : "" }}</span
+            >
           </div>
         </div>
         <p v-else class="text-sm text-muted-foreground">No data</p>
@@ -137,7 +200,9 @@ const sessionUser = computed(() => session?.value?.data?.user);
               <span class="font-medium">{{ u.name }}</span>
               <span class="text-xs text-muted-foreground">{{ u.email }}</span>
             </div>
-            <span class="text-xs uppercase text-muted-foreground">{{ u.role }}</span>
+            <span class="text-xs uppercase text-muted-foreground">{{
+              u.role
+            }}</span>
           </div>
         </div>
         <p v-else class="text-sm text-muted-foreground">No users</p>

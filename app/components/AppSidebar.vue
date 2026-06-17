@@ -1,36 +1,19 @@
 <script setup lang="ts">
 import { useMutation } from "@tanstack/vue-query";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarFooter,
-  SidebarSeparator,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const { t } = useI18n();
 
 const menuItems = [
-  { key: "sidebar.menu.dashboard", url: "/dashboard", icon: "lucide:chart-pie" },
-  { key: "sidebar.menu.transactions", url: "/transactions", icon: "lucide:arrow-left-right" },
+  {
+    key: "sidebar.menu.dashboard",
+    url: "/dashboard",
+    icon: "lucide:chart-pie",
+  },
+  {
+    key: "sidebar.menu.transactions",
+    url: "/transactions",
+    icon: "lucide:arrow-left-right",
+  },
   { key: "sidebar.menu.wallets", url: "/wallets", icon: "lucide:wallet" },
   { key: "sidebar.menu.categories", url: "/categories", icon: "lucide:layers" },
   { key: "sidebar.menu.budgets", url: "/budgets", icon: "lucide:piggy-bank" },
@@ -38,7 +21,9 @@ const menuItems = [
   { key: "sidebar.menu.goals", url: "/goals", icon: "lucide:target" },
 ];
 
-const publicItems = [{ key: "sidebar.public.news", url: "/news", icon: "lucide:newspaper" }];
+const publicItems = [
+  { key: "sidebar.public.news", url: "/news", icon: "lucide:newspaper" },
+];
 
 const adminItems = [
   { key: "sidebar.admin.panel", url: "/admin", icon: "lucide:shield" },
@@ -46,8 +31,16 @@ const adminItems = [
 
 const orgItems = [
   { key: "sidebar.organization.create", url: "/orgs", icon: "lucide:plus" },
-  { key: "sidebar.organization.invitations", url: "/orgs/invitations", icon: "lucide:mail" },
-  { key: "sidebar.organization.management", url: "/orgs/manage", icon: "lucide:shield-check" },
+  {
+    key: "sidebar.organization.invitations",
+    url: "/orgs/invitations",
+    icon: "lucide:mail",
+  },
+  {
+    key: "sidebar.organization.management",
+    url: "/orgs/manage",
+    icon: "lucide:shield-check",
+  },
 ];
 
 const route = useRoute();
@@ -88,200 +81,152 @@ const signOutMutation = useMutation({
 </script>
 
 <template>
-  <Sidebar>
-    <SidebarHeader>
+  <UiSidebar>
+    <UiSidebarHeader>
       <NuxtLink
         to="/"
         class="flex items-center gap-2 px-2 pb-3 p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
       >
         <NuxtImg src="/favicon.png" width="30" class="rounded-full" />
-        <span
-          class="text-md font-bold tracking-tight group-data-[collapsible=icon]:hidden"
-          >myuanggwe</span
-        >
+        <span class="text-md font-bold tracking-tight group-data-[collapsible=icon]:hidden">myuanggwe</span>
       </NuxtLink>
-      <DropdownMenu>
-        <DropdownMenuTrigger :disabled="orgs?.pending.value">
-          <div
-            class="flex border-2 border-gray-500 p-3 rounded-md items-center group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:border-0"
-          >
-            <div
-              class="border-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground"
-            >
+      <UiDropdownMenu>
+        <UiDropdownMenuTrigger :disabled="orgs?.pending.value">
+          <div class="flex border-2 border-gray-500 p-3 rounded-md items-center group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:border-0">
+            <div class="border-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground">
               <Icon name="lucide:user" size="14" />
             </div>
             <div class="flex flex-1 flex-col overflow-hidden">
               <UiSkeleton v-if="activeOrgs.isPending" class="h-3 w-20 mb-1" />
-              <span
-                v-else-if="activeOrgs.data?.name"
-                class="truncate text-xs font-semibold"
-                >{{ activeOrgs.data.name }}</span
-              >
-
-              <span v-else class="truncate text-xs font-semibold"
-                >Personal</span
-              >
+              <span v-else-if="activeOrgs.data?.name" class="truncate text-xs font-semibold">{{ activeOrgs.data.name }}</span>
+              <span v-else class="truncate text-xs font-semibold">Personal</span>
             </div>
             <Icon name="lucide:chevron-down" size="16" class="opacity-50" />
           </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem>
-            <button
-              @click="switchOrgMutation.mutate(null)"
-              :disabled="switchOrgMutation.isPending.value"
-              class="flex items-center w-55 justify-between py-3 px-2"
-            >
-              <div
-                class="border-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-foreground text-primary-foreground"
-              >
+        </UiDropdownMenuTrigger>
+        <UiDropdownMenuContent>
+          <UiDropdownMenuItem>
+            <button @click="switchOrgMutation.mutate(null)" :disabled="switchOrgMutation.isPending.value" class="flex items-center w-55 justify-between py-3 px-2">
+              <div class="border-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-foreground text-primary-foreground">
                 <Icon name="lucide:user" size="14" />
               </div>
-
               <p>{{ t("sidebar.personal") }}</p>
             </button>
-          </DropdownMenuItem>
+          </UiDropdownMenuItem>
 
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            v-for="org in orgs.data.value"
-            v-if="orgs.data"
-            :key="org.id"
-          >
-            <button
-              @click="switchOrgMutation.mutate(org.id)"
-              :disabled="switchOrgMutation.isPending.value"
-              class="flex items-center w-55 justify-between py-3 px-2"
-            >
-              <div
-                class="border-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-blue-600 text-primary-foreground"
-              >
+          <UiDropdownMenuSeparator />
+          <UiDropdownMenuItem v-for="org in orgs.data.value" v-if="orgs.data" :key="org.id">
+            <button @click="switchOrgMutation.mutate(org.id)" :disabled="switchOrgMutation.isPending.value" class="flex items-center w-55 justify-between py-3 px-2">
+              <div class="border-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-blue-600 text-primary-foreground">
                 <Icon name="lucide:user" size="14" />
               </div>
-
               <p>{{ org.name }}</p>
             </button>
-          </DropdownMenuItem>
-          <DropdownMenuItem v-else>
+          </UiDropdownMenuItem>
+          <UiDropdownMenuItem v-else>
             <div class="flex items-center w-55 justify-between py-3 px-2">
-              <div
-                class="border-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground"
-              >
+              <div class="border-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground">
                 <Icon name="lucide:user" size="14" />
               </div>
-
               <p>{{ t("sidebar.empty") }}</p>
             </div>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </SidebarHeader>
+          </UiDropdownMenuItem>
+        </UiDropdownMenuContent>
+      </UiDropdownMenu>
+    </UiSidebarHeader>
 
-    <SidebarContent>
-      <SidebarGroup>
-        <SidebarGroupLabel>{{ t("sidebar.groups.public") }}</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            <SidebarMenuItem v-for="item in publicItems" :key="item.url">
-              <SidebarMenuButton as-child :is-active="route.path === item.url" :tooltip="t(item.key)">
+    <UiSidebarContent>
+      <UiSidebarGroup>
+        <UiSidebarGroupLabel>{{ t("sidebar.groups.public") }}</UiSidebarGroupLabel>
+        <UiSidebarGroupContent>
+          <UiSidebarMenu>
+            <UiSidebarMenuItem v-for="item in publicItems" :key="item.url">
+              <UiSidebarMenuButton as-child :is-active="route.path === item.url" :tooltip="t(item.key)">
                 <NuxtLink :to="item.url">
                   <Icon :name="item.icon" size="20" />
                   <span class="group-data-[collapsible=icon]:hidden">{{ t(item.key) }}</span>
                 </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+              </UiSidebarMenuButton>
+            </UiSidebarMenuItem>
+          </UiSidebarMenu>
+        </UiSidebarGroupContent>
+      </UiSidebarGroup>
 
-      <SidebarGroup>
-        <SidebarGroupLabel>{{ t("sidebar.groups.menu") }}</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            <SidebarMenuItem v-for="item in menuItems" :key="item.url">
-              <SidebarMenuButton as-child v-if="session.data?.user" :is-active="route.path === item.url" :tooltip="t(item.key)">
+      <UiSidebarGroup>
+        <UiSidebarGroupLabel>{{ t("sidebar.groups.menu") }}</UiSidebarGroupLabel>
+        <UiSidebarGroupContent>
+          <UiSidebarMenu>
+            <UiSidebarMenuItem v-for="item in menuItems" :key="item.url">
+              <UiSidebarMenuButton as-child v-if="session.data?.user" :is-active="route.path === item.url" :tooltip="t(item.key)">
                 <NuxtLink :to="item.url">
                   <Icon :name="item.icon" size="20" />
                   <span class="group-data-[collapsible=icon]:hidden">{{ t(item.key) }}</span>
                 </NuxtLink>
-              </SidebarMenuButton>
+              </UiSidebarMenuButton>
 
-              <SidebarMenuButton as-child v-else :is-active="route.path === item.url" :tooltip="t(item.key)">
+              <UiSidebarMenuButton as-child v-else :is-active="route.path === item.url" :tooltip="t(item.key)">
                 <span>
                   <Icon :name="item.icon" size="20" />
                   <span class="group-data-[collapsible=icon]:hidden">{{ t(item.key) }}</span>
                 </span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+              </UiSidebarMenuButton>
+            </UiSidebarMenuItem>
+          </UiSidebarMenu>
+        </UiSidebarGroupContent>
+      </UiSidebarGroup>
 
-      <SidebarGroup v-if="session.data?.user?.role === 'developer'">
-        <SidebarGroupLabel>{{ t("sidebar.groups.admin") }}</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            <SidebarMenuItem v-for="item in adminItems" :key="item.url">
-              <SidebarMenuButton as-child :is-active="route.path === item.url" :tooltip="t(item.key)">
+      <UiSidebarGroup v-if="session.data?.user?.role === 'developer'">
+        <UiSidebarGroupLabel>{{ t("sidebar.groups.admin") }}</UiSidebarGroupLabel>
+        <UiSidebarGroupContent>
+          <UiSidebarMenu>
+            <UiSidebarMenuItem v-for="item in adminItems" :key="item.url">
+              <UiSidebarMenuButton as-child :is-active="route.path === item.url" :tooltip="t(item.key)">
                 <NuxtLink :to="item.url">
                   <Icon :name="item.icon" size="20" />
                   <span class="group-data-[collapsible=icon]:hidden">{{ t(item.key) }}</span>
                 </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+              </UiSidebarMenuButton>
+            </UiSidebarMenuItem>
+          </UiSidebarMenu>
+        </UiSidebarGroupContent>
+      </UiSidebarGroup>
 
-      <!-- ✅ Wrap Collapsible dengan ClientOnly untuk fix hydration mismatch -->
       <ClientOnly>
-        <Collapsible
-          v-model:open="isOrgOpen"
-          :disabled="!session.data?.user"
-          as-child
-        >
-          <SidebarGroup>
-            <SidebarGroupLabel as-child>
-              <CollapsibleTrigger
-                class="flex w-full items-center gap-2 rounded-md px-2 py-1 text-xs hover:bg-accent"
-              >
+        <UiCollapsible v-model:open="isOrgOpen" :disabled="!session.data?.user" as-child>
+          <UiSidebarGroup>
+            <UiSidebarGroupLabel as-child>
+              <UiCollapsibleTrigger class="flex w-full items-center gap-2 rounded-md px-2 py-1 text-xs hover:bg-accent">
                 <Icon name="lucide:building-2" size="16" class="shrink-0" />
                 <span class="group-data-[collapsible=icon]:hidden">{{ t("sidebar.groups.organization") }}</span>
-                <Icon
-                  name="lucide:chevron-right"
-                  size="14"
-                  class="ml-auto transition-transform duration-200 group-data-[collapsible=icon]:hidden"
-                  :class="isOrgOpen && 'rotate-90'"
-                />
-              </CollapsibleTrigger>
-            </SidebarGroupLabel>
+                <Icon name="lucide:chevron-right" size="14" class="ml-auto transition-transform duration-200 group-data-[collapsible=icon]:hidden" :class="isOrgOpen && 'rotate-90'" />
+              </UiCollapsibleTrigger>
+            </UiSidebarGroupLabel>
 
-            <CollapsibleContent class="group-data-[collapsible=icon]:hidden">
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem v-for="item in orgItems" :key="item.url">
-                    <SidebarMenuButton as-child :is-active="route.path === item.url" :tooltip="t(item.key)">
+            <UiCollapsibleContent class="group-data-[collapsible=icon]:hidden">
+              <UiSidebarGroupContent>
+                <UiSidebarMenu>
+                  <UiSidebarMenuItem v-for="item in orgItems" :key="item.url">
+                    <UiSidebarMenuButton as-child :is-active="route.path === item.url" :tooltip="t(item.key)">
                       <NuxtLink :to="item.url">
                         <Icon :name="item.icon" size="16" />
                         <span>{{ t(item.key) }}</span>
                       </NuxtLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
+                    </UiSidebarMenuButton>
+                  </UiSidebarMenuItem>
+                </UiSidebarMenu>
+              </UiSidebarGroupContent>
+            </UiCollapsibleContent>
+          </UiSidebarGroup>
+        </UiCollapsible>
       </ClientOnly>
-    </SidebarContent>
+    </UiSidebarContent>
 
-    <!-- Footer -->
-    <SidebarFooter>
-      <SidebarSeparator />
-      <SidebarMenu>
+    <UiSidebarFooter>
+      <UiSidebarSeparator />
+      <UiSidebarMenu>
         <template v-if="session.data">
-          <SidebarMenuItem>
-            <SidebarMenuButton
+          <UiSidebarMenuItem>
+            <UiSidebarMenuButton
               :tooltip="t('sidebar.footer.logout')"
               class="text-destructive hover:bg-destructive hover:text-destructive-foreground"
               :disable="signOutMutation.isPending"
@@ -289,22 +234,22 @@ const signOutMutation = useMutation({
             >
               <Icon name="lucide:log-out" size="16" />
               <span class="group-data-[collapsible=icon]:hidden">{{ t("sidebar.footer.logout") }}</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+            </UiSidebarMenuButton>
+          </UiSidebarMenuItem>
         </template>
-        <SidebarMenuItem v-else>
-          <SidebarMenuButton
+        <UiSidebarMenuItem v-else>
+          <UiSidebarMenuButton
             :tooltip="t('sidebar.footer.login')"
             class="text-green-500 hover:bg-green-500 hover:text-green-50"
             @click="navigateTo('/auth')"
           >
             <Icon name="lucide:log-in" size="16" />
             <span class="group-data-[collapsible=icon]:hidden">{{ t("sidebar.footer.getStarted") }}</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+          </UiSidebarMenuButton>
+        </UiSidebarMenuItem>
 
-        <SidebarMenuItem>
-          <SidebarMenuButton :tooltip="t('sidebar.footer.settings')" size="lg" class="hover:bg-accent">
+        <UiSidebarMenuItem>
+          <UiSidebarMenuButton :tooltip="t('sidebar.footer.settings')" size="lg" class="hover:bg-accent">
             <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted">
               <Icon name="lucide:user" size="16" />
             </div>
@@ -313,9 +258,9 @@ const signOutMutation = useMutation({
               <span class="truncate text-muted-foreground">{{ session.data?.user.email }}</span>
             </div>
             <Icon name="lucide:settings" size="16" class="opacity-50" />
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    </SidebarFooter>
-  </Sidebar>
+          </UiSidebarMenuButton>
+        </UiSidebarMenuItem>
+      </UiSidebarMenu>
+    </UiSidebarFooter>
+  </UiSidebar>
 </template>
