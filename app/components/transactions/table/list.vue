@@ -74,6 +74,12 @@ const { formatCurrency } = useCurrency();
                 >→ {{ tx.toWallet.name }}</template
               >
             </p>
+            <p
+              v-if="tx.afterTransaction"
+              class="mt-0.5 text-[10px] italic text-muted-foreground/70"
+            >
+              {{ tx.afterTransaction }}
+            </p>
           </div>
         </div>
 
@@ -89,6 +95,17 @@ const { formatCurrency } = useCurrency();
               {{ tx.type === "income" ? "+" : "-" }}
               {{
                 formatCurrency(tx.amount, tx.wallet?.currency ?? tx.currency)
+              }}
+            </p>
+            <p
+              v-if="tx.fromAmount && tx.fromAmount !== tx.amount"
+              class="text-[10px] text-muted-foreground/60 line-through"
+            >
+              {{
+                formatCurrency(
+                  tx.fromAmount,
+                  tx.wallet?.currency ?? tx.currency,
+                )
               }}
             </p>
             <p class="text-[10px] text-muted-foreground">

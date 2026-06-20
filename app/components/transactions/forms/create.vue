@@ -54,6 +54,8 @@ const transactionForm = useForm({
     toWalletId: "",
     categoryId: "",
     description: "",
+    fromAmount: 0,
+    afterTransaction: "",
     date: new Date().toISOString().split("T")[0],
   },
   onSubmit: async ({ value }) => {
@@ -65,6 +67,8 @@ const transactionForm = useForm({
         walletId: value.walletId,
         currency: wallet?.currency ?? 'IDR',
         description: value.description || null,
+        fromAmount: value.fromAmount > 0 ? value.fromAmount : null,
+        afterTransaction: value.afterTransaction || null,
         date: new Date(value.date!).toISOString(),
       };
 
@@ -276,6 +280,46 @@ const filteredCategories = computed(() =>
                     field.handleChange((e.target as HTMLInputElement).value)
                 "
               />
+            </div>
+          </template>
+        </transactionForm.Field>
+
+        <transactionForm.Field name="fromAmount">
+          <template #default="{ field }">
+            <div class="space-y-2">
+              <UiLabel for="fromAmount">Original Amount (Optional)</UiLabel>
+              <UiInput
+                id="fromAmount"
+                type="number"
+                :value="field.state.value || ''"
+                placeholder="0"
+                min="0"
+                @blur="field.handleBlur()"
+                @input="
+                  (e: Event) =>
+                    field.handleChange(Number((e.target as HTMLInputElement).value))
+                "
+              />
+              <p class="text-xs text-muted-foreground">Original amount before currency conversion</p>
+            </div>
+          </template>
+        </transactionForm.Field>
+
+        <transactionForm.Field name="afterTransaction">
+          <template #default="{ field }">
+            <div class="space-y-2">
+              <UiLabel for="afterTransaction">After Transaction Note (Optional)</UiLabel>
+              <UiInput
+                id="afterTransaction"
+                :value="field.state.value"
+                placeholder="Paid off, remaining balance..."
+                @blur="field.handleBlur()"
+                @input="
+                  (e: Event) =>
+                    field.handleChange((e.target as HTMLInputElement).value)
+                "
+              />
+              <p class="text-xs text-muted-foreground">Record result or remaining balance after this transaction</p>
             </div>
           </template>
         </transactionForm.Field>

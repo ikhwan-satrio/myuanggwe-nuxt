@@ -27,6 +27,9 @@ export const GET_TRANSACTIONS = gql`
       type
       description
       currency
+      exchangeRate
+      fromAmount
+      afterTransaction
       date
       createdAt
       wallet { id name type currency }
@@ -44,6 +47,9 @@ export const GET_TRANSACTION = gql`
       type
       description
       currency
+      exchangeRate
+      fromAmount
+      afterTransaction
       date
       createdAt
       wallet { id name type currency }
@@ -61,6 +67,9 @@ export const CREATE_TRANSACTION = gql`
       type
       description
       currency
+      exchangeRate
+      fromAmount
+      afterTransaction
       date
       createdAt
     }
@@ -74,6 +83,10 @@ export const UPDATE_TRANSACTION = gql`
       amount
       type
       description
+      currency
+      exchangeRate
+      fromAmount
+      afterTransaction
       date
     }
   }

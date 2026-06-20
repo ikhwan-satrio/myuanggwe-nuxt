@@ -7,5 +7,7 @@ export const transactionSchema = type({
   'toWalletId?': 'string | null',
   'categoryId?': 'string | null',
   'description?': 'string | null',
+  'fromAmount?': 'number',
+  'afterTransaction?': 'string',
   date: 'string > 0',
 })

@@ -146,6 +146,8 @@ type Transaction {
   wallet: Wallet!
   toWallet: Wallet
   category: Category
+  fromAmount: Int
+  afterTransaction: String
   user: User!
   organization: Organization
 }
@@ -338,6 +340,8 @@ input CreateTransactionInput {
   description: String
   currency: String
   exchangeRate: Int
+  fromAmount: Int
+  afterTransaction: String
   date: DateTime!
   walletId: ID!
   toWalletId: ID
@@ -349,6 +353,10 @@ input UpdateTransactionInput {
   type: TransactionType
   amount: Int
   description: String
+  currency: String
+  exchangeRate: Int
+  fromAmount: Int
+  afterTransaction: String
   date: DateTime
   walletId: ID
   toWalletId: ID

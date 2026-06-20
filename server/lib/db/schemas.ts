@@ -199,6 +199,8 @@ export const transactions = sqliteTable('transactions', {
     .references(() => wallets.id, { onDelete: 'cascade' }),
   toWalletId: text('to_wallet_id').references(() => wallets.id, { onDelete: 'cascade' }),
   categoryId: text('category_id').references(() => categories.id, { onDelete: 'set null' }),
+  fromAmount: integer("from_amount"),
+  afterTransaction: text('after_transaction'),
   userId: text('user_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
