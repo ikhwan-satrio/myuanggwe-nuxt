@@ -96,17 +96,11 @@ export default defineNuxtConfig({
     '/api/**': { cors: true, security: { enabled: true } }
   },
 
-  nuxtQuery: {
-    devtools: true,
-    autoImports: ["useQueryClient"],
-  },
-
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
         '@apollo/client/core',
-        '@tanstack/vue-query',
         '@vue/apollo-composable',
         '@vue/devtools-core',
         '@vue/devtools-kit',
