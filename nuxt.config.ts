@@ -32,7 +32,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@pinia/nuxt',
     'nuxt-graphql-server',
-    '@peterbud/nuxt-query',
     '@nuxtjs/i18n',
     'motion-v/nuxt',
     'nuxt-security',
