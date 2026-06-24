@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useMutation } from "@tanstack/vue-query";
-
 const { t } = useI18n();
 
 const menuItems = [

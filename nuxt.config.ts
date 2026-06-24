@@ -38,10 +38,16 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/robots',
     '@nuxtjs/sitemap',
+    '@peterbud/nuxt-query',
   ],
 
   pinia: {
     storesDirs: ['./app/stores/**'],
+  },
+
+  nuxtQuery: {
+    autoImports: ["useQuery", "useMutation"],
+    devtools: true
   },
 
   graphqlServer: {
