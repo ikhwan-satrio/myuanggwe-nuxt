@@ -85,6 +85,7 @@ export default defineNuxtConfig({
     corsHandler: {
       origin: [
         'http://localhost:3000',
+        'http://localhost:8081',
         process.env.PUBLIC_APP_BASE_URL,
         process.env.BETTER_AUTH_APP_URL,
       ].filter(Boolean) as string[],
