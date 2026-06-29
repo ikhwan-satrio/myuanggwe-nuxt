@@ -100,7 +100,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/api/**': { cors: true, security: { enabled: true } }
+    '/api/**': { cors: false, security: { enabled: false } }
   },
 
   vite: {

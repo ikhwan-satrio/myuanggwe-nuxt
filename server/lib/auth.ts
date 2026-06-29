@@ -1,6 +1,6 @@
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
-import { username, organization, role } from "better-auth/plugins";
+import { username, organization } from "better-auth/plugins";
 import { betterAuth } from "better-auth";
 
 const runtimeConfig = useRuntimeConfig();
@@ -10,6 +10,9 @@ export const auth = betterAuth({
     provider: "sqlite",
   }),
   appName: "myuanggwe-nuxt",
+  trustedOrigins: [
+    "http://localhost:3000"
+  ],
   plugins: [
     organization({
       requireEmailVerificationOnInvitation: false,
