@@ -219,6 +219,26 @@ type RoleCount {
   count: Int!
 }
 
+# ============= AUTH =============
+
+type AuthResult {
+  user: User!
+  session: Session!
+  token: String
+}
+
+type Session {
+  id: ID!
+  expiresAt: DateTime!
+  token: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  ipAddress: String
+  userAgent: String
+  userId: String!
+  activeOrganizationId: String
+}
+
 # ============= QUERIES =============
 
 type Query {
@@ -264,6 +284,11 @@ type Query {
   # Organization
   organization(id: ID!): Organization
   organizations: [Organization!]!
+  organizationBySlug(slug: String!): Organization
+  members(organizationId: ID!): [Member!]!
+
+  # Invitations
+  invitations: [Invitation!]!
 }
 
 # ============= MUTATIONS =============
@@ -299,10 +324,25 @@ type Mutation {
   updateFinancialGoal(id: ID!, input: UpdateFinancialGoalInput!): FinancialGoal!
   deleteFinancialGoal(id: ID!): Boolean!
 
+  # Auth
+  signUp(input: SignUpInput!): AuthResult!
+  signIn(input: SignInInput!): AuthResult!
+  signOut: Boolean!
+
+  # User
+  updateUser(input: UpdateUserInput!): User!
+  changePassword(currentPassword: String!, newPassword: String!): Boolean!
+
   # Organization
   createOrganization(input: CreateOrganizationInput!): Organization!
+  updateOrganization(id: ID!, input: UpdateOrganizationInput!): Organization!
+  deleteOrganization(id: ID!): Boolean!
   inviteMember(organizationId: ID!, email: String!, role: String): Invitation!
   removeMember(memberId: ID!): Boolean!
+  updateMemberRole(memberId: ID!, role: String!): Member!
+  acceptInvitation(invitationId: ID!): Boolean!
+  rejectInvitation(invitationId: ID!): Boolean!
+  cancelInvitation(invitationId: ID!): Boolean!
 }
 
 # ============= INPUTS =============
@@ -411,6 +451,31 @@ input UpdateFinancialGoalInput {
   targetAmount: Int
   currentAmount: Int
   deadline: DateTime
+}
+
+input SignUpInput {
+  email: String!
+  password: String!
+  name: String!
+  username: String
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  name: String
+  image: String
+  username: String
+}
+
+input UpdateOrganizationInput {
+  name: String
+  slug: String
+  logo: String
+  metadata: String
 }
 
 input CreateOrganizationInput {

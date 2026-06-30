@@ -53,7 +53,7 @@ export default defineNuxtConfig({
   graphqlServer: {
     url: '/api/graphql',
     codegen: {
-      contextType: '~~/server/lib/graphql/context#GraphQLContext',
+      contextType: '~~/server/lib/graphql-context#Context',
     },
   },
 

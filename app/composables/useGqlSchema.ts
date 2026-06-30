@@ -506,3 +506,147 @@ export const GET_ME = gql`
     }
   }
 `
+
+// =====================================================================
+// AUTH
+// =====================================================================
+export const SIGN_UP = gql`
+  mutation SignUp($input: SignUpInput!) {
+    signUp(input: $input) {
+      user { id name email username image emailVerified role createdAt updatedAt }
+      session { id expiresAt token createdAt updatedAt ipAddress userAgent userId activeOrganizationId }
+      token
+    }
+  }
+`
+
+export const SIGN_IN = gql`
+  mutation SignIn($input: SignInInput!) {
+    signIn(input: $input) {
+      user { id name email username image emailVerified role createdAt updatedAt }
+      session { id expiresAt token createdAt updatedAt ipAddress userAgent userId activeOrganizationId }
+      token
+    }
+  }
+`
+
+export const SIGN_OUT = gql`
+  mutation SignOut {
+    signOut
+  }
+`
+
+// =====================================================================
+// USER
+// =====================================================================
+export const UPDATE_USER = gql`
+  mutation UpdateUser($input: UpdateUserInput!) {
+    updateUser(input: $input) {
+      id
+      name
+      email
+      username
+      displayUsername
+      image
+      role
+    }
+  }
+`
+
+export const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
+    changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+  }
+`
+
+// =====================================================================
+// ORGANIZATION - EXTRA
+// =====================================================================
+export const GET_ORGANIZATION_BY_SLUG = gql`
+  query GetOrganizationBySlug($slug: String!) {
+    organizationBySlug(slug: $slug) {
+      id
+      name
+      slug
+      logo
+      createdAt
+      members {
+        id
+        role
+        user { id name email image }
+      }
+    }
+  }
+`
+
+export const GET_MEMBERS = gql`
+  query GetMembers($organizationId: ID!) {
+    members(organizationId: $organizationId) {
+      id
+      role
+      createdAt
+      user { id name email image }
+    }
+  }
+`
+
+export const GET_INVITATIONS = gql`
+  query GetInvitations {
+    invitations {
+      id
+      email
+      role
+      status
+      expiresAt
+      createdAt
+      organization { id name slug logo }
+      inviter { id name email image }
+    }
+  }
+`
+
+export const UPDATE_ORGANIZATION = gql`
+  mutation UpdateOrganization($id: ID!, $input: UpdateOrganizationInput!) {
+    updateOrganization(id: $id, input: $input) {
+      id
+      name
+      slug
+      logo
+      createdAt
+    }
+  }
+`
+
+export const DELETE_ORGANIZATION = gql`
+  mutation DeleteOrganization($id: ID!) {
+    deleteOrganization(id: $id)
+  }
+`
+
+export const UPDATE_MEMBER_ROLE = gql`
+  mutation UpdateMemberRole($memberId: ID!, $role: String!) {
+    updateMemberRole(memberId: $memberId, role: $role) {
+      id
+      role
+      user { id name email image }
+    }
+  }
+`
+
+export const ACCEPT_INVITATION = gql`
+  mutation AcceptInvitation($invitationId: ID!) {
+    acceptInvitation(invitationId: $invitationId)
+  }
+`
+
+export const REJECT_INVITATION = gql`
+  mutation RejectInvitation($invitationId: ID!) {
+    rejectInvitation(invitationId: $invitationId)
+  }
+`
+
+export const CANCEL_INVITATION = gql`
+  mutation CancelInvitation($invitationId: ID!) {
+    cancelInvitation(invitationId: $invitationId)
+  }
+`
