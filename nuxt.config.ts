@@ -81,26 +81,27 @@ export default defineNuxtConfig({
     ],
   },
 
-  security: {
-    corsHandler: {
-      origin: [
-        'http://localhost:3000',
-        'http://localhost:8081',
-        process.env.PUBLIC_APP_BASE_URL,
-        process.env.BETTER_AUTH_APP_URL,
-      ].filter(Boolean) as string[],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      credentials: true,
-    },
-    headers: {
-      contentSecurityPolicy: {
-        "img-src": ["'self'", "data:", "https:"],
-      },
-    },
-  },
 
   routeRules: {
-    '/api/**': { cors: false, security: { enabled: false } }
+    '/api/**': {
+      security: {
+        corsHandler: {
+          origin: [
+            'http://localhost:3000',
+            'http://localhost:8081',
+            process.env.PUBLIC_APP_BASE_URL,
+            process.env.BETTER_AUTH_APP_URL,
+          ].filter(Boolean) as string[],
+          methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+          credentials: true,
+        },
+        headers: {
+          contentSecurityPolicy: {
+            "img-src": ["'self'", "data:", "https:"],
+          },
+        },
+      },
+    }
   },
 
   vite: {
