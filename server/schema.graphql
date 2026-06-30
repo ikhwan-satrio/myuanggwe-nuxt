@@ -27,40 +27,11 @@ enum RecurringFrequency {
   yearly
 }
 
-enum InvitationStatus {
-  pending
-  accepted
-  rejected
-  cancelled
-}
-
-enum MemberRole {
-  owner
-  admin
-  member
-}
-
 # ============= USER =============
 
 type User {
   id: ID!
   name: String!
-  email: String!
-  emailVerified: Boolean!
-  image: String
-  username: String
-  displayUsername: String
-  role: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-
-  wallets: [Wallet!]!
-  categories: [Category!]!
-  transactions: [Transaction!]!
-  budgets: [Budget!]!
-  recurringTransactions: [RecurringTransaction!]!
-  financialGoals: [FinancialGoal!]!
-  members: [Member!]!
 }
 
 # ============= ORGANIZATION =============
@@ -68,38 +39,6 @@ type User {
 type Organization {
   id: ID!
   name: String!
-  slug: String!
-  logo: String
-  metadata: String
-  createdAt: DateTime!
-
-  members: [Member!]!
-  invitations: [Invitation!]!
-  wallets: [Wallet!]!
-  categories: [Category!]!
-  transactions: [Transaction!]!
-  budgets: [Budget!]!
-  recurringTransactions: [RecurringTransaction!]!
-  financialGoals: [FinancialGoal!]!
-}
-
-type Member {
-  id: ID!
-  role: String!
-  createdAt: DateTime!
-  organization: Organization!
-  user: User!
-}
-
-type Invitation {
-  id: ID!
-  email: String!
-  role: String
-  status: InvitationStatus!
-  expiresAt: DateTime!
-  createdAt: DateTime!
-  organization: Organization!
-  inviter: User!
 }
 
 # ============= WALLET =============
@@ -199,56 +138,11 @@ type FinancialGoal {
   organization: Organization
 }
 
-# ============= ADMIN =============
 
-type AdminOverview {
-  totalUsers: Int!
-  totalOrganizations: Int!
-  totalWallets: Int!
-  totalTransactions: Int!
-  totalBudgets: Int!
-  totalRecurring: Int!
-  totalGoals: Int!
-  usersByRole: [RoleCount!]!
-  recentUsers: [User!]!
-  recentOrganizations: [Organization!]!
-}
-
-type RoleCount {
-  role: String!
-  count: Int!
-}
-
-# ============= AUTH =============
-
-type AuthResult {
-  user: User!
-  session: Session!
-  token: String
-}
-
-type Session {
-  id: ID!
-  expiresAt: DateTime!
-  token: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  ipAddress: String
-  userAgent: String
-  userId: String!
-  activeOrganizationId: String
-}
 
 # ============= QUERIES =============
 
 type Query {
-  # User
-  me: User
-
-  # Admin (developer only)
-  users: [User!]!
-  adminOverview: AdminOverview!
-
   # Wallets
   wallets: [Wallet!]!
   wallet(id: ID!): Wallet
@@ -280,15 +174,6 @@ type Query {
   # Financial Goals
   financialGoals: [FinancialGoal!]!
   financialGoal(id: ID!): FinancialGoal
-
-  # Organization
-  organization(id: ID!): Organization
-  organizations: [Organization!]!
-  organizationBySlug(slug: String!): Organization
-  members(organizationId: ID!): [Member!]!
-
-  # Invitations
-  invitations: [Invitation!]!
 }
 
 # ============= MUTATIONS =============
@@ -323,26 +208,6 @@ type Mutation {
   createFinancialGoal(input: CreateFinancialGoalInput!): FinancialGoal!
   updateFinancialGoal(id: ID!, input: UpdateFinancialGoalInput!): FinancialGoal!
   deleteFinancialGoal(id: ID!): Boolean!
-
-  # Auth
-  signUp(input: SignUpInput!): AuthResult!
-  signIn(input: SignInInput!): AuthResult!
-  signOut: Boolean!
-
-  # User
-  updateUser(input: UpdateUserInput!): User!
-  changePassword(currentPassword: String!, newPassword: String!): Boolean!
-
-  # Organization
-  createOrganization(input: CreateOrganizationInput!): Organization!
-  updateOrganization(id: ID!, input: UpdateOrganizationInput!): Organization!
-  deleteOrganization(id: ID!): Boolean!
-  inviteMember(organizationId: ID!, email: String!, role: String): Invitation!
-  removeMember(memberId: ID!): Boolean!
-  updateMemberRole(memberId: ID!, role: String!): Member!
-  acceptInvitation(invitationId: ID!): Boolean!
-  rejectInvitation(invitationId: ID!): Boolean!
-  cancelInvitation(invitationId: ID!): Boolean!
 }
 
 # ============= INPUTS =============
@@ -451,36 +316,4 @@ input UpdateFinancialGoalInput {
   targetAmount: Int
   currentAmount: Int
   deadline: DateTime
-}
-
-input SignUpInput {
-  email: String!
-  password: String!
-  name: String!
-  username: String
-}
-
-input SignInInput {
-  email: String!
-  password: String!
-}
-
-input UpdateUserInput {
-  name: String
-  image: String
-  username: String
-}
-
-input UpdateOrganizationInput {
-  name: String
-  slug: String
-  logo: String
-  metadata: String
-}
-
-input CreateOrganizationInput {
-  name: String!
-  slug: String!
-  logo: String
-  metadata: String
 }

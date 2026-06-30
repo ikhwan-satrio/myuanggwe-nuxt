@@ -1,81 +1,17 @@
 <script setup lang="ts">
-import { gql } from "@apollo/client/core";
-
 const { $authClient } = useNuxtApp();
-const { $apolloClient } = useNuxtApp();
 const session = $authClient.useSession();
 
 useHead({ title: "Admin Panel" });
 
 definePageMeta({ middleware: ["auth", "developer"] });
 
-const ADMIN_OVERVIEW = gql`
-  query AdminOverview {
-    adminOverview {
-      totalUsers
-      totalOrganizations
-      totalWallets
-      totalTransactions
-      totalBudgets
-      totalRecurring
-      totalGoals
-      usersByRole {
-        role
-        count
-      }
-      recentUsers {
-        id
-        name
-        email
-        role
-        createdAt
-      }
-      recentOrganizations {
-        id
-        name
-        slug
-        createdAt
-      }
-    }
-  }
-`;
+const { data: overview, status: overviewStatus } = await useFetch('/api/admin/overview', {
+  server: false,
+  lazy: true,
+});
 
-const { data, pending } = useAsyncData(
-  "admin-overview",
-  async () => {
-    const result = await $apolloClient.query({
-      query: ADMIN_OVERVIEW,
-      fetchPolicy: "network-only",
-    });
-    return result.data.adminOverview as {
-      totalUsers: number;
-      totalOrganizations: number;
-      totalWallets: number;
-      totalTransactions: number;
-      totalBudgets: number;
-      totalRecurring: number;
-      totalGoals: number;
-      usersByRole: { role: string; count: number }[];
-      recentUsers: {
-        id: string;
-        name: string;
-        email: string;
-        role: string;
-        createdAt: string;
-      }[];
-      recentOrganizations: {
-        id: string;
-        name: string;
-        slug: string;
-        createdAt: string;
-      }[];
-    };
-  },
-  { server: false, lazy: true },
-);
-
-const overview = computed(() => data.value);
-const isLoading = computed(() => pending.value);
+const isLoading = computed(() => overviewStatus.value === 'pending');
 
 const statsCards = computed(() => [
   {
