@@ -11,7 +11,8 @@ export const auth = betterAuth({
   }),
   appName: "myuanggwe-nuxt",
   trustedOrigins: [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "myuanggwe-mobile://"
   ],
   plugins: [
     organization({
