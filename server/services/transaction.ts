@@ -125,7 +125,7 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
           if (txn) {
             const txType = txn.type
             const amt = txn.amount
-            await applyBalanceChange(txType, amt, txn.walletId, txn.toWalletId, false, tx)
+            await applyBalanceChange(txType, amt, txn.walletId, txn.toWalletId, false, tx as any)
           }
 
           return txn
@@ -149,7 +149,7 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
         const newToWalletId = input.toWalletId !== undefined ? input.toWalletId : oldTxn.toWalletId
 
         const result = await db.transaction(async (tx) => {
-          await applyBalanceChange(oldTxn.type, oldTxn.amount, oldTxn.walletId, oldTxn.toWalletId, true, tx)
+          await applyBalanceChange(oldTxn.type, oldTxn.amount, oldTxn.walletId, oldTxn.toWalletId, true, tx as any)
 
           if (newType === 'expense' || newType === 'transfer') {
             const wallet = await tx.query.wallets.findFirst({ where: eq(wallets.id, newWalletId) })
@@ -170,7 +170,7 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
             .returning()
           if (!updated[0]) throw new Error('Transaction not found')
 
-          await applyBalanceChange(newType, newAmount, newWalletId, newToWalletId, false, tx)
+          await applyBalanceChange(newType, newAmount, newWalletId, newToWalletId, false, tx as any)
 
           return updated[0]
         })
@@ -194,7 +194,7 @@ export class TransactionService extends Effect.Service<TransactionService>()('Tr
               : and(eq(transactions.id, id), eq(transactions.userId, c.user?.id!))
           )
 
-          await applyBalanceChange(txn.type, txn.amount, txn.walletId, txn.toWalletId, true, tx)
+          await applyBalanceChange(txn.type, txn.amount, txn.walletId, txn.toWalletId, true, tx as any)
         })
 
         await redis.invalidateUserCache(c.user?.id!, orgId)
