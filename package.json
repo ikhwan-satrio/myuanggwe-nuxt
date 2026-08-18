@@ -77,5 +77,10 @@
     "esbuild",
     "sharp",
     "vue-demi"
-  ]
+  ],
+  "aube": {
+    "allowBuilds": {
+      "unrs-resolver": true
+    }
+  }
 }

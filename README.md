@@ -36,8 +36,8 @@
 ## Getting Started
 
 ```bash
-bun install
-bun run dev
+aube install
+aube run dev
 ```
 
 Open `http://localhost:3000`.
@@ -51,6 +51,13 @@ Open `http://localhost:3000`.
 | `bun run build` | Production build (Vercel) |
 | `bun run generate` | Static site generation |
 | `bun run preview` | Preview production build |
+| Command            | Purpose                   |
+| ------------------ | ------------------------- |
+| `aube install`     | Install dependencies      |
+| `aube run dev`     | Start dev server          |
+| `aube run build`   | Production build (Vercel) |
+| `aube run generate`| Static site generation    |
+| `aube run preview` | Preview production build  |
 
 ## Environment Variables
 

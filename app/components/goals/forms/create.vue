@@ -12,7 +12,6 @@ defineProps<{
 
 const store = useGoalsCrudStore();
 const emit = defineEmits<{ created: [] }>();
-const { $apolloClient } = useNuxtApp();
 
 const { mutate: createMutate } = useMutation(CREATE_FINANCIAL_GOAL);
 
@@ -64,6 +63,7 @@ const selectedWallet = computed(
   () =>
     wallets.value?.find((w) => w.id === createFormValues.value.walletId)
       ?.name ?? "Select Source Wallet",
+  () => wallets.find((w) => w.id === createFormValues.value.walletId)?.name ?? 'Select Source Wallet',
 );
 </script>
 

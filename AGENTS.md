@@ -2,13 +2,15 @@
 
 ## Commands
 
-- `bun install` — install deps (bun is the package manager; don't use npm/pnpm/yarn)
-- `bun run dev` — dev server at `http://localhost:3000`
-- `bun run build` — production build (Nitro preset: vercel)
-- `bun run generate` — static site generation
-- `bun run preview` — preview production build
-- `bun run postinstall` → runs `nuxt prepare` (auto after install; generates `.nuxt/` types)
-- No lint, typecheck, or test scripts exist.
+- `aube install` — install deps (aube is the package manager; reads/writes `bun.lock` in place)
+- `aube run dev` — dev server at `http://localhost:3000`
+- `aube run build` — production build (Nitro preset: vercel)
+- `aube run generate` — static site generation
+- `aube run preview` — preview production build
+- `aube run postinstall` → runs `nuxt prepare` (auto after install; generates `.nuxt/` types)
+- `aube run lint` / `aube run lint:fix` — ESLint (flat config; `app/components/ui/` ignored)
+- `aube run format` / `aube run format:check` — Prettier
+- No typecheck or test scripts exist.
 
 ## Structure
 

@@ -40,12 +40,19 @@ const transactions = computed(() => transactionsData.value ?? []);
 
 const { mutate: deleteMutation } = useMutation(DELETE_TRANSACTION);
 
+async function refreshAfterChange() {
+  await refreshNuxtData('transactions');
+  await refreshNuxtData('wallets');
+}
+
 async function handleDelete(id: string) {
   try {
     await deleteMutation({ id });
     toast.success("Transaction deleted");
     await refreshNuxtData("transactions");
     await refreshNuxtData("wallets");
+    toast.success('Transaction deleted');
+    await refreshAfterChange();
   } catch {
     toast.error("Failed to delete transaction");
   }
@@ -64,7 +71,7 @@ async function handleDelete(id: string) {
         </p>
       </div>
 
-      <TransactionsFormsCreate @created="refreshNuxtData('transactions')" />
+      <TransactionsFormsCreate @created="refreshAfterChange" />
     </div>
 
     <TransactionsTableList

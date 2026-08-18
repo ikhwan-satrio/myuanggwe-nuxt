@@ -13,7 +13,14 @@ const { formatCurrency } = useCurrency();
 </script>
 
 <template>
-  <TransactionsFormsEdit @updated="() => refreshNuxtData('transactions')" />
+  <TransactionsFormsEdit
+    @updated="
+      () => {
+        refreshNuxtData('transactions');
+        refreshNuxtData('wallets');
+      }
+    "
+  />
 
   <div class="rounded-md border bg-card">
     <template v-if="pending">
